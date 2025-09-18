@@ -38,9 +38,20 @@ import re
 import nltk
 try:
     from textblob import TextBlob
+    TEXTBLOB_AVAILABLE = True
 except ImportError:
     print("TextBlob not available, using basic text processing")
-    TextBlob = None
+    TEXTBLOB_AVAILABLE = False
+    class TextBlob:
+        def __init__(self, text):
+            self.text = text
+        @property
+        def sentiment(self):
+            # Return neutral sentiment as a mock
+            class Sentiment:
+                polarity = 0.0
+                subjectivity = 0.0
+            return Sentiment()
 
 # Deep learning (if available)
 try:
