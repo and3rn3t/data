@@ -1,0 +1,59 @@
+{
+    "folders": [
+        {
+            "name": "🎮 Data Science Sandbox",
+            "path": "."
+        }
+    ],
+    "settings": {
+        "python.defaultInterpreterPath": "./venv/bin/python",
+        "python.terminal.activateEnvironment": true,
+        "files.associations": {
+            "*.md": "markdown"
+        },
+        "workbench.colorCustomizations": {
+            "activityBar.background": "#2D3748",
+            "activityBar.foreground": "#E2E8F0",
+            "statusBar.background": "#2D3748",
+            "statusBar.foreground": "#E2E8F0"
+        },
+        "workbench.colorTheme": "Dark+ (default dark)",
+        "explorer.fileNesting.enabled": true,
+        "explorer.fileNesting.patterns": {
+            "*.py": "${capture}.pyc, ${capture}.pyo, ${capture}.pyd",
+            "*.md": "${capture}.html",
+            "requirements.txt": "requirements-*.txt, pyproject.toml, setup.py, setup.cfg",
+            "pytest.ini": ".pytest_cache, .coverage, htmlcov, coverage.xml",
+            ".gitignore": ".gitattributes, .gitkeep"
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "ms-python.python",
+            "ms-python.black-formatter",
+            "ms-python.isort",
+            "ms-toolsai.jupyter",
+            "github.copilot",
+            "github.copilot-chat",
+            "pkief.material-icon-theme",
+            "ms-vscode.vscode-json"
+        ]
+    },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "🚀 Quick Start",
+                "type": "shell",
+                "command": "./scripts/setup.sh && echo '✅ Setup complete! Run: python main.py --help'",
+                "group": "build",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared"
+                }
+            }
+        ]
+    }
+}
