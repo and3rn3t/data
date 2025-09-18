@@ -280,3 +280,21 @@ progress.json
 temp/
 tmp/
 .streamlit/
+
+# Development specific files
+bandit-report.json
+safety-report.json
+logs/
+backups/
+models/
+outputs/
+*.prof
+
+# IDE local settings
+.vscode/settings-local.json
+
+# Data processing artifacts
+data/processed/
+data/raw/
+data/external/
+!data/datasets/
