@@ -22,7 +22,7 @@ from sklearn.svm import SVC, SVR
 from sklearn.metrics import (accuracy_score, precision_score, recall_score, f1_score,
                             mean_squared_error, mean_absolute_error, r2_score,
                             classification_report, confusion_matrix)
-from sklearn.datasets import load_iris, load_boston
+from sklearn.datasets import load_iris, load_california_housing
 import warnings
 warnings.filterwarnings('ignore')
 
