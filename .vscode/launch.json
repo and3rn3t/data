@@ -1,0 +1,63 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Main Application",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "args": ["--mode", "cli"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "name": "Python: Dashboard Mode",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "args": ["--mode", "dashboard"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "name": "Python: Jupyter Mode",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "args": ["--mode", "jupyter"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "cwd": "${fileDirname}"
+        },
+        {
+            "name": "Python: pytest",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "args": ["${workspaceFolder}/tests", "-v"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "name": "Python: pytest (current file)",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "args": ["${file}", "-v"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
