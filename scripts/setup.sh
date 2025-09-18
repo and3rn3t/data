@@ -245,21 +245,25 @@ fi
 # Update .gitignore
 print_status "Updating .gitignore..."
 if [ -f ".gitignore" ]; then
-    # Add development-specific ignores if not already present
-    grep -qxF "venv/" .gitignore || echo "venv/" >> .gitignore
-    grep -qxF ".env" .gitignore || echo ".env" >> .gitignore
-    grep -qxF "*.pyc" .gitignore || echo "*.pyc" >> .gitignore
-    grep -qxF "__pycache__/" .gitignore || echo "__pycache__/" >> .gitignore
-    grep -qxF ".pytest_cache/" .gitignore || echo ".pytest_cache/" >> .gitignore
-    grep -qxF "htmlcov/" .gitignore || echo "htmlcov/" >> .gitignore
-    grep -qxF ".coverage" .gitignore || echo ".coverage" >> .gitignore
-    grep -qxF "*.egg-info/" .gitignore || echo "*.egg-info/" >> .gitignore
-    grep -qxF "dist/" .gitignore || echo "dist/" >> .gitignore
-    grep -qxF "build/" .gitignore || echo "build/" >> .gitignore
-    grep -qxF ".mypy_cache/" .gitignore || echo ".mypy_cache/" >> .gitignore
-    grep -qxF "logs/" .gitignore || echo "logs/" >> .gitignore
-    grep -qxF "temp/" .gitignore || echo "temp/" >> .gitignore
-    print_success ".gitignore updated"
+    if [ -r ".gitignore" ]; then
+        # Add development-specific ignores if not already present
+        grep -qxF "venv/" .gitignore || echo "venv/" >> .gitignore
+        grep -qxF ".env" .gitignore || echo ".env" >> .gitignore
+        grep -qxF "*.pyc" .gitignore || echo "*.pyc" >> .gitignore
+        grep -qxF "__pycache__/" .gitignore || echo "__pycache__/" >> .gitignore
+        grep -qxF ".pytest_cache/" .gitignore || echo ".pytest_cache/" >> .gitignore
+        grep -qxF "htmlcov/" .gitignore || echo "htmlcov/" >> .gitignore
+        grep -qxF ".coverage" .gitignore || echo ".coverage" >> .gitignore
+        grep -qxF "*.egg-info/" .gitignore || echo "*.egg-info/" >> .gitignore
+        grep -qxF "dist/" .gitignore || echo "dist/" >> .gitignore
+        grep -qxF "build/" .gitignore || echo "build/" >> .gitignore
+        grep -qxF ".mypy_cache/" .gitignore || echo ".mypy_cache/" >> .gitignore
+        grep -qxF "logs/" .gitignore || echo "logs/" >> .gitignore
+        grep -qxF "temp/" .gitignore || echo "temp/" >> .gitignore
+        print_success ".gitignore updated"
+    else
+        print_status "${YELLOW}Warning:${NC} .gitignore exists but is not readable. Skipping update."
+    fi
 fi
 
 print_success "Development environment setup complete!"
