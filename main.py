@@ -1,0 +1,47 @@
+"""
+Data Science Sandbox - Main Application
+A gamified data science learning platform
+"""
+
+from sandbox.core.game_engine import GameEngine
+from sandbox.core.dashboard import Dashboard
+import sys
+import argparse
+
+def main():
+    """Main entry point for the Data Science Sandbox"""
+    parser = argparse.ArgumentParser(description='Data Science Sandbox - Interactive Learning Platform')
+    parser.add_argument('--mode', choices=['dashboard', 'cli', 'jupyter'], 
+                       default='dashboard', help='Choose interface mode')
+    parser.add_argument('--level', type=int, choices=range(1, 7), 
+                       help='Start at specific level (1-6)')
+    parser.add_argument('--reset', action='store_true', 
+                       help='Reset progress and start fresh')
+    
+    args = parser.parse_args()
+    
+    # Initialize game engine
+    game = GameEngine()
+    
+    if args.reset:
+        game.reset_progress()
+        print("✨ Progress reset! Starting fresh...")
+    
+    if args.level:
+        game.set_current_level(args.level)
+        print(f"🎯 Starting at Level {args.level}")
+    
+    # Launch interface based on mode
+    if args.mode == 'dashboard':
+        print("🚀 Launching Data Science Sandbox Dashboard...")
+        dashboard = Dashboard(game)
+        dashboard.run()
+    elif args.mode == 'cli':
+        print("💻 Starting CLI mode...")
+        game.start_cli_mode()
+    elif args.mode == 'jupyter':
+        print("📚 Opening Jupyter Lab environment...")
+        game.launch_jupyter()
+
+if __name__ == "__main__":
+    main()
