@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  data-science-sandbox:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"  # Streamlit dashboard
+      - "8888:8888"  # Jupyter Lab
+      - "5000:5000"  # Flask API
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./logs:/app/logs
+      - ./notebooks:/app/notebooks
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - STREAMLIT_SERVER_PORT=8501
+      - MLFLOW_TRACKING_URI=file:///app/logs/mlruns
+      - WANDB_MODE=offline
+    command: python main.py --mode dashboard
+    
+  # Optional: MLflow tracking server
+  mlflow:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./logs:/app/logs
+    environment:
+      - MLFLOW_TRACKING_URI=file:///app/logs/mlruns
+    command: mlflow server --host 0.0.0.0 --port 5001 --default-artifact-root /app/logs/mlruns
+    depends_on:
+      - data-science-sandbox
+
+  # Optional: Jupyter Lab server  
+  jupyter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8889:8888"
+    volumes:
+      - ./notebooks:/app/notebooks
+      - ./data:/app/data
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    command: jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password=''
+    depends_on:
+      - data-science-sandbox
+
+networks:
+  default:
+    name: data-science-network
