@@ -102,6 +102,13 @@ Data Science Sandbox is a comprehensive learning platform that transforms data s
 - Natural language processing
 - Computer vision applications
 
+### 🚀 Level 7: Modern Tools Master
+*Cutting-edge data science toolchain*
+- High-performance data processing (Polars, DuckDB)
+- ML experiment tracking (MLflow, Weights & Biases)
+- Model explainability (SHAP, LIME, Yellowbrick)
+- Automated hyperparameter optimization (Optuna)
+
 ## 🎯 Challenge Categories
 
 - 📊 **Data Exploration & Understanding**
@@ -194,14 +201,39 @@ The platform includes several curated datasets for learning:
 
 ## 🛠️ Technology Stack
 
+### Core Data Science Libraries
 - **Python 3.8+**: Core language
 - **Pandas & NumPy**: Data manipulation and analysis
 - **Matplotlib & Seaborn**: Static visualizations
 - **Plotly**: Interactive visualizations  
 - **Scikit-learn**: Machine learning algorithms
+
+### Modern High-Performance Tools
+- **Polars**: Lightning-fast DataFrame operations (2-30x faster than pandas)
+- **DuckDB**: High-performance analytical database with SQL interface
+- **PyArrow**: Columnar in-memory analytics
+
+### ML Operations & Tracking
+- **MLflow**: Experiment tracking and model management
+- **Weights & Biases**: Advanced experiment tracking with rich visualizations
+- **Optuna**: State-of-the-art hyperparameter optimization
+
+### Model Understanding & Explainability
+- **SHAP**: Unified model explanations with game-theoretic foundation
+- **LIME**: Local interpretable model explanations
+- **Yellowbrick**: Machine learning visualization library
+
+### Development & Deployment
 - **Streamlit**: Web dashboard interface
 - **Jupyter Lab**: Interactive development environment
+- **FastAPI**: Modern API development for ML models
 - **Flask**: Additional web components
+
+### Advanced ML Libraries
+- **XGBoost & LightGBM**: Gradient boosting frameworks
+- **TensorFlow & PyTorch**: Deep learning frameworks
+- **Transformers**: Pre-trained NLP models (Hugging Face)
+- **Statsmodels**: Statistical analysis and time series
 
 ## 🤝 Contributing
 
