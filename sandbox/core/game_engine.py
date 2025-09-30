@@ -168,27 +168,29 @@ class GameEngine:
 
         while True:
             stats = self.get_stats()
-            print(f"\n👤 {self.progress['player_name']} | Level {stats['level']} | {stats['experience']} XP")
+            print(
+                f"\n👤 {self.progress['player_name']} | Level {stats['level']} | {stats['experience']} XP"
+            )
 
             self.show_main_menu()
 
             try:
                 choice = input("Select option (1-6, 'q' to quit): ").strip().lower()
 
-                if choice == 'q':
+                if choice == "q":
                     print("👋 Thanks for playing! Keep learning!")
                     break
-                elif choice == '1':
+                elif choice == "1":
                     self.show_stats()
-                elif choice == '2':
+                elif choice == "2":
                     self.show_levels()
-                elif choice == '3':
+                elif choice == "3":
                     self.show_badges()
-                elif choice == '4':
+                elif choice == "4":
                     self.list_challenges()
-                elif choice == '5':
+                elif choice == "5":
                     self.show_help()
-                elif choice == '6':
+                elif choice == "6":
                     self.launch_jupyter()
                 else:
                     print("❌ Invalid option. Please try again.")
@@ -288,7 +290,7 @@ class GameEngine:
             subprocess.run(
                 ["jupyter", "lab", "--notebook-dir", notebooks_dir],
                 check=True,
-                creationflags=subprocess.CREATE_NEW_CONSOLE if os.name == 'nt' else 0
+                creationflags=subprocess.CREATE_NEW_CONSOLE if os.name == "nt" else 0,
             )
         except (subprocess.CalledProcessError, FileNotFoundError) as e:
             print(f"❌ Jupyter Lab failed to start: {e}")
