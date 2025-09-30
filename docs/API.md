@@ -5,8 +5,8 @@ This document provides detailed information about the Data Science Sandbox API a
 ## Table of Contents
 
 - [Core Classes](#core-classes)
-- [Game Engine](#game-engine)
-- [Dashboard](#dashboard)  
+- [GameEngine](#gameengine)
+- [Dashboard](#dashboard)
 - [Modern Data Tools](#modern-data-tools)
 - [Data Validation](#data-validation)
 - [ML Integrations](#ml-integrations)
@@ -40,6 +40,7 @@ challenges = game.get_available_challenges()
 ##### `get_progress() -> Dict[str, Any]`
 
 Returns the current player progress including:
+
 - `level`: Current level (1-7)
 - `xp`: Experience points earned
 - `challenges_completed`: List of completed challenge IDs
@@ -48,6 +49,7 @@ Returns the current player progress including:
 ##### `get_stats() -> Dict[str, Any]`
 
 Returns player statistics:
+
 - `level`: Current level
 - `total_xp`: Total experience points
 - `challenges_completed`: Number of completed challenges
@@ -59,6 +61,7 @@ Returns player statistics:
 Marks a challenge as completed and awards XP.
 
 **Parameters:**
+
 - `challenge_id`: Unique identifier for the challenge
 
 **Returns:** `True` if challenge was successfully completed
@@ -111,6 +114,7 @@ result = processor.polars_operations(polars_df)
 Execute SQL queries on pandas DataFrames using DuckDB.
 
 **Parameters:**
+
 - `query`: SQL query string
 - `data`: Input pandas DataFrame
 
@@ -138,11 +142,11 @@ tracker = ExperimentTracker()
 with tracker.start_experiment("my_experiment"):
     # Log parameters
     tracker.log_params({"learning_rate": 0.01, "epochs": 100})
-    
+
     # Train model and log metrics
     model = train_model()
     tracker.log_metrics({"accuracy": 0.95, "loss": 0.05})
-    
+
     # Log model
     tracker.log_model(model, "my_model")
 ```
@@ -190,12 +194,14 @@ for col, result in completeness.items():
 ##### `get_iris_schema() -> pa.DataFrameSchema`
 
 Returns validation schema for Iris dataset with:
+
 - Numeric columns with range validation
 - Species column with category validation
 
 ##### `get_sales_schema() -> pa.DataFrameSchema`
 
 Returns validation schema for sales dataset with:
+
 - Date validation
 - Numeric constraints
 - Business rule validation
@@ -207,6 +213,7 @@ Returns validation schema for sales dataset with:
 Check data completeness for each column.
 
 **Parameters:**
+
 - `df`: DataFrame to validate
 - `threshold`: Minimum completeness ratio (default: 0.95)
 
@@ -365,6 +372,7 @@ def test_challenge_completion():
 ```
 
 Run tests with:
+
 ```bash
 pytest tests/ -v --cov=sandbox --cov-report=html
 ```
