@@ -6,10 +6,10 @@ into the documentation and dashboard components.
 """
 
 import json
+import logging
 import subprocess
 from pathlib import Path
-from typing import Dict, List, Optional, Union, Callable, Any
-import logging
+from typing import Any, Callable, Dict, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
