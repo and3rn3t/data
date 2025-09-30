@@ -172,23 +172,23 @@ Raw Data → Quality Validation → Modern Processing → Analysis → Visualiza
 
 ### Backend Technologies
 
-| Component | Technology | Rationale |
-|-----------|------------|-----------|
-| **Core Language** | Python 3.8+ | Data science ecosystem, type hints |
-| **Web Framework** | Streamlit | Rapid prototyping, data science focused |
-| **Data Processing** | DuckDB + Polars | Performance, SQL compatibility |
-| **ML Tracking** | MLflow | Industry standard, comprehensive |
-| **Data Validation** | Pandera | Type safety, schema validation |
+| Component           | Technology      | Rationale                               |
+| ------------------- | --------------- | --------------------------------------- |
+| **Core Language**   | Python 3.8+     | Data science ecosystem, type hints      |
+| **Web Framework**   | Streamlit       | Rapid prototyping, data science focused |
+| **Data Processing** | DuckDB + Polars | Performance, SQL compatibility          |
+| **ML Tracking**     | MLflow          | Industry standard, comprehensive        |
+| **Data Validation** | Pandera         | Type safety, schema validation          |
 
 ### Development Tools
 
-| Tool | Purpose | Benefits |
-|------|---------|----------|
-| **Black** | Code formatting | Consistency, zero configuration |
-| **Ruff** | Linting | Speed, comprehensive checks |
-| **pytest** | Testing | Powerful, extensible |
-| **mypy** | Type checking | Runtime error prevention |
-| **pre-commit** | Quality gates | Automated enforcement |
+| Tool           | Purpose         | Benefits                        |
+| -------------- | --------------- | ------------------------------- |
+| **Black**      | Code formatting | Consistency, zero configuration |
+| **Ruff**       | Linting         | Speed, comprehensive checks     |
+| **pytest**     | Testing         | Powerful, extensible            |
+| **mypy**       | Type checking   | Runtime error prevention        |
+| **pre-commit** | Quality gates   | Automated enforcement           |
 
 ### Performance Considerations
 
@@ -293,8 +293,8 @@ services:
     volumes:
       - .:/app
     ports:
-      - "8501:8501"  # Streamlit
-      - "5000:5000"  # MLflow
+      - "8501:8501" # Streamlit
+      - "5000:5000" # MLflow
 
   postgres:
     image: postgres:15
