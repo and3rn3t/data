@@ -2,11 +2,9 @@
 Unit tests for GameEngine core functionality
 """
 
-import pytest
-import json
 import os
-from unittest.mock import patch, mock_open
-from datetime import datetime
+from typing import Any
+from unittest.mock import patch
 
 from sandbox.core.game_engine import GameEngine
 
@@ -14,13 +12,13 @@ from sandbox.core.game_engine import GameEngine
 class TestGameEngine:
     """Test suite for GameEngine class."""
 
-    def test_initialization_with_existing_progress(self, game_engine):
+    def test_initialization_with_existing_progress(self, game_engine: Any) -> None:
         """Test GameEngine initialization with existing progress file."""
         assert game_engine.progress["player_name"] == "Test Player"
         assert game_engine.progress["current_level"] == 1
         assert game_engine.progress["experience_points"] == 0
 
-    def test_initialization_with_new_progress(self, temp_dir):
+    def test_initialization_with_new_progress(self, temp_dir: Any) -> None:
         """Test GameEngine initialization without existing progress file."""
         new_save_file = os.path.join(temp_dir, "new_progress.json")
         engine = GameEngine(save_file=new_save_file)
@@ -30,7 +28,7 @@ class TestGameEngine:
         assert engine.progress["experience_points"] == 0
         assert len(engine.progress["level_progress"]) == 6
 
-    def test_save_progress(self, game_engine):
+    def test_save_progress(self, game_engine: Any) -> None:
         """Test saving progress to file."""
         original_exp = game_engine.progress["experience_points"]
         game_engine.add_experience(50, "Test completion")
@@ -39,14 +37,14 @@ class TestGameEngine:
         new_engine = GameEngine(save_file=game_engine.save_file)
         assert new_engine.progress["experience_points"] == original_exp + 50
 
-    def test_add_experience(self, game_engine):
+    def test_add_experience(self, game_engine: Any) -> None:
         """Test adding experience points."""
         initial_exp = game_engine.progress["experience_points"]
         game_engine.add_experience(100, "Completed challenge")
 
         assert game_engine.progress["experience_points"] == initial_exp + 100
 
-    def test_complete_challenge(self, game_engine):
+    def test_complete_challenge(self, game_engine: Any) -> None:
         """Test completing a challenge."""
         challenge_id = "level_1_first_steps"
         initial_challenges = len(game_engine.progress["challenges_completed"])
@@ -58,7 +56,7 @@ class TestGameEngine:
         )
         assert challenge_id in game_engine.progress["challenges_completed"]
 
-    def test_earn_badge(self, game_engine):
+    def test_earn_badge(self, game_engine: Any) -> None:
         """Test earning a badge."""
         badge_id = "first_steps"
         initial_badges = len(game_engine.progress["badges_earned"])
@@ -68,7 +66,7 @@ class TestGameEngine:
         assert len(game_engine.progress["badges_earned"]) == initial_badges + 1
         assert badge_id in game_engine.progress["badges_earned"]
 
-    def test_unlock_next_level(self, game_engine):
+    def test_unlock_next_level(self, game_engine: Any) -> None:
         """Test unlocking next level."""
         # Should be at level 1 initially
         assert game_engine.get_current_level() == 1
@@ -79,7 +77,7 @@ class TestGameEngine:
         assert game_engine.progress["level_progress"]["2"]["unlocked"] is True
         assert game_engine.progress["current_level"] == 2
 
-    def test_unlock_next_level_at_max(self, game_engine):
+    def test_unlock_next_level_at_max(self, game_engine: Any) -> None:
         """Test unlocking next level when already at maximum."""
         game_engine.set_current_level(6)  # Set to max level
 
@@ -88,7 +86,7 @@ class TestGameEngine:
         assert next_level == 6  # Should remain at 6
         assert game_engine.progress["current_level"] == 6
 
-    def test_get_stats(self, game_engine):
+    def test_get_stats(self, game_engine: Any) -> None:
         """Test getting player statistics."""
         # Add some data
         game_engine.add_experience(150)
@@ -103,7 +101,7 @@ class TestGameEngine:
         assert stats["challenges_completed"] == 1
         assert "completion_rate" in stats
 
-    def test_reset_progress(self, game_engine):
+    def test_reset_progress(self, game_engine: Any) -> None:
         """Test resetting all progress."""
         # Add some progress first
         game_engine.add_experience(100)
@@ -117,7 +115,7 @@ class TestGameEngine:
         assert len(game_engine.progress["challenges_completed"]) == 0
         assert game_engine.progress["current_level"] == 1
 
-    def test_get_level_challenges(self, game_engine):
+    def test_get_level_challenges(self, game_engine: Any) -> None:
         """Test getting challenges for a level."""
         challenges = game_engine.get_level_challenges(1)
 
@@ -125,7 +123,7 @@ class TestGameEngine:
         assert isinstance(challenges, list)
 
     @patch("subprocess.run")
-    def test_launch_jupyter_success(self, mock_subprocess, game_engine):
+    def test_launch_jupyter_success(self, mock_subprocess: Any, game_engine: Any) -> None:
         """Test successful Jupyter Lab launch."""
         mock_subprocess.return_value.returncode = 0
 
@@ -134,7 +132,7 @@ class TestGameEngine:
         mock_subprocess.assert_called_once()
 
     @patch("subprocess.run")
-    def test_launch_jupyter_failure(self, mock_subprocess, game_engine, capsys):
+    def test_launch_jupyter_failure(self, mock_subprocess: Any, game_engine: Any, capsys: Any) -> None:
         """Test Jupyter Lab launch failure."""
         mock_subprocess.side_effect = FileNotFoundError()
 
@@ -143,20 +141,20 @@ class TestGameEngine:
         captured = capsys.readouterr()
         assert "Jupyter Lab not available" in captured.out
 
-    def test_count_total_challenges(self, game_engine):
+    def test_count_total_challenges(self, game_engine: Any) -> None:
         """Test counting total challenges across all levels."""
         total = game_engine.count_total_challenges()
 
         assert total >= 1  # Should have at least 1 to avoid division by zero
         assert isinstance(total, int)
 
-    def test_set_current_level(self, game_engine):
+    def test_set_current_level(self, game_engine: Any) -> None:
         """Test setting current level directly."""
         game_engine.set_current_level(3)
 
         assert game_engine.progress["current_level"] == 3
 
-    def test_invalid_level_setting(self, game_engine):
+    def test_invalid_level_setting(self, game_engine: Any) -> None:
         """Test setting invalid level values."""
         # Test setting level too high
         game_engine.set_current_level(10)

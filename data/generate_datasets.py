@@ -9,9 +9,10 @@ import numpy as np
 import pandas as pd
 
 
-def create_sample_sales_data():
+def create_sample_sales_data() -> pd.DataFrame:
     """Create a sample sales dataset for learning exercises"""
-    np.random.seed(42)
+    # Use modern NumPy random generator
+    rng = np.random.default_rng(42)
 
     # Configuration
     n_records = 1000
@@ -20,32 +21,35 @@ def create_sample_sales_data():
     sales_reps = [f"Rep_{i:02d}" for i in range(1, 21)]
 
     # Generate data
+    # Generate random days first to avoid numpy int64 issues
+    random_days = [int(day) for day in rng.integers(0, 365, n_records)]
+    
     data = {
         "sale_id": range(1, n_records + 1),
         "date": [
-            datetime.now() - timedelta(days=np.random.randint(0, 365))
-            for _ in range(n_records)
+            datetime.now() - timedelta(days=days)
+            for days in random_days
         ],
-        "region": np.random.choice(regions, n_records),
-        "category": np.random.choice(categories, n_records),
-        "sales_rep": np.random.choice(sales_reps, n_records),
-        "quantity": np.random.poisson(5, n_records) + 1,
-        "unit_price": np.random.uniform(10, 500, n_records).round(2),
-        "customer_age": np.random.normal(40, 15, n_records).astype(int).clip(18, 80),
-        "customer_satisfaction": np.random.choice(
+        "region": rng.choice(regions, n_records),
+        "category": rng.choice(categories, n_records),
+        "sales_rep": rng.choice(sales_reps, n_records),
+        "quantity": rng.poisson(5, n_records) + 1,
+        "unit_price": rng.uniform(10, 500, n_records).round(2),
+        "customer_age": rng.normal(40, 15, n_records).astype(int).clip(18, 80),
+        "customer_satisfaction": rng.choice(
             [1, 2, 3, 4, 5], n_records, p=[0.05, 0.1, 0.2, 0.4, 0.25]
         ),
     }
 
-    # Calculate sales amount
-    data["sales"] = (data["quantity"] * data["unit_price"]).round(2)
+    # Calculate sales amount (convert to arrays for multiplication)
+    data["sales"] = (np.array(data["quantity"]) * np.array(data["unit_price"])).round(2)
 
     # Create DataFrame first
     df = pd.DataFrame(data)
     df["date"] = pd.to_datetime(df["date"])
 
     # Add some missing values for learning purposes
-    missing_indices = np.random.choice(
+    missing_indices = rng.choice(
         n_records, size=int(n_records * 0.05), replace=False
     )
     for idx in missing_indices[: len(missing_indices) // 2]:
@@ -56,9 +60,14 @@ def create_sample_sales_data():
     return df
 
 
-def create_sample_datasets():
+def create_sample_datasets() -> None:
     """Create all sample datasets"""
-    datasets_dir = "/home/runner/work/data/data/data/datasets"
+    # Get the datasets directory relative to this script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    datasets_dir = os.path.join(script_dir, "datasets")
+
+    # Create directory if it doesn't exist
+    os.makedirs(datasets_dir, exist_ok=True)
 
     # Sales dataset
     sales_df = create_sample_sales_data()

@@ -1,20 +1,23 @@
-import pytest
-import tempfile
 import json
 import os
-from unittest.mock import Mock, patch
+import tempfile
+from typing import Any, Dict, Generator
+from unittest.mock import patch
+
+import pytest
+
 from sandbox.core.game_engine import GameEngine
 
 
 @pytest.fixture
-def temp_dir():
+def temp_dir() -> Generator[str, None, None]:
     """Create a temporary directory for tests."""
     with tempfile.TemporaryDirectory() as tmp:
         yield tmp
 
 
 @pytest.fixture
-def mock_progress_file(temp_dir):
+def mock_progress_file(temp_dir: str) -> str:
     """Create a mock progress file for testing."""
     progress_data = {
         "player_name": "Test Player",
@@ -39,13 +42,13 @@ def mock_progress_file(temp_dir):
 
 
 @pytest.fixture
-def game_engine(mock_progress_file):
+def game_engine(mock_progress_file: str) -> GameEngine:
     """Create a GameEngine instance with mock data."""
     return GameEngine(save_file=mock_progress_file)
 
 
 @pytest.fixture
-def sample_datasets():
+def sample_datasets() -> Dict[str, Any]:
     """Create sample datasets for testing."""
     import pandas as pd
 
@@ -79,7 +82,7 @@ def sample_datasets():
 
 
 @pytest.fixture
-def mock_jupyter():
+def mock_jupyter() -> Generator[Any, None, None]:
     """Mock Jupyter Lab functionality for testing."""
     with patch("subprocess.run") as mock_subprocess:
         mock_subprocess.return_value.returncode = 0
