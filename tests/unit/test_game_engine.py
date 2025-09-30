@@ -26,7 +26,7 @@ class TestGameEngine:
         assert engine.progress["player_name"] == "Data Scientist"
         assert engine.progress["current_level"] == 1
         assert engine.progress["experience_points"] == 0
-        assert len(engine.progress["level_progress"]) == 6
+        assert len(engine.progress["level_progress"]) == 7
 
     def test_save_progress(self, game_engine: Any) -> None:
         """Test saving progress to file."""
@@ -79,12 +79,12 @@ class TestGameEngine:
 
     def test_unlock_next_level_at_max(self, game_engine: Any) -> None:
         """Test unlocking next level when already at maximum."""
-        game_engine.set_current_level(6)  # Set to max level
+        game_engine.set_current_level(7)  # Set to max level
 
         next_level = game_engine.unlock_next_level()
 
-        assert next_level == 6  # Should remain at 6
-        assert game_engine.progress["current_level"] == 6
+        assert next_level == 7  # Should remain at 7
+        assert game_engine.progress["current_level"] == 7
 
     def test_get_stats(self, game_engine: Any) -> None:
         """Test getting player statistics."""
@@ -96,7 +96,7 @@ class TestGameEngine:
         stats = game_engine.get_stats()
 
         assert stats["level"] == 1
-        assert stats["experience"] == 150
+        assert stats["experience"] == 300  # 150 + 50 (badge) + 100 (challenge)
         assert stats["badges"] == 1
         assert stats["challenges_completed"] == 1
         assert "completion_rate" in stats
@@ -143,7 +143,7 @@ class TestGameEngine:
         game_engine.launch_jupyter()
 
         captured = capsys.readouterr()
-        assert "Jupyter Lab not available" in captured.out
+        assert "Jupyter Lab failed to start" in captured.out
 
     def test_count_total_challenges(self, game_engine: Any) -> None:
         """Test counting total challenges across all levels."""
@@ -162,7 +162,7 @@ class TestGameEngine:
         """Test setting invalid level values."""
         # Test setting level too high
         game_engine.set_current_level(10)
-        assert game_engine.progress["current_level"] <= 6
+        assert game_engine.progress["current_level"] <= 7
 
         # Test setting level too low
         game_engine.set_current_level(0)

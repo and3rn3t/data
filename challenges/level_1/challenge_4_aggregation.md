@@ -5,6 +5,7 @@
 Time to learn one of the most powerful features of data analysis - grouping and aggregation!
 
 ### Objective
+
 Master the art of grouping data and calculating aggregate statistics to discover patterns.
 
 ### Instructions
@@ -16,18 +17,34 @@ import numpy as np
 # Load the sales dataset
 df = pd.read_csv('../data/datasets/sample_sales.csv')
 
+# Convert date to datetime for time-based analysis
+df['date'] = pd.to_datetime(df['date'])
+
+print("📊 Learning Data Aggregation - Let's find patterns in our data!")
+
 # Your tasks:
 # 1. Group by categorical columns and calculate basic statistics
-if 'category' in df.columns and 'amount' in df.columns:
-    category_stats = df.groupby('category')['amount'].agg(['count', 'sum', 'mean', 'std'])
-    print("Category statistics:")
-    print(category_stats)
+print("\n🏷️ Sales by Product Category:")
+category_stats = df.groupby('category')['sales'].agg(['count', 'sum', 'mean', 'std'])
+category_stats.columns = ['Number of Sales', 'Total Sales', 'Average Sale', 'Standard Deviation']
+print(category_stats.round(2))
 
-# 2. Multiple grouping
-if 'category' in df.columns and 'region' in df.columns:
-    multi_group = df.groupby(['category', 'region'])['amount'].sum()
-    print("\nSales by category and region:")
-    print(multi_group)
+# 2. Multiple grouping - sales by category AND region
+print("\n🌍 Sales by Category and Region:")
+multi_group = df.groupby(['category', 'region'])['sales'].sum().unstack(fill_value=0)
+print(multi_group)
+
+# Find the best performing combinations
+print(f"\n🏆 Top performing category-region combination:")
+best_combo = multi_group.stack().idxmax()
+best_value = multi_group.stack().max()
+print(f"   {best_combo[0]} in {best_combo[1]}: ${best_value:,.2f}")
+
+# 3. Time-based grouping - monthly sales trends
+print("\n📅 Monthly Sales Trends:")
+df['month'] = df['date'].dt.to_period('M')
+monthly_sales = df.groupby('month')['sales'].sum()
+print(monthly_sales)
 
 # 3. Custom aggregation functions
 def coefficient_of_variation(x):
@@ -35,7 +52,7 @@ def coefficient_of_variation(x):
 
 if 'category' in df.columns:
     custom_agg = df.groupby('category')['amount'].agg([
-        'mean', 
+        'mean',
         'std',
         ('cv', coefficient_of_variation)
     ])
@@ -44,11 +61,11 @@ if 'category' in df.columns:
 
 # 4. Pivot tables
 if 'category' in df.columns and 'month' in df.columns:
-    pivot = pd.pivot_table(df, 
-                          values='amount', 
-                          index='category', 
-                          columns='month', 
-                          aggfunc='sum', 
+    pivot = pd.pivot_table(df,
+                          values='amount',
+                          index='category',
+                          columns='month',
+                          aggfunc='sum',
                           fill_value=0)
     print("\nPivot table - Sales by category and month:")
     print(pivot)
@@ -62,6 +79,7 @@ if 'date' in df.columns:
 ```
 
 ### Success Criteria
+
 - Group data by single and multiple columns
 - Calculate various aggregate statistics
 - Create custom aggregation functions
@@ -69,6 +87,7 @@ if 'date' in df.columns:
 - Perform time-based aggregations
 
 ### Learning Objectives
+
 - Master pandas groupby operations
 - Understand pivot tables
 - Learn custom aggregation functions
@@ -76,4 +95,4 @@ if 'date' in df.columns:
 
 ---
 
-*Tip: Use `pd.pivot_table()` for complex cross-tabulations!*
+_Tip: Use `pd.pivot_table()` for complex cross-tabulations!_

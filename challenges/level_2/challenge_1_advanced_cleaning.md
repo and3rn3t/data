@@ -5,6 +5,7 @@
 Welcome to Level 2! Now we'll tackle messier, more realistic data cleaning scenarios.
 
 ### Objective
+
 Master advanced data cleaning techniques including handling outliers, data validation, and complex missing value strategies.
 
 ### Instructions
@@ -106,8 +107,8 @@ print(f"Income capped at: ${income_cap:.2f}")
 
 # Create cleaned dataset
 cleaned_data = messy_data[
-    (messy_data['email_valid'] == True) & 
-    (messy_data['age'] >= 18) & 
+    (messy_data['email_valid'] == True) &
+    (messy_data['age'] >= 18) &
     (messy_data['age'] <= 80) &
     (messy_data['purchase_amount'] > 0)
 ].copy()
@@ -131,6 +132,7 @@ for metric, value in quality_metrics.items():
 ```
 
 ### Success Criteria
+
 - Implement multiple missing value handling strategies
 - Validate and clean data using business rules
 - Detect and handle outliers using statistical methods
@@ -138,6 +140,7 @@ for metric, value in quality_metrics.items():
 - Retain maximum valid data while ensuring quality
 
 ### Learning Objectives
+
 - Master advanced pandas cleaning functions
 - Understand different outlier detection methods
 - Learn data validation techniques

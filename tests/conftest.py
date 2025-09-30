@@ -30,7 +30,7 @@ def mock_progress_file(temp_dir: str) -> str:
         "last_played": "2024-01-01T00:00:00",
         "level_progress": {
             str(i): {"unlocked": i == 1, "completed": False, "score": 0}
-            for i in range(1, 7)
+            for i in range(1, 8)
         },
     }
 

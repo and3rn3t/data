@@ -36,6 +36,10 @@ LEVELS = {
         "name": "Data Science Master",
         "description": "Complex projects and real-world challenges",
     },
+    7: {
+        "name": "Modern Toolchain Master",
+        "description": "Master cutting-edge tools, MLOps, and ethical AI",
+    },
 }
 
 # Achievement badges

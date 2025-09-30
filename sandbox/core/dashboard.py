@@ -23,10 +23,19 @@ from sandbox.core.game_engine import GameEngine
 class Dashboard:
     """Streamlit-based dashboard for the data science sandbox"""
 
+    # Constants for commonly used strings
+    TRANSPARENT_BG = "rgba(0,0,0,0)"
+    GRID_COLOR = "rgba(142, 142, 147, 0.2)"
+    SF_FONT = "SF Pro Display, -apple-system, sans-serif"
+    IOS_BLUE = "var(--ios-blue)"
+    IOS_GREEN = "var(--ios-green)"
+    IOS_PURPLE = "var(--ios-purple)"
+    CLOSE_DIV = "</div></div>"
+
     def __init__(self, game_engine: GameEngine):
         self.game = game_engine
 
-    def run(self):
+    def run(self) -> None:
         """Launch the Streamlit dashboard"""
         # Configure Streamlit page
         st.set_page_config(
@@ -42,7 +51,7 @@ class Dashboard:
         <style>
         /* iOS 26 HIG Design System */
         @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@200;300;400;500;600;700&display=swap');
-        
+
         :root {
             --ios-blue: #007AFF;
             --ios-gray: #8E8E93;
@@ -56,7 +65,7 @@ class Dashboard:
             --ios-teal: #40C8E0;
             --ios-indigo: #5856D6;
             --ios-yellow: #FFD60A;
-            
+
             --surface-primary: rgba(255, 255, 255, 0.85);
             --surface-secondary: rgba(242, 242, 247, 0.8);
             --surface-tertiary: rgba(255, 255, 255, 0.6);
@@ -66,13 +75,13 @@ class Dashboard:
             --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
             --shadow-heavy: 0 8px 25px rgba(0, 0, 0, 0.2);
         }
-        
+
         /* Global Styles */
         .main > div {
             padding-top: 1rem;
             font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
         }
-        
+
         /* iOS Card System */
         .ios-card {
             background: var(--surface-primary);
@@ -84,12 +93,12 @@ class Dashboard:
             border: 0.5px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        
+
         .ios-card:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-heavy);
         }
-        
+
         /* Enhanced Metrics Cards */
         .stMetric {
             background: var(--surface-primary);
@@ -100,12 +109,12 @@ class Dashboard:
             border: 0.5px solid rgba(255, 255, 255, 0.3);
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        
+
         .stMetric:hover {
             transform: scale(1.02);
             box-shadow: var(--shadow-heavy);
         }
-        
+
         .stMetric label {
             color: var(--text-secondary);
             font-size: 14px;
@@ -113,13 +122,13 @@ class Dashboard:
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
+
         .stMetric div[data-testid="metric-value"] {
             color: var(--text-primary);
             font-size: 32px;
             font-weight: 700;
         }
-        
+
         /* Level Cards with iOS Island Design */
         .level-card {
             background: linear-gradient(135deg, var(--ios-blue) 0%, var(--ios-purple) 100%);
@@ -132,7 +141,7 @@ class Dashboard:
             overflow: hidden;
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        
+
         .level-card::before {
             content: '';
             position: absolute;
@@ -143,12 +152,12 @@ class Dashboard:
             background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%);
             pointer-events: none;
         }
-        
+
         .level-card:hover {
             transform: scale(1.02) translateY(-4px);
             box-shadow: 0 12px 40px rgba(0, 122, 255, 0.3);
         }
-        
+
         /* Achievement Badge System */
         .badge-card {
             background: var(--surface-primary);
@@ -161,18 +170,18 @@ class Dashboard:
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
+
         .badge-card.earned {
             background: linear-gradient(135deg, var(--ios-green) 0%, var(--ios-teal) 100%);
             color: white;
             box-shadow: 0 8px 25px rgba(48, 209, 88, 0.3);
         }
-        
+
         .badge-card:hover {
             transform: translateY(-4px) scale(1.05);
             box-shadow: var(--shadow-heavy);
         }
-        
+
         /* Interactive Buttons */
         .stButton > button {
             background: var(--ios-blue);
@@ -185,23 +194,23 @@ class Dashboard:
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             box-shadow: var(--shadow-medium);
         }
-        
+
         .stButton > button:hover {
             background: #0056CC;
             transform: translateY(-2px);
             box-shadow: var(--shadow-heavy);
         }
-        
+
         .stButton > button:active {
             transform: scale(0.95);
         }
-        
+
         /* Sidebar Styling */
         .css-1d391kg {
             background: var(--surface-secondary);
             backdrop-filter: blur(20px);
         }
-        
+
         /* Navigation Pills */
         .nav-pill {
             background: var(--surface-tertiary);
@@ -215,21 +224,21 @@ class Dashboard:
             text-align: left;
             font-weight: 500;
         }
-        
+
         .nav-pill:hover {
             background: var(--ios-blue);
             color: white;
             transform: translateX(4px);
             box-shadow: var(--shadow-medium);
         }
-        
+
         /* Progress Bars */
         .progress-ring {
             width: 60px;
             height: 60px;
             transform: rotate(-90deg);
         }
-        
+
         .progress-ring-circle {
             stroke: var(--ios-blue);
             stroke-dasharray: 157;
@@ -239,7 +248,7 @@ class Dashboard:
             stroke-linecap: round;
             transition: stroke-dashoffset 0.5s ease;
         }
-        
+
         /* Dynamic Island Style Header */
         .dynamic-island {
             background: var(--ios-gray-dark);
@@ -253,12 +262,12 @@ class Dashboard:
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             max-width: fit-content;
         }
-        
+
         .dynamic-island:hover {
             transform: scale(1.05);
             border-radius: 36px;
         }
-        
+
         /* Glassmorphism Effects */
         .glass-panel {
             background: rgba(255, 255, 255, 0.25);
@@ -267,7 +276,7 @@ class Dashboard:
             border: 1px solid rgba(255, 255, 255, 0.18);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
         }
-        
+
         /* Activity Indicators */
         .activity-dot {
             display: inline-block;
@@ -278,50 +287,50 @@ class Dashboard:
             margin-right: 8px;
             animation: pulse 2s infinite;
         }
-        
+
         @keyframes pulse {
             0% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.2); opacity: 0.7; }
             100% { transform: scale(1); opacity: 1; }
         }
-        
+
         /* Chart Enhancements */
         .js-plotly-plot {
             border-radius: 16px;
             overflow: hidden;
             box-shadow: var(--shadow-medium);
         }
-        
+
         /* Responsive Typography */
         h1, h2, h3 {
             font-weight: 700;
             color: var(--text-primary);
             letter-spacing: -0.5px;
         }
-        
+
         h1 { font-size: 2.5rem; }
         h2 { font-size: 2rem; }
         h3 { font-size: 1.5rem; }
-        
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
-        
+
         ::-webkit-scrollbar-track {
             background: var(--surface-secondary);
             border-radius: 4px;
         }
-        
+
         ::-webkit-scrollbar-thumb {
             background: var(--ios-gray);
             border-radius: 4px;
         }
-        
+
         ::-webkit-scrollbar-thumb:hover {
             background: var(--ios-blue);
         }
-        
+
         /* Animations */
         @keyframes slideInUp {
             from {
@@ -333,7 +342,7 @@ class Dashboard:
                 opacity: 1;
             }
         }
-        
+
         .animate-slide-in {
             animation: slideInUp 0.5s ease-out;
         }
@@ -388,7 +397,7 @@ class Dashboard:
         elif page == "Settings":
             self.show_settings()
 
-    def create_sidebar(self):
+    def create_sidebar(self) -> None:
         """Create iOS-style sidebar navigation"""
         # Player Profile Card
         stats = self.game.get_stats()
@@ -433,18 +442,6 @@ class Dashboard:
         ]
 
         for page, icon, description in nav_items:
-            is_current = st.session_state.get("page", "Dashboard") == page
-            button_style = (
-                """
-                background: linear-gradient(135deg, var(--ios-blue), var(--ios-purple));
-                color: white;
-                transform: translateX(4px);
-                box-shadow: var(--shadow-medium);
-            """
-                if is_current
-                else ""
-            )
-
             if st.sidebar.button(f"{icon} {page}", key=page, help=description):
                 st.session_state.page = page
                 st.rerun()
@@ -479,11 +476,11 @@ class Dashboard:
             <h4 style='color: var(--text-secondary); margin-bottom: 16px;'>Overall Progress</h4>
             <div style="position: relative; display: inline-block;">
                 <svg class="progress-ring" width="80" height="80">
-                    <circle class="progress-ring-circle" 
+                    <circle class="progress-ring-circle"
                             cx="40" cy="40" r="25"
                             style="stroke-dashoffset: {157 - (157 * completion / 100)};"></circle>
                 </svg>
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
                            font-weight: 700; color: var(--ios-blue);">{completion:.0f}%</div>
             </div>
         </div>
@@ -491,9 +488,15 @@ class Dashboard:
             unsafe_allow_html=True,
         )
 
-    def show_dashboard(self):
+        # Dark Mode Toggle
+        self.render_dark_mode_toggle()
+
+    def show_dashboard(self) -> None:
         """iOS-inspired main dashboard view"""
         stats = self.game.get_stats()
+
+        # Study Session Timer Section
+        self.render_study_timer()
 
         # Enhanced Key Metrics with iOS Cards
         st.markdown(
@@ -570,7 +573,7 @@ class Dashboard:
 
             # Enhanced progress chart with iOS styling
             progress_data = []
-            for level in range(1, 7):
+            for level in range(1, 8):
                 level_status = self.game.progress["level_progress"][str(level)]
                 progress_data.append(
                     {
@@ -607,12 +610,16 @@ class Dashboard:
             fig.update_layout(
                 plot_bgcolor="rgba(0,0,0,0)",
                 paper_bgcolor="rgba(0,0,0,0)",
-                font=dict(family="SF Pro Display, -apple-system, sans-serif"),
+                font={"family": "SF Pro Display, -apple-system, sans-serif"},
                 showlegend=True,
-                legend=dict(
-                    orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
-                ),
-                margin=dict(t=50, b=50, l=50, r=50),
+                legend={
+                    "orientation": "h",
+                    "yanchor": "bottom",
+                    "y": 1.02,
+                    "xanchor": "right",
+                    "x": 1,
+                },
+                margin={"t": 50, "b": 50, "l": 50, "r": 50},
             )
             fig.update_xaxes(showgrid=False)
             fig.update_yaxes(showgrid=True, gridcolor="rgba(142, 142, 147, 0.2)")
@@ -630,7 +637,7 @@ class Dashboard:
             )
 
             current_level = stats["level"]
-            if current_level <= 6:
+            if current_level <= 7:
                 level_info = LEVELS[current_level]
                 st.markdown(
                     f"""
@@ -669,7 +676,7 @@ class Dashboard:
 
                         st.markdown(
                             f"""
-                        <div style="display: flex; align-items: center; padding: 12px; margin: 8px 0; 
+                        <div style="display: flex; align-items: center; padding: 12px; margin: 8px 0;
                                    background: var(--surface-tertiary); border-radius: 12px;">
                             <span style="font-size: 1.2rem; margin-right: 12px; color: {status_color};">{icon}</span>
                             <div style="flex: 1;">
@@ -680,6 +687,12 @@ class Dashboard:
                         """,
                             unsafe_allow_html=True,
                         )
+
+        # Enhanced Metrics Section
+        self.render_enhanced_metrics()
+
+        # Challenge Recommendations Section
+        self.render_challenge_recommendations()
 
         # Enhanced Recent Activity Section
         st.markdown(
@@ -782,7 +795,7 @@ class Dashboard:
                 st.session_state.page = "Levels"
                 st.rerun()
 
-    def show_levels(self):
+    def show_levels(self) -> None:
         """iOS-inspired levels overview page"""
         st.markdown(
             """
@@ -820,7 +833,7 @@ class Dashboard:
             with col1:
                 st.markdown(
                     f"""
-                <div class="ios-card" style="text-align: center; height: 100px; display: flex; 
+                <div class="ios-card" style="text-align: center; height: 100px; display: flex;
                            flex-direction: column; justify-content: center;">
                     <div style="font-size: 2rem; margin-bottom: 8px; color: {status_color};">{status_icon}</div>
                     <div style="font-size: 0.9rem; color: {status_color}; font-weight: 600;">{status_text}</div>
@@ -858,10 +871,10 @@ class Dashboard:
                             </div>
                         </div>
                         <p style="margin: 0 0 16px 0; color: var(--text-secondary); line-height: 1.5;">{level_info['description']}</p>
-                        
+
                         <!-- Progress bar -->
                         <div style="background: rgba(255,255,255,0.2); border-radius: 10px; height: 6px; margin: 16px 0;">
-                            <div style="background: {status_color}; height: 100%; border-radius: 10px; width: {completion_pct}%; 
+                            <div style="background: {status_color}; height: 100%; border-radius: 10px; width: {completion_pct}%;
                                        transition: width 0.3s ease;"></div>
                         </div>
                 """,
@@ -907,7 +920,7 @@ class Dashboard:
                             )
                             st.markdown(
                                 f"""
-                                <div style="width: 8px; height: 8px; background: {dot_color}; 
+                                <div style="width: 8px; height: 8px; background: {dot_color};
                                            border-radius: 50%; display: inline-block;"></div>
                             """,
                                 unsafe_allow_html=True,
@@ -938,7 +951,7 @@ class Dashboard:
                 elif status["completed"]:
                     st.markdown(
                         """
-                    <div class="ios-card" style="text-align: center; height: 100px; display: flex; 
+                    <div class="ios-card" style="text-align: center; height: 100px; display: flex;
                                flex-direction: column; justify-content: center; background: var(--ios-green);">
                         <div style="font-size: 2rem; margin-bottom: 8px;">🏆</div>
                         <div style="font-size: 0.8rem; color: white; font-weight: 600;">MASTERED</div>
@@ -949,7 +962,7 @@ class Dashboard:
                 else:
                     st.markdown(
                         """
-                    <div class="ios-card" style="text-align: center; height: 100px; display: flex; 
+                    <div class="ios-card" style="text-align: center; height: 100px; display: flex;
                                flex-direction: column; justify-content: center; opacity: 0.5;">
                         <div style="font-size: 1.5rem; margin-bottom: 8px;">🔒</div>
                         <div style="font-size: 0.8rem; color: var(--text-secondary);">LOCKED</div>
@@ -961,7 +974,7 @@ class Dashboard:
             # Spacer
             st.markdown("<div style='margin: 20px 0;'></div>", unsafe_allow_html=True)
 
-    def show_challenges(self):
+    def show_challenges(self) -> None:
         """iOS-inspired challenges page"""
         st.markdown(
             """
@@ -975,7 +988,7 @@ class Dashboard:
 
         # Level selector with iOS style
         current_level = self.game.get_current_level()
-        available_levels = list(range(1, min(current_level + 1, 7)))
+        available_levels = list(range(1, min(current_level + 1, 8)))
 
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
@@ -1094,7 +1107,7 @@ class Dashboard:
                     with col1:
                         st.markdown(
                             f"""
-                        <div class="ios-card" style="text-align: center; height: 120px; display: flex; 
+                        <div class="ios-card" style="text-align: center; height: 120px; display: flex;
                                    flex-direction: column; justify-content: center; {card_style}">
                             <div style="font-size: 2.5rem; margin-bottom: 8px;">{status_icon}</div>
                             <div style="font-size: 0.8rem; font-weight: 600; opacity: 0.8;">{i:02d}</div>
@@ -1109,7 +1122,7 @@ class Dashboard:
                         <div class="ios-card" style="height: 120px; display: flex; flex-direction: column; justify-content: center;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                                 <h4 style="margin: 0; color: var(--text-primary); flex: 1;">{challenge}</h4>
-                                <div style="background: var(--surface-tertiary); border-radius: 16px; padding: 4px 12px; 
+                                <div style="background: var(--surface-tertiary); border-radius: 16px; padding: 4px 12px;
                                            font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">
                                     {status_text}
                                 </div>
@@ -1121,7 +1134,7 @@ class Dashboard:
                                 <!-- Progress indicator -->
                                 <div style="display: flex; align-items: center; gap: 8px;">
                                     <div style="flex: 1; height: 4px; background: var(--surface-tertiary); border-radius: 2px;">
-                                        <div style="height: 100%; background: {'var(--ios-green)' if completed else 'var(--ios-blue)'}; 
+                                        <div style="height: 100%; background: {'var(--ios-green)' if completed else 'var(--ios-blue)'};
                                                    width: {'100%' if completed else '0%'}; border-radius: 2px; transition: width 0.3s ease;"></div>
                                     </div>
                                     <span style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">
@@ -1188,7 +1201,7 @@ class Dashboard:
             # Level not unlocked
             st.markdown(
                 f"""
-            <div class="ios-card" style="text-align: center; padding: 60px; background: var(--surface-secondary); 
+            <div class="ios-card" style="text-align: center; padding: 60px; background: var(--surface-secondary);
                        border: 2px dashed var(--ios-gray);">
                 <div style="font-size: 4rem; margin-bottom: 20px; opacity: 0.5;">🔒</div>
                 <h3 style="margin-bottom: 16px; color: var(--text-primary);">Level {selected_level} Locked</h3>
@@ -1210,7 +1223,7 @@ class Dashboard:
 
             st.markdown("</div></div>", unsafe_allow_html=True)
 
-    def show_badges(self):
+    def show_badges(self) -> None:
         """iOS-inspired badges page"""
         st.markdown(
             """
@@ -1289,7 +1302,7 @@ class Dashboard:
                             <div style="font-size: 3rem; margin-bottom: 16px;">🏆</div>
                             <h4 style="margin: 0 0 8px 0; font-weight: 700;">{badge['name']}</h4>
                             <p style="margin: 0; font-size: 0.9rem; opacity: 0.9; line-height: 1.4;">{badge['description']}</p>
-                            <div style="margin-top: 16px; padding: 8px 16px; background: rgba(255,255,255,0.2); 
+                            <div style="margin-top: 16px; padding: 8px 16px; background: rgba(255,255,255,0.2);
                                        border-radius: 12px; font-size: 0.8rem; font-weight: 600;">
                                 EARNED ✨
                             </div>
@@ -1318,12 +1331,12 @@ class Dashboard:
                     # Different styling for locked/available badges
                     st.markdown(
                         f"""
-                    <div class="badge-card" style="transform: none; margin: 12px 0; opacity: 0.7; 
+                    <div class="badge-card" style="transform: none; margin: 12px 0; opacity: 0.7;
                                 background: var(--surface-secondary); border: 2px dashed var(--ios-gray);">
                         <div style="font-size: 3rem; margin-bottom: 16px; opacity: 0.5;">🔒</div>
                         <h4 style="margin: 0 0 8px 0; font-weight: 700; color: var(--text-primary);">{badge['name']}</h4>
                         <p style="margin: 0; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.4;">{badge['description']}</p>
-                        <div style="margin-top: 16px; padding: 8px 16px; background: var(--surface-tertiary); 
+                        <div style="margin-top: 16px; padding: 8px 16px; background: var(--surface-tertiary);
                                    border-radius: 12px; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">
                             NOT YET EARNED
                         </div>
@@ -1357,7 +1370,7 @@ class Dashboard:
 
             st.markdown("</div></div>", unsafe_allow_html=True)
 
-    def show_progress(self):
+    def show_progress(self) -> None:
         """iOS-inspired progress analytics page"""
         st.markdown(
             """
@@ -1370,10 +1383,6 @@ class Dashboard:
         )
 
         # Key metrics overview
-        stats = self.game.get_stats()
-        completed_challenges = len(self.game.progress["challenges_completed"])
-        earned_badges = len(self.game.progress["badges_earned"])
-
         col1, col2, col3, col4 = st.columns(4)
 
         metrics = [
@@ -1470,8 +1479,8 @@ class Dashboard:
             for icon, title, time, color in achievements:
                 st.markdown(
                     f"""
-                <div style="display: flex; align-items: center; padding: 16px; margin: 12px 0; 
-                           background: var(--surface-tertiary); border-radius: 16px; 
+                <div style="display: flex; align-items: center; padding: 16px; margin: 12px 0;
+                           background: var(--surface-tertiary); border-radius: 16px;
                            border-left: 4px solid {color};">
                     <span style="font-size: 1.5rem; margin-right: 16px;">{icon}</span>
                     <div style="flex: 1;">
@@ -1629,11 +1638,12 @@ class Dashboard:
         days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
         weeks = ["Week 1", "Week 2", "Week 3", "Week 4"]
         activity_data = []
+        rng = np.random.default_rng(42)
 
         for week in weeks:
             for day in days:
                 activity_data.append(
-                    {"Week": week, "Day": day, "Activity": np.random.randint(0, 10)}
+                    {"Week": week, "Day": day, "Activity": rng.integers(0, 10)}
                 )
 
         activity_df = pd.DataFrame(activity_data)
@@ -1682,7 +1692,7 @@ class Dashboard:
                 st.session_state.page = "Badges"
                 st.rerun()
 
-    def show_settings(self):
+    def show_settings(self) -> None:
         """iOS-inspired settings page"""
         st.markdown(
             """
@@ -1759,7 +1769,7 @@ class Dashboard:
                 unsafe_allow_html=True,
             )
 
-            difficulty = st.radio(
+            st.radio(
                 "Choose your preferred challenge difficulty:",
                 ["Beginner Friendly", "Standard", "Advanced"],
                 index=1,
@@ -1775,9 +1785,9 @@ class Dashboard:
                 unsafe_allow_html=True,
             )
 
-            notifications = st.checkbox("Enable learning reminders", value=True)
-            badge_notifications = st.checkbox("Badge achievement alerts", value=True)
-            weekly_summary = st.checkbox("Weekly progress summary", value=False)
+            st.checkbox("Enable learning reminders", value=True)
+            st.checkbox("Badge achievement alerts", value=True)
+            st.checkbox("Weekly progress summary", value=False)
 
         with col2:
             st.markdown(
@@ -1789,12 +1799,12 @@ class Dashboard:
                 unsafe_allow_html=True,
             )
 
-            theme = st.selectbox(
+            st.selectbox(
                 "Color Theme", ["Auto (System)", "Light Mode", "Dark Mode"], index=0
             )
 
-            animations = st.checkbox("Enable animations", value=True)
-            compact_view = st.checkbox("Compact card layout", value=False)
+            st.checkbox("Enable animations", value=True)
+            st.checkbox("Compact card layout", value=False)
 
             st.markdown(
                 """
@@ -1805,12 +1815,12 @@ class Dashboard:
                 unsafe_allow_html=True,
             )
 
-            analytics = st.checkbox(
+            st.checkbox(
                 "Share anonymous usage data",
                 value=True,
                 help="Helps improve the learning platform",
             )
-            progress_backup = st.checkbox("Automatic progress backup", value=True)
+            st.checkbox("Automatic progress backup", value=True)
 
         # Progress Management
         st.markdown(
@@ -1883,13 +1893,13 @@ class Dashboard:
             if st.button("ℹ️ Show App Info", key="show_info"):
                 st.info(
                     """
-                **Data Science Sandbox v2.0**  
-                iOS 26 HIG Inspired Design  
-                
-                📊 Total Levels: 6  
-                🎯 Total Challenges: 25+  
-                🏅 Total Badges: 15  
-                
+                **Data Science Sandbox v2.0**
+                iOS 26 HIG Inspired Design
+
+                📊 Total Levels: 6
+                🎯 Total Challenges: 25+
+                🏅 Total Badges: 15
+
                 Built with ❤️ and Streamlit
                 """
                 )
@@ -1938,3 +1948,282 @@ Completion: {stats['completion_rate']:.1f}%
         """,
             unsafe_allow_html=True,
         )
+
+    def render_study_timer(self) -> None:
+        """Render an iOS-style study session timer"""
+        import time
+
+        # Initialize session state for timer
+        if "session_start_time" not in st.session_state:
+            st.session_state.session_start_time = None
+        if "session_total_time" not in st.session_state:
+            st.session_state.session_total_time = 0
+        if "session_paused" not in st.session_state:
+            st.session_state.session_paused = True
+
+        # Calculate current session time
+        current_time = 0
+        if st.session_state.session_start_time and not st.session_state.session_paused:
+            current_time = time.time() - st.session_state.session_start_time
+
+        total_display_time = st.session_state.session_total_time + current_time
+
+        # Format time for display
+        def format_time(seconds: float) -> str:
+            hours = int(seconds // 3600)
+            minutes = int((seconds % 3600) // 60)
+            seconds = int(seconds % 60)
+            if hours > 0:
+                return f"{hours}h {minutes:02d}m {seconds:02d}s"
+            return f"{minutes:02d}m {seconds:02d}s"
+
+        col1, col2, col3 = st.columns([2, 1, 1])
+
+        with col1:
+            st.markdown(
+                f"""
+            <div class="ios-card" style="background: linear-gradient(135deg, var(--ios-green) 0%, var(--ios-teal) 100%);
+                 color: white; text-align: center; position: relative; overflow: hidden;">
+                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+                     background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%);"></div>
+                <div style="position: relative; z-index: 1;">
+                    <div style="font-size: 2rem; margin-bottom: 8px;">⏱️</div>
+                    <div style="font-size: 2.5rem; font-weight: 700; margin-bottom: 8px;
+                         font-family: 'SF Pro Display', monospace;">{format_time(total_display_time)}</div>
+                    <div style="font-size: 1rem; opacity: 0.9;">Study Session</div>
+                    <div style="margin-top: 12px; font-size: 0.9rem; opacity: 0.8;">
+                        Status: {"🔥 Active" if not st.session_state.session_paused else "⏸️ Paused"}
+                    </div>
+                </div>
+            </div>
+            """,
+                unsafe_allow_html=True,
+            )
+
+        with col2:
+            if st.session_state.session_paused:
+                if st.button("▶️ Start", key="start_timer", help="Start study session"):
+                    if st.session_state.session_start_time is None:
+                        st.session_state.session_start_time = time.time()
+                    else:
+                        # Resume from pause
+                        st.session_state.session_start_time = time.time()
+                    st.session_state.session_paused = False
+                    st.rerun()
+            else:
+                if st.button("⏸️ Pause", key="pause_timer", help="Pause study session"):
+                    if st.session_state.session_start_time:
+                        st.session_state.session_total_time += (
+                            time.time() - st.session_state.session_start_time
+                        )
+                    st.session_state.session_paused = True
+                    st.rerun()
+
+        with col3:
+            if st.button("🔄 Reset", key="reset_timer", help="Reset session timer"):
+                st.session_state.session_start_time = None
+                st.session_state.session_total_time = 0
+                st.session_state.session_paused = True
+                st.rerun()
+
+        # Auto-refresh every second when timer is running
+        if not st.session_state.session_paused and st.session_state.session_start_time:
+            time.sleep(1)
+            st.rerun()
+
+    def render_dark_mode_toggle(self) -> None:
+        """Render dark/light mode toggle"""
+        # Initialize theme in session state
+        if "dark_mode" not in st.session_state:
+            st.session_state.dark_mode = False
+
+        # Theme toggle in sidebar
+        st.sidebar.markdown("---")
+        col1, col2 = st.sidebar.columns(2)
+
+        with col1:
+            st.markdown("🌙 Dark Mode")
+        with col2:
+            if st.checkbox("", value=st.session_state.dark_mode, key="theme_toggle"):
+                st.session_state.dark_mode = not st.session_state.dark_mode
+                st.rerun()
+
+    def render_enhanced_metrics(self) -> None:
+        """Render additional metrics and insights"""
+
+        # Performance insights
+        st.markdown(
+            """
+        <div class="ios-card" style="margin: 30px 0 20px 0;">
+            <h3 style="margin-bottom: 20px;">📈 Performance Insights</h3>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        col1, col2, col3 = st.columns(3)
+
+        # Calculate some enhanced metrics
+        challenges_completed = len(self.game.progress["challenges_completed"])
+        total_challenges = sum(
+            len(self.game.get_level_challenges(i)) for i in range(1, 8)
+        )
+        completion_rate = (
+            (challenges_completed / total_challenges * 100)
+            if total_challenges > 0
+            else 0
+        )
+
+        with col1:
+            st.markdown(
+                f"""
+            <div class="ios-card" style="text-align: center; background: linear-gradient(135deg, var(--ios-blue), var(--ios-purple)); color: white;">
+                <div style="font-size: 2.5rem; margin-bottom: 12px;">🎯</div>
+                <div style="font-size: 2rem; font-weight: 700; margin-bottom: 8px;">{completion_rate:.1f}%</div>
+                <div style="font-size: 1rem; opacity: 0.9;">Completion Rate</div>
+            </div>
+            """,
+                unsafe_allow_html=True,
+            )
+
+        with col2:
+            # Calculate learning streak (mock data for now)
+            learning_streak = 5  # This could be calculated from session data
+            st.markdown(
+                f"""
+            <div class="ios-card" style="text-align: center; background: linear-gradient(135deg, var(--ios-orange), var(--ios-yellow)); color: white;">
+                <div style="font-size: 2.5rem; margin-bottom: 12px;">🔥</div>
+                <div style="font-size: 2rem; font-weight: 700; margin-bottom: 8px;">{learning_streak}</div>
+                <div style="font-size: 1rem; opacity: 0.9;">Day Streak</div>
+            </div>
+            """,
+                unsafe_allow_html=True,
+            )
+
+        with col3:
+            # Average score (mock calculation)
+            avg_score = 87.5  # This could be calculated from challenge scores
+            st.markdown(
+                f"""
+            <div class="ios-card" style="text-align: center; background: linear-gradient(135deg, var(--ios-green), var(--ios-teal)); color: white;">
+                <div style="font-size: 2.5rem; margin-bottom: 12px;">⭐</div>
+                <div style="font-size: 2rem; font-weight: 700; margin-bottom: 8px;">{avg_score:.1f}%</div>
+                <div style="font-size: 1rem; opacity: 0.9;">Avg Score</div>
+            </div>
+            """,
+                unsafe_allow_html=True,
+            )
+
+    def render_challenge_recommendations(self) -> None:
+        """Render AI-powered challenge recommendations"""
+        current_level = self.game.get_current_level()
+        completed_challenges = self.game.progress["challenges_completed"]
+
+        st.markdown(
+            """
+        <div class="ios-card" style="margin: 30px 0 20px 0;">
+            <h3 style="margin-bottom: 8px;">🎯 Recommended for You</h3>
+            <p style="color: var(--text-secondary); margin: 0;">AI-powered suggestions based on your progress</p>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Smart recommendations based on current progress
+        recommendations = []
+
+        # If user is new, recommend level 1
+        if len(completed_challenges) == 0:
+            recommendations = [
+                {
+                    "title": "First Steps with Data",
+                    "level": 1,
+                    "challenge": 1,
+                    "difficulty": "Beginner",
+                    "reason": "Perfect starting point for your data science journey",
+                    "icon": "🚀",
+                    "color": "var(--ios-green)",
+                }
+            ]
+        # If user has completed some level 1, suggest next in level 1 or level 2
+        elif current_level <= 2:
+            if len(completed_challenges) < 4:  # Still in level 1
+                recommendations = [
+                    {
+                        "title": "Data Visualization Mastery",
+                        "level": 1,
+                        "challenge": 2,
+                        "difficulty": "Beginner",
+                        "reason": "Build on your foundation with visual storytelling",
+                        "icon": "📊",
+                        "color": "var(--ios-blue)",
+                    },
+                    {
+                        "title": "Advanced Data Cleaning",
+                        "level": 2,
+                        "challenge": 1,
+                        "difficulty": "Intermediate",
+                        "reason": "Ready for more complex data challenges",
+                        "icon": "🧹",
+                        "color": "var(--ios-purple)",
+                    },
+                ]
+            else:  # Ready for level 2
+                recommendations = [
+                    {
+                        "title": "Statistical Analysis Deep Dive",
+                        "level": 2,
+                        "challenge": 2,
+                        "difficulty": "Intermediate",
+                        "reason": "Perfect next step in your learning journey",
+                        "icon": "📈",
+                        "color": "var(--ios-orange)",
+                    }
+                ]
+        else:
+            # Advanced recommendations
+            recommendations = [
+                {
+                    "title": "Machine Learning Fundamentals",
+                    "level": 3,
+                    "challenge": 1,
+                    "difficulty": "Advanced",
+                    "reason": "You're ready for machine learning concepts",
+                    "icon": "🤖",
+                    "color": "var(--ios-purple)",
+                }
+            ]
+
+        # Display recommendations
+        cols = st.columns(len(recommendations) if len(recommendations) <= 3 else 3)
+
+        for i, rec in enumerate(recommendations[:3]):
+            with cols[i]:
+                st.markdown(
+                    f"""
+                <div class="ios-card" style="background: linear-gradient(135deg, {rec['color']}, var(--ios-teal));
+                     color: white; text-align: center; position: relative; overflow: hidden; cursor: pointer;
+                     transition: transform 0.3s ease;">
+                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+                         background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%);"></div>
+                    <div style="position: relative; z-index: 1;">
+                        <div style="font-size: 3rem; margin-bottom: 16px;">{rec['icon']}</div>
+                        <h4 style="margin: 0 0 12px 0; font-weight: 700;">{rec['title']}</h4>
+                        <div style="background: rgba(255,255,255,0.2); border-radius: 12px;
+                             padding: 6px 12px; font-size: 0.8rem; margin: 8px auto; display: inline-block;">
+                            Level {rec['level']} • {rec['difficulty']}
+                        </div>
+                        <p style="margin: 12px 0 16px 0; font-size: 0.9rem; opacity: 0.9; line-height: 1.4;">
+                            {rec['reason']}
+                        </p>
+                    </div>
+                </div>
+                """,
+                    unsafe_allow_html=True,
+                )
+
+                if st.button(
+                    "Start Challenge", key=f"rec_{i}", help=f"Begin {rec['title']}"
+                ):
+                    st.session_state.page = "Challenges"
+                    st.rerun()

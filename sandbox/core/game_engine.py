@@ -1,5 +1,28 @@
 """
-Core game engine for the Data Science Sandbox
+Core game engine for the D        self.progress = {
+            "player_name": "Data Scientist",
+            "current_level": 1,
+            "experience_points": 0,
+            "badges_earned": [],
+            "challenges_completed": [],
+                  for level in range(1, 8):
+            if self.progress["level_progress"][str(level)]["unlocked"]:
+                challenges = self.get_level_challenges(level)
+                print(f"\n📚 Level {level} - {LEVELS[level]['name']}:")
+                for challenge in challenges:
+                    completed = (
+                        f"level_{level}_{challenge}"
+                        in self.progress["challenges_completed"]
+                    )
+                    status = "✅" if completed else "⏳"
+                    print(f"  {status} {challenge}")nt": 0,
+            "created_at": datetime.now().isoformat(),
+            "last_played": datetime.now().isoformat(),
+            "level_progress": {
+                str(i): {"unlocked": i == 1, "completed": False, "score": 0}
+                for i in range(1, 8)
+            },
+        }ndbox
 Handles progress tracking, level management, and achievements
 """
 
@@ -40,7 +63,7 @@ class GameEngine:
             "last_played": datetime.now().isoformat(),
             "level_progress": {
                 str(i): {"unlocked": i == 1, "completed": False, "score": 0}
-                for i in range(1, 7)
+                for i in range(1, 8)
             },
         }
 
@@ -63,22 +86,24 @@ class GameEngine:
 
     def set_current_level(self, level: int) -> None:
         """Set current level (for testing/admin)"""
-        if 1 <= level <= 6:
+        if 1 <= level <= 7:
             self.progress["current_level"] = level
             # Unlock all levels up to this one
             for i in range(1, level + 1):
                 self.progress["level_progress"][str(i)]["unlocked"] = True
             self.save_progress()
 
-    def unlock_next_level(self) -> None:
+    def unlock_next_level(self) -> int:
         """Unlock next level when current is completed"""
         current = self.progress["current_level"]
-        if current < 6:
+        if current < 7:
             next_level = current + 1
             self.progress["level_progress"][str(next_level)]["unlocked"] = True
             self.progress["current_level"] = next_level
             self.save_progress()
             print(f"🎉 Level {next_level} unlocked!")
+            return next_level
+        return current
 
     def add_experience(self, points: int, reason: str = "") -> None:
         """Add experience points"""
@@ -116,7 +141,7 @@ class GameEngine:
 
         if len(completed_challenges) >= len(level_challenges) * 0.8:  # 80% completion
             self.progress["level_progress"][str(current_level)]["completed"] = True
-            if current_level < 6:  # Can unlock next level
+            if current_level < 7:  # Can unlock next level
                 self.unlock_next_level()
                 print(
                     f"🎊 Level {current_level} Complete! Level {current_level + 1} Unlocked!"
@@ -125,13 +150,20 @@ class GameEngine:
 
     def get_level_challenges(self, level: int) -> List[str]:
         """Get list of challenges for a specific level"""
-        # This will be implemented when we create the challenges
         challenges_dir = os.path.join(BASE_DIR, "challenges", f"level_{level}")
         if os.path.exists(challenges_dir):
-            return [
+            challenge_files = [
                 f
                 for f in os.listdir(challenges_dir)
-                if f.endswith(".py") or f.endswith(".ipynb")
+                if f.endswith(".md") or f.endswith(".py") or f.endswith(".ipynb")
+            ]
+            # Return clean challenge names without file extensions
+            return [
+                os.path.splitext(f)[0]
+                .replace("challenge_", "")
+                .replace("_", " ")
+                .title()
+                for f in sorted(challenge_files)
             ]
         return []
 
@@ -142,7 +174,7 @@ class GameEngine:
             "experience": self.progress["experience_points"],
             "badges": len(self.progress["badges_earned"]),
             "challenges_completed": len(self.progress["challenges_completed"]),
-            "total_levels": 6,
+            "total_levels": 7,
             "completion_rate": len(self.progress["challenges_completed"])
             / max(1, self.count_total_challenges())
             * 100,
@@ -151,7 +183,7 @@ class GameEngine:
     def count_total_challenges(self) -> int:
         """Count total number of challenges across all levels"""
         total = 0
-        for level in range(1, 7):
+        for level in range(1, 8):
             total += len(self.get_level_challenges(level))
         return max(1, total)  # Avoid division by zero
 
@@ -237,7 +269,7 @@ class GameEngine:
         print("=" * 35)
         current_level = self.get_current_level()
 
-        for level in range(1, min(current_level + 1, 7)):
+        for level in range(1, min(current_level + 1, 8)):
             if self.progress["level_progress"][str(level)]["unlocked"]:
                 challenges = self.get_level_challenges(level)
                 print(f"\n📚 Level {level} - {LEVELS[level]['name']}:")

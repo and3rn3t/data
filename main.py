@@ -22,7 +22,7 @@ def main() -> None:
         help="Choose interface mode",
     )
     parser.add_argument(
-        "--level", type=int, choices=range(1, 7), help="Start at specific level (1-6)"
+        "--level", type=int, choices=range(1, 8), help="Start at specific level (1-7)"
     )
     parser.add_argument(
         "--reset", action="store_true", help="Reset progress and start fresh"

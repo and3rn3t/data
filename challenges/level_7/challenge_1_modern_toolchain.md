@@ -7,6 +7,7 @@ Welcome to the cutting edge of data science! This challenge introduces you to mo
 ### 🎯 Learning Objectives
 
 By completing this challenge, you will:
+
 - Master modern high-performance data processing with Polars and DuckDB
 - Implement ML experiment tracking with MLflow and Weights & Biases
 - Create model explanations using SHAP and LIME
@@ -22,16 +23,19 @@ By completing this challenge, you will:
 ### 🛠️ Tools You'll Master
 
 **Modern Data Processing:**
+
 - 🚀 **Polars**: Lightning-fast DataFrame library (2-30x faster than pandas)
 - 🗄️ **DuckDB**: High-performance analytical database
 - 💾 **PyArrow**: Columnar in-memory analytics
 
 **ML Operations:**
+
 - 📊 **MLflow**: Experiment tracking and model management
 - 📈 **Weights & Biases**: Advanced experiment tracking with visualizations
 - 🎯 **Optuna**: State-of-the-art hyperparameter optimization
 
 **Model Understanding:**
+
 - 🔍 **SHAP**: Unified model explanations
 - 💡 **LIME**: Local interpretable model explanations
 - 📊 **Yellowbrick**: ML visualization library
@@ -51,8 +55,8 @@ warnings.filterwarnings('ignore')
 
 # Import our new integration modules
 from sandbox.integrations import (
-    ModernDataProcessor, 
-    ExperimentTracker, 
+    ModernDataProcessor,
+    ExperimentTracker,
     ModelExplainer,
     HyperparameterOptimizer
 )
@@ -90,10 +94,10 @@ dataset_types = ["sales", "ecommerce", "iot", "financial"]
 for dataset_type in dataset_types:
     print(f"  Creating {dataset_type} dataset...")
     datasets[dataset_type] = processor.create_sample_dataset(
-        n_rows=50000, 
+        n_rows=50000,
         dataset_type=dataset_type
     )
-    
+
     # Show basic info
     if hasattr(datasets[dataset_type], 'shape'):
         print(f"  ✅ {dataset_type}: {datasets[dataset_type].shape}")
@@ -281,10 +285,10 @@ def rf_objective(params):
         min_samples_split=params['min_samples_split'],
         random_state=42
     )
-    
+
     # Use cross-validation score
     cv_scores = cross_val_score(model, X_train, y_train, cv=3, scoring='accuracy')
-    
+
     # Return negative score (since we minimize)
     return -cv_scores.mean()
 
@@ -397,7 +401,7 @@ To complete this challenge successfully, you should:
    - Execute SQL queries on DataFrames using DuckDB
    - Optimize data types for memory efficiency
 
-2. **Experiment Tracking** (25 points) 
+2. **Experiment Tracking** (25 points)
    - Track ML experiments with parameters, metrics, and models
    - Compare baseline and optimized models
    - Generate experiment summaries
@@ -415,19 +419,22 @@ To complete this challenge successfully, you should:
 ### 💡 Bonus Challenges
 
 **Expert Level Extensions:**
+
 1. **Multi-objective Optimization**: Optimize for both accuracy and training time
-2. **A/B Testing Framework**: Compare multiple models systematically  
+2. **A/B Testing Framework**: Compare multiple models systematically
 3. **Production Pipeline**: Create an end-to-end ML pipeline with all tools
 4. **Custom Visualizations**: Build custom dashboards for experiment tracking
 
 ### 🔧 Troubleshooting
 
 **Common Issues:**
+
 - **Missing Libraries**: The challenge gracefully handles missing libraries with fallbacks
 - **Memory Issues**: Use smaller datasets (reduce n_rows) if memory is limited
 - **Slow Optimization**: Reduce n_trials for faster completion during learning
 
 **Installation Help:**
+
 ```bash
 # Install missing libraries
 pip install polars duckdb mlflow wandb shap lime yellowbrick optuna
@@ -436,6 +443,7 @@ pip install polars duckdb mlflow wandb shap lime yellowbrick optuna
 ### 📖 Additional Resources
 
 **Documentation:**
+
 - [Polars User Guide](https://pola-rs.github.io/polars/)
 - [DuckDB Documentation](https://duckdb.org/docs/)
 - [MLflow Documentation](https://mlflow.org/docs/)
@@ -443,6 +451,7 @@ pip install polars duckdb mlflow wandb shap lime yellowbrick optuna
 - [Optuna Documentation](https://optuna.org/)
 
 **Tutorials:**
+
 - Modern Data Processing with Polars
 - MLOps Best Practices
 - Model Interpretability Guide
