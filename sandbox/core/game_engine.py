@@ -20,6 +20,13 @@ class GameEngine:
         self.save_file = os.path.join(BASE_DIR, save_file)
         self.progress = self.load_progress()
 
+        # Initialize enhanced systems
+        from .badge_manager import BadgeManager
+        from .challenge_loader import ChallengeLoader
+
+        self.badge_manager = BadgeManager()
+        self.challenge_loader = ChallengeLoader()
+
     def load_progress(self) -> Dict[str, Any]:
         """Load progress from save file or create new profile"""
         if os.path.exists(self.save_file):
@@ -91,10 +98,16 @@ class GameEngine:
         self.save_progress()
 
     def complete_challenge(self, challenge_id: str) -> None:
-        """Mark a challenge as completed"""
+        """Mark a challenge as completed and check for badges"""
         if challenge_id not in self.progress["challenges_completed"]:
             self.progress["challenges_completed"].append(challenge_id)
             self.add_experience(100, f"Completed {challenge_id}")
+
+            # Check for newly earned badges
+            newly_earned = self.badge_manager.check_and_award_badges(self.progress)
+            for badge_id in newly_earned:
+                self.earn_badge(badge_id)
+
             self.save_progress()
             self.check_level_completion()
 
@@ -140,6 +153,24 @@ class GameEngine:
                     challenges.append(formatted_name)
 
         return sorted(challenges)
+
+    def get_enhanced_challenges(self, level: int) -> List[Dict[str, Any]]:
+        """Get enhanced challenge information with metadata"""
+        return self.challenge_loader.list_challenges(level)
+
+    def get_challenge_details(self, level: int, challenge_name: str) -> Dict[str, Any]:
+        """Get detailed information about a specific challenge"""
+        challenge_data = self.challenge_loader.load_challenge(level, challenge_name)
+        if challenge_data:
+            progress_info = self.challenge_loader.get_challenge_progress(
+                level, challenge_name, self.progress["challenges_completed"]
+            )
+            challenge_data.update(progress_info)
+        return challenge_data or {}
+
+    def get_next_badges(self) -> List[Dict[str, Any]]:
+        """Get badges that can be earned next"""
+        return self.badge_manager.get_next_badges(self.progress)
 
     def get_stats(self) -> Dict[str, Any]:
         """Get player statistics"""
@@ -305,16 +336,26 @@ class GameEngine:
                 print(f"❌ Could not start Jupyter Lab: {fallback_error}")
 
     def launch_dashboard(self) -> None:
-        """Launch Streamlit dashboard"""
+        """Launch Streamlit dashboard with enhanced features"""
         try:
             print("🚀 Launching Data Science Sandbox Dashboard...")
+            print(
+                "💡 Dashboard includes enhanced challenge metadata and smart badge recommendations"
+            )
             subprocess.run(
-                ["streamlit", "run", os.path.join(BASE_DIR, "streamlit_app.py")],
+                [
+                    "python",
+                    "-m",
+                    "streamlit",
+                    "run",
+                    os.path.join(BASE_DIR, "streamlit_app.py"),
+                ],
                 check=True,
             )
         except (subprocess.CalledProcessError, FileNotFoundError) as e:
             print(f"❌ Dashboard failed to start: {e}")
             print("💡 Make sure Streamlit is installed: pip install streamlit")
+            print("💡 Try running: python -m streamlit run streamlit_app.py")
 
     def get_progress(self) -> Dict[str, Any]:
         """Get current progress data"""

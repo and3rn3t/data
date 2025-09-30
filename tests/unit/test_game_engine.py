@@ -49,7 +49,7 @@ class TestGameEngine:
         challenge_id = "level_1_first_steps"
         initial_challenges = len(game_engine.progress["challenges_completed"])
 
-        game_engine.complete_challenge(challenge_id, 95)
+        game_engine.complete_challenge(challenge_id)
 
         assert (
             len(game_engine.progress["challenges_completed"]) == initial_challenges + 1
