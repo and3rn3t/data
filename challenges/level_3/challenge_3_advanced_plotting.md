@@ -174,8 +174,8 @@ from scipy.spatial.distance import squareform
 distance_matrix = 1 - latest_stocks.abs()
 linkage_matrix = linkage(squareform(distance_matrix), method='ward')
 
-# Create custom colormap
-colors = ['#d7191c', '#fdae61', '#ffffbf', '#abd9e9', '#2c7bb6']
+# Create custom colormap - professional harmonious palette
+colors = ['#DC2626', '#C2410C', '#F9FAFB', '#047857', '#1D4ED8']
 n_bins = 256
 cmap = LinearSegmentedColormap.from_list('custom', colors, N=n_bins)
 

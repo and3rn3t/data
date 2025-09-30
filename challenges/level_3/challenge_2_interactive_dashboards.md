@@ -33,12 +33,12 @@ st.markdown("""
 <style>
 .main-header {
     font-size: 2.5rem;
-    color: #1f77b4;
+    color: #1D4ED8;
     text-align: center;
     margin-bottom: 2rem;
 }
 .metric-container {
-    background-color: #f0f2f6;
+    background-color: #F9FAFB;
     padding: 1rem;
     border-radius: 0.5rem;
     text-align: center;
@@ -212,7 +212,7 @@ with col_left:
         x='date',
         y=chart_metric,
         title=f"Daily {chart_metric.replace('_', ' ').title()}",
-        color_discrete_sequence=['#1f77b4']
+        color_discrete_sequence=['#1D4ED8']
     )
     fig_time.update_layout(height=400)
     st.plotly_chart(fig_time, use_container_width=True)

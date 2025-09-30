@@ -18,6 +18,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
 from config import BADGES, LEVELS
 from sandbox.core.game_engine import GameEngine
+from sandbox.utils.dashboard_layout_system import DashboardLayoutSystem
+from sandbox.utils.dashboard_layout_system import DashboardLayoutSystem
 
 
 class Dashboard:
@@ -56,24 +58,25 @@ class Dashboard:
         @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@200;300;400;500;600;700&display=swap');
 
         :root {
-            --ios-blue: #007AFF;
-            --ios-gray: #8E8E93;
-            --ios-gray-light: #F2F2F7;
-            --ios-gray-dark: #1C1C1E;
-            --ios-green: #30D158;
-            --ios-orange: #FF9500;
-            --ios-red: #FF3B30;
-            --ios-purple: #AF52DE;
-            --ios-pink: #FF2D92;
-            --ios-teal: #40C8E0;
-            --ios-indigo: #5856D6;
-            --ios-yellow: #FFD60A;
+            --ios-blue: #1D4ED8;
+            --ios-gray: #6B7280;
+            --ios-gray-light: #F9FAFB;
+            --ios-gray-dark: #374151;
+            --ios-green: #047857;
+            --ios-orange: #C2410C;
+            --ios-red: #DC2626;
+            --ios-purple: #7C3AED;
+            --ios-pink: #EC4899;
+            --ios-teal: #06B6D4;
+            --ios-indigo: #6366F1;
+            --ios-gold: #F59E0B;
+            --ios-yellow: #EAB308;
 
             --surface-primary: rgba(255, 255, 255, 0.85);
             --surface-secondary: rgba(242, 242, 247, 0.8);
             --surface-tertiary: rgba(255, 255, 255, 0.6);
             --text-primary: #000000;
-            --text-secondary: #8E8E93;
+            --text-secondary: #6B7280;
             --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.1);
             --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
             --shadow-heavy: 0 8px 25px rgba(0, 0, 0, 0.2);
@@ -91,10 +94,13 @@ class Dashboard:
             backdrop-filter: blur(20px);
             border-radius: 16px;
             padding: 20px;
-            margin: 12px 0;
+            margin: 16px 0;
             box-shadow: var(--shadow-medium);
             border: 0.5px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
         }
 
         .ios-card:hover {
@@ -138,9 +144,10 @@ class Dashboard:
             border-radius: 24px;
             padding: 28px;
             color: white;
-            margin: 16px 0;
+            margin: 20px 0;
             box-shadow: var(--shadow-heavy);
             position: relative;
+            z-index: 2;
             overflow: hidden;
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
@@ -199,7 +206,7 @@ class Dashboard:
         }
 
         .stButton > button:hover {
-            background: #0056CC;
+            background: #1E40AF;
             transform: translateY(-2px);
             box-shadow: var(--shadow-heavy);
         }
@@ -349,6 +356,240 @@ class Dashboard:
         .animate-slide-in {
             animation: slideInUp 0.5s ease-out;
         }
+
+        /* iOS 26 SF Symbols System */
+        .sf-symbol {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .sf-symbol svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        /* SF Symbol Animations */
+        @keyframes sf-pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        @keyframes sf-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        @keyframes sf-rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes sf-wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-3deg); }
+            75% { transform: rotate(3deg); }
+        }
+
+        /* Hover Animations */
+        .sf-symbol:hover {
+            transform: scale(1.05);
+        }
+
+        .sf-symbol.sf-pulse:hover {
+            animation: sf-pulse 1s ease-in-out infinite;
+        }
+
+        .sf-symbol.sf-bounce:hover {
+            animation: sf-bounce 0.6s ease-in-out infinite;
+        }
+
+        .sf-symbol.sf-rotate:hover {
+            animation: sf-rotate 2s linear infinite;
+        }
+
+        .sf-symbol.sf-wiggle:hover {
+            animation: sf-wiggle 0.5s ease-in-out infinite;
+        }
+
+        /* Icon Base Classes */
+        .icon-dashboard, .icon-levels, .icon-challenges, .icon-badges, .icon-progress,
+        .icon-settings, .icon-focus, .icon-fire, .icon-actions, .icon-trophy,
+        .icon-star, .icon-medal, .icon-chart, .icon-check, .icon-clock,
+        .icon-rocket, .icon-book, .icon-stats {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            position: relative;
+        }
+
+        .icon-dashboard::before {
+            content: '▦';
+            position: absolute;
+            font-size: 16px;
+            font-weight: normal;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: currentColor;
+        }
+
+        .icon-levels::before {
+            content: '📊';
+            position: absolute;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .icon-challenges::before {
+            content: '🎯';
+            position: absolute;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .icon-badges::before {
+            content: '🏆';
+            position: absolute;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .icon-progress::before {
+            content: '⏱️';
+            position: absolute;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .icon-settings::before {
+            content: '⚙️';
+            position: absolute;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .icon-trophy::before {
+            content: '🏅';
+            position: absolute;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .icon-star::before {
+            content: '★';
+            position: absolute;
+            font-size: 16px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: currentColor;
+        }
+
+        .icon-fire::before {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 12px;
+            background: currentColor;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .icon-check::before {
+            content: '✓';
+            position: absolute;
+            font-size: 14px;
+            font-weight: bold;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: currentColor;
+        }
+
+        .icon-rocket::before {
+            content: '🚀';
+            position: absolute;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .icon-book::before {
+            content: '📚';
+            position: absolute;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        /* Legacy icon classes for backward compatibility */
+        .icon-focus, .icon-fire, .icon-actions, .icon-medal,
+        .icon-chart, .icon-check, .icon-clock, .icon-stats {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            position: relative;
+        }
+
+        .icon-focus::before, .icon-fire::before, .icon-actions::before,
+        .icon-medal::before, .icon-chart::before, .icon-check::before,
+        .icon-clock::before, .icon-stats::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'><circle cx='9' cy='9' r='6' fill='currentColor'/></svg>");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        /* SF Symbol Navigation Buttons */
+        .nav-button {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            margin: 4px 0;
+            background: var(--surface-secondary);
+            border: none;
+            border-radius: 12px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-button:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .nav-button .sf-symbol {
+            margin-right: 8px;
+        }
         </style>
         """,
             unsafe_allow_html=True,
@@ -358,8 +599,15 @@ class Dashboard:
         st.markdown(
             """
         <div class="dynamic-island animate-slide-in">
-            <h1 style="margin: 0; font-size: 1.5rem;">🎮 Data Science Sandbox</h1>
-            <p style="margin: 4px 0 0 0; opacity: 0.7; font-size: 0.9rem;">Learn data science through gamified challenges</p>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <div class="sf-symbol sf-pulse" style="margin-right: 12px;">
+                    <div class="icon-dashboard"></div>
+                </div>
+                <div>
+                    <h1 style="margin: 0; font-size: 1.5rem;">Data Science Sandbox</h1>
+                    <p style="margin: 4px 0 0 0; opacity: 0.7; font-size: 0.9rem;">Learn data science through gamified challenges</p>
+                </div>
+            </div>
         </div>
         """,
             unsafe_allow_html=True,
@@ -434,17 +682,28 @@ class Dashboard:
             unsafe_allow_html=True,
         )
 
-        # Navigation with emoji icons
+        # Navigation with SF Symbols
         nav_items = [
-            ("Dashboard", "📊", "Overview and progress"),
-            ("Levels", "🏆", "Learning progression"),
-            ("Challenges", "🎯", "Practice exercises"),
-            ("Badges", "🏅", "Achievements"),
-            ("Progress", "📈", "Analytics"),
-            ("Settings", "⚙️", "Configuration"),
+            ("Dashboard", "dashboard", "sf-pulse", "Overview and progress"),
+            ("Levels", "levels", "sf-bounce", "Learning progression"),
+            ("Challenges", "challenges", "sf-wiggle", "Practice exercises"),
+            ("Badges", "badges", "sf-pulse", "Achievements"),
+            ("Progress", "progress", "sf-rotate", "Analytics"),
+            ("Settings", "settings", "sf-rotate", "Configuration"),
         ]
 
-        for page, icon, description in nav_items:
+        for page, icon_name, animation, description in nav_items:
+            # Create navigation button with icon
+            icon_map = {
+                "dashboard": "▦",
+                "levels": "📊",
+                "challenges": "🎯",
+                "badges": "🏆",
+                "progress": "⏱️",
+                "settings": "⚙️",
+            }
+            icon = icon_map.get(icon_name, "●")
+
             if st.sidebar.button(f"{icon} {page}", key=page, help=description):
                 st.session_state.page = page
                 st.rerun()
@@ -453,22 +712,22 @@ class Dashboard:
 
         # Quick Actions with enhanced styling
         st.sidebar.markdown(
-            "<h4 style='margin: 20px 0 16px 0; color: var(--text-secondary);'>🚀 Quick Actions</h4>",
+            "<h4 style='margin: 20px 0 16px 0; color: var(--text-secondary);'>⚡ Quick Actions</h4>",
             unsafe_allow_html=True,
         )
 
         # Action buttons with icons
         col1, col2 = st.sidebar.columns(2)
         with col1:
-            if st.button("📊", key="jupyter", help="Launch Jupyter Lab"):
+            if st.button("▶", key="jupyter", help="Launch Jupyter Lab"):
                 self.game.launch_jupyter()
-                st.sidebar.success("🚀 Launching...")
+                st.sidebar.success("→ Launching...")
 
         with col2:
-            if st.button("🔄", key="reset", help="Reset Progress"):
-                if st.sidebar.button("⚠️", key="confirm_reset", help="Confirm Reset"):
+            if st.button("↻", key="reset", help="Reset Progress"):
+                if st.sidebar.button("!", key="confirm_reset", help="Confirm Reset"):
                     self.game.reset_progress()
-                    st.sidebar.success("✅ Reset complete!")
+                    st.sidebar.success("✓ Reset complete!")
                     st.rerun()
 
         # Progress Ring Visualization
@@ -491,134 +750,132 @@ class Dashboard:
             unsafe_allow_html=True,
         )
 
+        # Color Accessibility Status Widget
+        try:
+            from sandbox.utils.dashboard_contrast_integration import (
+                render_contrast_widget,
+            )
+
+            render_contrast_widget()
+        except ImportError:
+            pass
+
         # Dark Mode Toggle
         self.render_dark_mode_toggle()
 
     def show_dashboard(self) -> None:
-        """iOS-inspired main dashboard view"""
+        """iOS-inspired main dashboard view with organized sections"""
         stats = self.game.get_stats()
+
+        # Page Header
+        DashboardLayoutSystem.create_page_header(
+            title="Learning Dashboard",
+            subtitle="Track your progress and continue your data science journey",
+            icon="■",
+        )
 
         # Study Session Timer Section
         self.render_study_timer()
 
-        # Enhanced Key Metrics with iOS Cards
-        st.markdown(
-            "<h2 style='margin: 30px 0 20px 0;'>📊 Learning Dashboard</h2>",
-            unsafe_allow_html=True,
-        )
+        # Key Metrics Section
+        DashboardLayoutSystem.create_section_header("→ Your Progress")
 
-        col1, col2, col3, col4 = st.columns(4)
-        with col1:
-            st.markdown(
-                f"""
-            <div class="ios-card" style="text-align: center;">
-                <div style="font-size: 2.5rem; margin-bottom: 8px;">🏆</div>
-                <div style="font-size: 2rem; font-weight: 700; color: var(--ios-blue);">{stats['level']}</div>
-                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 4px;">Current Level</div>
-                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">out of 6</div>
-            </div>
-            """,
-                unsafe_allow_html=True,
-            )
+        completion = stats.get("completion_rate", 0)
+        metrics = [
+            {
+                "icon": "▲",
+                "value": str(stats["level"]),
+                "label": "Current Level",
+                "sublabel": "out of 7",
+                "color": "var(--ios-blue)",
+            },
+            {
+                "icon": "★",
+                "value": str(stats["experience"]),
+                "label": "Experience",
+                "sublabel": "points earned",
+                "color": "var(--ios-green)",
+                "delta": "+50 recent",
+                "delta_color": "var(--ios-green)",
+            },
+            {
+                "icon": "◆",
+                "value": str(stats["badges"]),
+                "label": "Badges Earned",
+                "sublabel": "achievements",
+                "color": "var(--ios-purple)",
+            },
+            {
+                "icon": "→",
+                "value": f"{completion:.1f}%",
+                "label": "Completion",
+                "sublabel": "overall progress",
+                "color": "var(--ios-orange)",
+            },
+        ]
 
-        with col2:
-            st.markdown(
-                f"""
-            <div class="ios-card" style="text-align: center;">
-                <div style="font-size: 2.5rem; margin-bottom: 8px;">⭐</div>
-                <div style="font-size: 2rem; font-weight: 700; color: var(--ios-green);">{stats['experience']}</div>
-                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 4px;">Experience</div>
-                <div style="font-size: 0.8rem; color: var(--ios-green); margin-top: 4px;">+50 recent</div>
-            </div>
-            """,
-                unsafe_allow_html=True,
-            )
+        DashboardLayoutSystem.create_metric_cards(metrics)
 
-        with col3:
-            st.markdown(
-                f"""
-            <div class="ios-card" style="text-align: center;">
-                <div style="font-size: 2.5rem; margin-bottom: 8px;">🏅</div>
-                <div style="font-size: 2rem; font-weight: 700; color: var(--ios-purple);">{stats['badges']}</div>
-                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 4px;">Badges Earned</div>
-                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">achievements</div>
-            </div>
-            """,
-                unsafe_allow_html=True,
-            )
+        # Structured Content Sections
+        self._render_learning_progression_section(stats)
+        self._render_activity_and_actions_section()
 
-        with col4:
-            completion = stats.get("completion_rate", 0)
-            st.markdown(
-                f"""
-            <div class="ios-card" style="text-align: center;">
-                <div style="font-size: 2.5rem; margin-bottom: 8px;">📈</div>
-                <div style="font-size: 2rem; font-weight: 700; color: var(--ios-orange);">{completion:.1f}%</div>
-                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 4px;">Completion</div>
-                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">overall progress</div>
-            </div>
-            """,
-                unsafe_allow_html=True,
-            )
+    def _render_learning_progression_section(self, stats):
+        """Render organized learning progression section with chart and current focus"""
 
-        # Interactive Progress Section
-        col1, col2 = st.columns([2, 1])
+        def render_progress_chart():
+            """Render progress chart for all levels"""
+            import plotly.express as px
 
-        with col1:
-            st.markdown(
-                """
-            <div class="ios-card">
-                <h3 style="margin-bottom: 20px;">📊 Learning Progression</h3>
-            </div>
-            """,
-                unsafe_allow_html=True,
-            )
-
-            # Enhanced progress chart with iOS styling
             progress_data = []
             for level in range(1, 8):
                 level_status = self.game.progress["level_progress"][str(level)]
+
+                # Calculate actual progress
+                if level_status["completed"]:
+                    status = "Completed"
+                    progress = 100
+                elif level == stats["level"]:
+                    total_challenges = len(level_status.get("challenges", []))
+                    completed_challenges = len(
+                        [
+                            c
+                            for c in level_status.get("challenges", [])
+                            if c in self.game.progress["challenges_completed"]
+                        ]
+                    )
+                    progress = (
+                        (completed_challenges / total_challenges * 100)
+                        if total_challenges > 0
+                        else 0
+                    )
+                    status = "Active"
+                else:
+                    status = "Locked"
+                    progress = 0
+
                 progress_data.append(
                     {
                         "Level": f"Level {level}",
                         "Name": LEVELS[level]["name"],
+                        "Progress": progress,
+                        "Status": status,
                     }
                 )
 
-                # Determine status based on level completion state
-                if level_status["completed"]:
-                    status = "Completed"
-                elif level_status["unlocked"]:
-                    status = "Active"
-                else:
-                    status = "Locked"
-
-                # Determine progress based on level completion state
-                if level_status["completed"]:
-                    progress = 100
-                elif level_status["unlocked"]:
-                    progress = 65
-                else:
-                    progress = 0
-
-                progress_data[-1]["Status"] = status
-                progress_data[-1]["Progress"] = str(progress)
-
-            df = pd.DataFrame(progress_data)
             fig = px.bar(
-                df,
+                progress_data,
                 x="Level",
                 y="Progress",
                 color="Status",
                 color_discrete_map={
-                    "Completed": "#30D158",
-                    "Active": "#007AFF",
-                    "Locked": "#8E8E93",
+                    "Completed": "#047857",
+                    "Active": "#1D4ED8",
+                    "Locked": "#9CA3AF",
                 },
                 hover_data=["Name"],
             )
 
-            # iOS-style chart customization
             fig.update_layout(
                 plot_bgcolor=Dashboard.TRANSPARENT_BG,
                 paper_bgcolor=Dashboard.TRANSPARENT_BG,
@@ -638,229 +895,252 @@ class Dashboard:
 
             st.plotly_chart(fig, use_container_width=True)
 
-        with col2:
-            st.markdown(
-                """
-            <div class="ios-card">
-                <h3 style="margin-bottom: 16px;">🎯 Current Focus</h3>
-            </div>
-            """,
-                unsafe_allow_html=True,
-            )
-
+        def render_current_focus():
+            """Render current level focus and available challenges"""
             current_level = stats["level"]
+
             if current_level <= 7:
                 level_info = LEVELS[current_level]
+
+                # Current Level Card
+                st.markdown(
+                    '<h3 style="margin-bottom: 16px;">● Current Focus</h3>',
+                    unsafe_allow_html=True,
+                )
                 st.markdown(
                     f"""
-                <div class="level-card">
-                    <div style="position: relative; z-index: 1;">
-                        <h3 style="margin: 0 0 12px 0; font-size: 1.3rem;">Level {current_level}</h3>
-                        <h4 style="margin: 0 0 16px 0; opacity: 0.9;">{level_info['name']}</h4>
+                    <div class="level-card">
+                        <h3 style="margin: 0 0 12px 0; font-size: 1.3rem;">Level {current_level}: {level_info['name']}</h3>
                         <p style="margin: 0; opacity: 0.8; line-height: 1.4;">{level_info['description']}</p>
                     </div>
-                </div>
-                """,
+                    """,
                     unsafe_allow_html=True,
                 )
 
-                # Enhanced challenge preview with metadata
+                # Available Challenges
                 enhanced_challenges = self.game.get_enhanced_challenges(current_level)
                 if enhanced_challenges:
                     st.markdown(
-                        """
-                    <div class="ios-card" style="margin-top: 16px;">
-                        <h4 style="margin-bottom: 16px;">🔥 Available Challenges</h4>
-                    </div>
-                    """,
+                        '<h3 style="margin: 24px 0 16px 0;">◆ Available Challenges</h3>',
                         unsafe_allow_html=True,
                     )
 
-                    for i, challenge_data in enumerate(enhanced_challenges[:3]):  # Show first 3
-                        if isinstance(challenge_data, dict):
-                            challenge_name = challenge_data.get('title', challenge_data.get('name', f'Challenge {i+1}'))
-                        else:
-                            challenge_name = str(challenge_data)
+                    for i, challenge_data in enumerate(enhanced_challenges[:3]):
+                        challenge_name = (
+                            challenge_data.get("title", f"Challenge {i+1}")
+                            if isinstance(challenge_data, dict)
+                            else str(challenge_data)
+                        )
                         completed = (
                             f"level_{current_level}_{challenge_name}"
                             in self.game.progress["challenges_completed"]
                         )
 
-                        # Enhanced metadata
-                        if isinstance(challenge_data, dict):
-                            difficulty = challenge_data.get('difficulty', 'Unknown')
-                            estimated_time_str = challenge_data.get('estimated_time', '20 minutes')
-                            concepts = challenge_data.get('concepts', [])
+                        # Get metadata
+                        difficulty = (
+                            challenge_data.get("difficulty", "Unknown")
+                            if isinstance(challenge_data, dict)
+                            else "Unknown"
+                        )
+                        estimated_time = (
+                            challenge_data.get("estimated_time", 20)
+                            if isinstance(challenge_data, dict)
+                            else 20
+                        )
 
-                            # Parse time string if it's in "15-20 minutes" format
-                            try:
-                                import re
-                                if 'minutes' in str(estimated_time_str) or 'min' in str(estimated_time_str):
-                                    # Extract numbers from strings like "15-20 minutes"
-                                    numbers = re.findall(r'\d+', str(estimated_time_str))
-                                    if numbers:
-                                        estimated_time = int(numbers[-1])  # Use the last number found
-                                    else:
-                                        estimated_time = 20
-                                elif isinstance(estimated_time_str, (int, float)):
-                                    estimated_time = int(estimated_time_str)
-                                else:
-                                    estimated_time = 20
-                            except (ValueError, TypeError, AttributeError):
-                                estimated_time = 20
-
-                            # Format time
-                            if estimated_time > 60:
-                                time_str = f"{estimated_time // 60}h {estimated_time % 60}m"
-                            else:
-                                time_str = f"{estimated_time}m"
-                        else:
-                            difficulty = "Unknown"
+                        # Parse time
+                        try:
+                            if isinstance(estimated_time, str):
+                                estimated_time = int(
+                                    "".join(filter(str.isdigit, estimated_time)) or 20
+                                )
+                            time_str = (
+                                f"{estimated_time // 60}h {estimated_time % 60}m"
+                                if estimated_time > 60
+                                else f"{estimated_time}m"
+                            )
+                        except:
                             time_str = "~20m"
-                            concepts = []
 
-                        icon = "✅" if completed else "⏳"
-                        status_color = Dashboard.IOS_GREEN if completed else Dashboard.IOS_BLUE
+                        icon = "✓" if completed else "○"
+                        status_color = (
+                            Dashboard.IOS_GREEN if completed else Dashboard.IOS_BLUE
+                        )
 
-                        # Difficulty color
                         difficulty_colors = {
-                            'Beginner': Dashboard.IOS_GREEN,
-                            'Easy': Dashboard.IOS_GREEN,
-                            'Intermediate': Dashboard.IOS_ORANGE,
-                            'Medium': Dashboard.IOS_ORANGE,
-                            'Advanced': Dashboard.IOS_RED,
-                            'Hard': Dashboard.IOS_RED,
-                            'Expert': Dashboard.IOS_PURPLE
+                            "Beginner": Dashboard.IOS_GREEN,
+                            "Easy": Dashboard.IOS_GREEN,
+                            "Intermediate": Dashboard.IOS_ORANGE,
+                            "Medium": Dashboard.IOS_ORANGE,
+                            "Advanced": Dashboard.IOS_RED,
+                            "Hard": Dashboard.IOS_RED,
+                            "Expert": Dashboard.IOS_PURPLE,
                         }
-                        difficulty_color = difficulty_colors.get(difficulty, Dashboard.IOS_BLUE)
+                        difficulty_color = difficulty_colors.get(
+                            difficulty, Dashboard.IOS_BLUE
+                        )
 
                         st.markdown(
                             f"""
-                        <div style="display: flex; align-items: center; padding: 12px; margin: 8px 0;
-                                   background: var(--surface-tertiary); border-radius: 12px;">
-                            <span style="font-size: 1.2rem; margin-right: 12px; color: {status_color};">{icon}</span>
-                            <div style="flex: 1;">
-                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                                    <div style="font-weight: 600; color: var(--text-primary);">{challenge_name}</div>
-                                    <span style="background: {difficulty_color}; color: white; font-size: 0.7rem;
-                                                padding: 2px 6px; border-radius: 6px;">{difficulty}</span>
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 12px; font-size: 0.8rem; color: var(--text-secondary);">
-                                    <span>Challenge {i+1} • {time_str}</span>
-                                    {f'<span>• {concepts[0]}</span>' if concepts else ''}
+                            <div style="display: flex; align-items: center; padding: 16px; margin: 12px 0;
+                                       background: var(--surface-primary); border-radius: 16px;
+                                       border: 1px solid rgba(255, 255, 255, 0.1);
+                                       box-shadow: var(--shadow-light);
+                                       position: relative; z-index: 1;">
+                                <span style="font-size: 1.2rem; margin-right: 16px; color: {status_color};">{icon}</span>
+                                <div style="flex: 1;">
+                                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                                        <div style="font-weight: 600; color: var(--text-primary); font-size: 0.95rem;">{challenge_name}</div>
+                                        <span style="background: {difficulty_color}; color: white; font-size: 0.7rem;
+                                              padding: 3px 8px; border-radius: 10px; font-weight: 500;">{difficulty}</span>
+                                    </div>
+                                    <div style="font-size: 0.85rem; color: var(--text-secondary); opacity: 0.8;">{time_str}</div>
                                 </div>
                             </div>
-                        </div>
-                        """,
+                            """,
                             unsafe_allow_html=True,
                         )
 
-        # Enhanced Metrics Section
-        self.render_enhanced_metrics()
-
-        # Challenge Recommendations Section
-        self.render_challenge_recommendations()
-
-        # Enhanced Recent Activity Section
-        st.markdown(
-            """
-        <div class="ios-card animate-slide-in" style="margin-top: 30px;">
-            <h3 style="margin-bottom: 20px;">📈 Recent Activity</h3>
-        </div>
-        """,
-            unsafe_allow_html=True,
+        # Render using layout system
+        DashboardLayoutSystem.create_section_header("■ Learning Progression")
+        DashboardLayoutSystem.create_two_column_layout(
+            render_progress_chart, render_current_focus
         )
 
-        col1, col2, col3 = st.columns(3)
+    def _render_activity_and_actions_section(self):
+        """Render organized recent activity and quick actions section"""
+        DashboardLayoutSystem.create_section_header("⚡ Activity & Actions")
 
-        with col1:
-            # Recent badges
+        def render_recent_badges():
+            """Render recent badges earned"""
             recent_badges = (
                 self.game.progress["badges_earned"][-3:]
                 if self.game.progress["badges_earned"]
                 else []
             )
+
             if recent_badges:
-                st.markdown(
-                    "<h4 style='color: var(--text-secondary);'>🏆 Latest Badges</h4>",
-                    unsafe_allow_html=True,
-                )
                 for badge_id in recent_badges:
                     if badge_id in BADGES:
                         badge = BADGES[badge_id]
                         st.markdown(
                             f"""
-                        <div class="badge-card earned">
-                            <div style="font-size: 2rem; margin-bottom: 8px;">🏆</div>
-                            <div style="font-weight: 600; font-size: 1rem;">{badge['name']}</div>
-                            <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 4px;">{badge['description']}</div>
-                        </div>
-                        """,
+                            <div class="badge-card earned" style="margin-bottom: 12px;">
+                                <div style="font-size: 2rem; margin-bottom: 8px; color: var(--ios-gold);">◆</div>
+                                <div style="font-weight: 600; font-size: 1rem;">{badge['name']}</div>
+                                <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 4px;">{badge['description']}</div>
+                            </div>
+                            """,
                             unsafe_allow_html=True,
                         )
             else:
                 st.markdown(
                     """
-                <div class="ios-card" style="text-align: center; padding: 40px;">
-                    <div style="font-size: 3rem; margin-bottom: 16px;">🎯</div>
-                    <h4 style="margin-bottom: 8px;">Start Your Journey</h4>
-                    <p style="color: var(--text-secondary); margin: 0;">Complete challenges to earn badges!</p>
-                </div>
-                """,
+                    <div style="text-align: center; padding: 40px;">
+                        <div style="font-size: 3rem; margin-bottom: 16px; color: var(--ios-blue);">●</div>
+                        <h4 style="margin-bottom: 8px;">Start Your Journey</h4>
+                        <p style="color: var(--text-secondary); margin: 0;">Complete challenges to earn badges!</p>
+                    </div>
+                    """,
                     unsafe_allow_html=True,
                 )
 
-        with col2:
-            # Learning streaks and stats
-            st.markdown(
-                "<h4 style='color: var(--text-secondary);'>🔥 Learning Stats</h4>",
-                unsafe_allow_html=True,
-            )
-
-            # Mock streak data
+        def render_learning_stats():
+            """Render learning statistics"""
             streak_days = 5
             total_challenges = len(self.game.progress["challenges_completed"])
 
             st.markdown(
                 f"""
-            <div class="ios-card" style="text-align: center;">
-                <div style="font-size: 2.5rem; margin-bottom: 12px;">🔥</div>
-                <div style="font-size: 1.5rem; font-weight: 700; color: var(--ios-orange);">{streak_days}</div>
-                <div style="font-size: 0.9rem; color: var(--text-secondary);">Day Streak</div>
-            </div>
-            """,
+                <div style="text-align: center; margin-bottom: 16px;">
+                    <div style="font-size: 2.5rem; margin-bottom: 12px; color: var(--ios-orange);">▲</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--ios-orange);">{streak_days}</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Day Streak</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 12px; color: var(--ios-teal);">■</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--ios-teal);">{total_challenges}</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Challenges Done</div>
+                </div>
+                """,
                 unsafe_allow_html=True,
             )
 
+        def render_quick_actions():
+            """Render quick action buttons"""
+            # Add specific CSS to ensure uniform button sizing
             st.markdown(
-                f"""
-            <div class="ios-card" style="text-align: center; margin-top: 12px;">
-                <div style="font-size: 2.5rem; margin-bottom: 12px;">📚</div>
-                <div style="font-size: 1.5rem; font-weight: 700; color: var(--ios-teal);">{total_challenges}</div>
-                <div style="font-size: 0.9rem; color: var(--text-secondary);">Challenges Done</div>
-            </div>
-            """,
+                """
+                <style>
+                div[data-testid="column"] .stButton > button {
+                    width: 100% !important;
+                    height: 48px !important;
+                    font-size: 14px !important;
+                    font-weight: 600 !important;
+                    padding: 12px 16px !important;
+                    background: var(--ios-blue) !important;
+                    color: white !important;
+                    border: none !important;
+                    border-radius: 12px !important;
+                }
+                div[data-testid="column"] .stButton > button:hover {
+                    background: #1E40AF !important;
+                    transform: translateY(-2px) !important;
+                }
+                </style>
+                """,
                 unsafe_allow_html=True,
             )
 
+            col1, col2, col3 = st.columns(3)
+
+            with col1:
+                if st.button("▶ Continue Learning", key="continue_learning"):
+                    st.session_state.page = "Challenges"
+                    st.rerun()
+
+            with col2:
+                if st.button("→ View Progress", key="view_progress"):
+                    st.session_state.page = "Progress"
+                    st.rerun()
+
+            with col3:
+                if st.button("▲ Check Levels", key="check_levels"):
+                    st.session_state.page = "Levels"
+                    st.rerun()
+
+            return ""  # Buttons are rendered directly
+
+        # Create three-column layout for activity section
+        def render_left_activity():
+            st.markdown(
+                '<h3 style="margin-bottom: 16px;">◆ Latest Badges</h3>',
+                unsafe_allow_html=True,
+            )
+            render_recent_badges()
+
+        def render_center_activity():
+            st.markdown(
+                '<h3 style="margin-bottom: 16px;">→ Learning Stats</h3>',
+                unsafe_allow_html=True,
+            )
+            render_learning_stats()
+
+        def render_right_activity():
+            st.markdown(
+                '<h3 style="margin-bottom: 16px;">▶ Quick Actions</h3>',
+                unsafe_allow_html=True,
+            )
+            render_quick_actions()
+
+        # Three column layout for activity section
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            render_left_activity()
+        with col2:
+            render_center_activity()
         with col3:
-            # Quick actions
-            st.markdown(
-                "<h4 style='color: var(--text-secondary);'>⚡ Quick Actions</h4>",
-                unsafe_allow_html=True,
-            )
-
-            if st.button("🚀 Continue Learning", type="primary"):
-                st.session_state.page = "Challenges"
-                st.rerun()
-
-            if st.button("📊 View Progress", key="view_progress"):
-                st.session_state.page = "Progress"
-                st.rerun()
-
-            if st.button("🏆 Check Levels", key="check_levels"):
-                st.session_state.page = "Levels"
-                st.rerun()
+            render_right_activity()
 
     def show_levels(self) -> None:
         """iOS-inspired levels overview page"""
@@ -1151,7 +1431,9 @@ class Dashboard:
 
                 for i, challenge_data in enumerate(challenges, 1):
                     if isinstance(challenge_data, dict):
-                        challenge_name = challenge_data.get('title', challenge_data.get('name', f'Challenge {i}'))
+                        challenge_name = challenge_data.get(
+                            "title", challenge_data.get("name", f"Challenge {i}")
+                        )
                     else:
                         challenge_name = str(challenge_data)
                     challenge_id = f"level_{selected_level}_{challenge_name}"
@@ -1161,19 +1443,33 @@ class Dashboard:
 
                     # Enhanced metadata from challenge_loader
                     if isinstance(challenge_data, dict):
-                        difficulty = challenge_data.get('difficulty', 'Unknown')
-                        estimated_time_str = challenge_data.get('estimated_time', '20 minutes')
-                        description = challenge_data.get('description', challenge_data.get('title', f'Challenge {i} for {level_info["name"]}'))
-                        concepts = challenge_data.get('concepts', challenge_data.get('objectives', []))
+                        difficulty = challenge_data.get("difficulty", "Unknown")
+                        estimated_time_str = challenge_data.get(
+                            "estimated_time", "20 minutes"
+                        )
+                        description = challenge_data.get(
+                            "description",
+                            challenge_data.get(
+                                "title", f'Challenge {i} for {level_info["name"]}'
+                            ),
+                        )
+                        concepts = challenge_data.get(
+                            "concepts", challenge_data.get("objectives", [])
+                        )
 
                         # Parse time string if it's in "15-20 minutes" format
                         try:
                             import re
-                            if 'minutes' in str(estimated_time_str) or 'min' in str(estimated_time_str):
+
+                            if "minutes" in str(estimated_time_str) or "min" in str(
+                                estimated_time_str
+                            ):
                                 # Extract numbers from strings like "15-20 minutes"
-                                numbers = re.findall(r'\d+', str(estimated_time_str))
+                                numbers = re.findall(r"\d+", str(estimated_time_str))
                                 if numbers:
-                                    estimated_time = int(numbers[-1])  # Use the last number found
+                                    estimated_time = int(
+                                        numbers[-1]
+                                    )  # Use the last number found
                                 else:
                                     estimated_time = 20
                             elif isinstance(estimated_time_str, (int, float)):
@@ -1193,7 +1489,7 @@ class Dashboard:
                         difficulty = "Unknown"
                         time_str = "~20m"
                         description = f"Challenge {i} for {level_info['name']} - Practice your skills with hands-on exercises"
-                        concepts = []                    # Challenge card styling
+                        concepts = []  # Challenge card styling
                     if completed:
                         card_style = "background: linear-gradient(135deg, var(--ios-green), var(--ios-teal)); color: white;"
                         status_icon = "✅"
@@ -1209,15 +1505,17 @@ class Dashboard:
 
                     # Difficulty color coding
                     difficulty_colors = {
-                        'Beginner': 'var(--ios-green)',
-                        'Easy': 'var(--ios-green)',
-                        'Intermediate': 'var(--ios-orange)',
-                        'Medium': 'var(--ios-orange)',
-                        'Advanced': 'var(--ios-red)',
-                        'Hard': 'var(--ios-red)',
-                        'Expert': 'var(--ios-purple)'
+                        "Beginner": "var(--ios-green)",
+                        "Easy": "var(--ios-green)",
+                        "Intermediate": "var(--ios-orange)",
+                        "Medium": "var(--ios-orange)",
+                        "Advanced": "var(--ios-red)",
+                        "Hard": "var(--ios-red)",
+                        "Expert": "var(--ios-purple)",
                     }
-                    difficulty_color = difficulty_colors.get(difficulty, 'var(--ios-blue)')
+                    difficulty_color = difficulty_colors.get(
+                        difficulty, "var(--ios-blue)"
+                    )
 
                     col1, col2, col3 = st.columns([1, 4, 1])
 
@@ -1459,11 +1757,15 @@ class Dashboard:
 
             cols = st.columns(3)
             for i, badge_data in enumerate(next_badges[:3]):  # Show only first 3
-                badge_id = badge_data.get('id', '')
-                badge_name = badge_data.get('name', badge_id)
-                badge_description = badge_data.get('description', 'Achievement badge')
-                progress_info = badge_data.get('progress', {}).get('requirements_met', False)
-                progress_text = "Close to earning!" if not progress_info else "Requirements met!"
+                badge_id = badge_data.get("id", "")
+                badge_name = badge_data.get("name", badge_id)
+                badge_description = badge_data.get("description", "Achievement badge")
+                progress_info = badge_data.get("progress", {}).get(
+                    "requirements_met", False
+                )
+                progress_text = (
+                    "Close to earning!" if not progress_info else "Requirements met!"
+                )
 
                 with cols[i]:
                     st.markdown(
@@ -1606,11 +1908,11 @@ class Dashboard:
             # Create line chart with iOS-style colors
             fig = px.line(exp_data, x="Date", y="Experience", title="")
 
-            # Update styling to match iOS aesthetics
+            # Update styling to match professional aesthetics
             fig.update_traces(
-                line={"color": "#007AFF", "width": 3},
+                line={"color": "#1D4ED8", "width": 3},
                 fill="tonexty",
-                fillcolor="rgba(0, 122, 255, 0.1)",
+                fillcolor="rgba(29, 78, 216, 0.1)",
             )
 
             fig.update_layout(
@@ -1710,10 +2012,10 @@ class Dashboard:
                 color="Category",
                 orientation="h",
                 color_discrete_map={
-                    "Technical": "#007AFF",
-                    "Analytical": "#30D158",
-                    "Advanced": "#AF52DE",
-                    "Programming": "#FF9500",
+                    "Technical": "#1D4ED8",
+                    "Analytical": "#047857",
+                    "Advanced": "#7C3AED",
+                    "Programming": "#C2410C",
                 },
             )
 
@@ -1760,16 +2062,16 @@ class Dashboard:
                         "Review & Analysis",
                     ],
                     "Hours": [25, 15, 20, 8],
-                    "Color": ["#007AFF", "#30D158", "#AF52DE", "#FF9500"],
+                    "Color": ["#1D4ED8", "#047857", "#7C3AED", "#C2410C"],
                 }
             )
 
-            # Create donut chart with iOS styling
+            # Create donut chart with professional styling
             fig = px.pie(
                 time_data,
                 values="Hours",
                 names="Category",
-                color_discrete_sequence=["#007AFF", "#30D158", "#AF52DE", "#FF9500"],
+                color_discrete_sequence=["#1D4ED8", "#047857", "#7C3AED", "#C2410C"],
             )
 
             # Convert to donut chart
@@ -1828,7 +2130,7 @@ class Dashboard:
         heatmap_data = activity_df.pivot(index="Week", columns="Day", values="Activity")
 
         fig = px.imshow(
-            heatmap_data, color_continuous_scale=["#F2F2F7", "#007AFF"], aspect="auto"
+            heatmap_data, color_continuous_scale=["#F9FAFB", "#1D4ED8"], aspect="auto"
         )
 
         fig.update_layout(
@@ -2078,6 +2380,16 @@ class Dashboard:
                 """
                 )
 
+        # Color Accessibility Status
+        try:
+            from sandbox.utils.dashboard_contrast_integration import (
+                DashboardContrastIntegration,
+            )
+
+            DashboardContrastIntegration.render_contrast_status()
+        except ImportError:
+            st.warning("Color contrast monitoring not available")
+
         # Advanced Settings (collapsible)
         with st.expander("🔧 Advanced Settings & Debug"):
             st.markdown("**System Information**")
@@ -2309,14 +2621,24 @@ Completion: {stats['completion_rate']:.1f}%
         recommendations = []
 
         # Get enhanced challenges for current and next level
-        current_enhanced = self.game.get_enhanced_challenges(current_level) if current_level <= 7 else []
-        next_enhanced = self.game.get_enhanced_challenges(min(current_level + 1, 7)) if current_level < 7 else []
+        current_enhanced = (
+            self.game.get_enhanced_challenges(current_level)
+            if current_level <= 7
+            else []
+        )
+        next_enhanced = (
+            self.game.get_enhanced_challenges(min(current_level + 1, 7))
+            if current_level < 7
+            else []
+        )
 
         # Find next challenge to complete in current level
         if current_enhanced:
             for challenge_data in current_enhanced[:3]:  # Check first 3 challenges
                 if isinstance(challenge_data, dict):
-                    challenge_name = challenge_data.get('title', challenge_data.get('name', 'Challenge'))
+                    challenge_name = challenge_data.get(
+                        "title", challenge_data.get("name", "Challenge")
+                    )
                 else:
                     challenge_name = str(challenge_data)
                 challenge_id = f"level_{current_level}_{challenge_name}"
@@ -2324,11 +2646,16 @@ Completion: {stats['completion_rate']:.1f}%
                 if challenge_id not in completed_challenges:
                     if isinstance(challenge_data, dict):
                         # Parse time properly
-                        estimated_time_str = challenge_data.get('estimated_time', Dashboard.DEFAULT_TIME_STR)
+                        estimated_time_str = challenge_data.get(
+                            "estimated_time", Dashboard.DEFAULT_TIME_STR
+                        )
                         try:
                             import re
-                            if 'minutes' in str(estimated_time_str) or 'min' in str(estimated_time_str):
-                                numbers = re.findall(r'\d+', str(estimated_time_str))
+
+                            if "minutes" in str(estimated_time_str) or "min" in str(
+                                estimated_time_str
+                            ):
+                                numbers = re.findall(r"\d+", str(estimated_time_str))
                                 parsed_time = int(numbers[-1]) if numbers else 20
                             elif isinstance(estimated_time_str, (int, float)):
                                 parsed_time = int(estimated_time_str)
@@ -2337,39 +2664,47 @@ Completion: {stats['completion_rate']:.1f}%
                         except (ValueError, TypeError, AttributeError):
                             parsed_time = 20
 
-                        recommendations.append({
-                            "title": challenge_name,
-                            "level": current_level,
-                            "difficulty": challenge_data.get('difficulty', 'Unknown'),
-                            "time": parsed_time,
-                            "reason": f"Continue your {LEVELS[current_level]['name']} journey",
-                            "description": challenge_data.get('description', ''),
-                            "concepts": challenge_data.get('concepts', []),
-                            "icon": "🎯",
-                            "color": Dashboard.IOS_BLUE,
-                        })
+                        recommendations.append(
+                            {
+                                "title": challenge_name,
+                                "level": current_level,
+                                "difficulty": challenge_data.get(
+                                    "difficulty", "Unknown"
+                                ),
+                                "time": parsed_time,
+                                "reason": f"Continue your {LEVELS[current_level]['name']} journey",
+                                "description": challenge_data.get("description", ""),
+                                "concepts": challenge_data.get("concepts", []),
+                                "icon": "🎯",
+                                "color": Dashboard.IOS_BLUE,
+                            }
+                        )
                         break
 
         # Add next level preview if user has made good progress
         if len(completed_challenges) >= 2 and next_enhanced and current_level < 7:
             first_next_challenge = next_enhanced[0]
             if isinstance(first_next_challenge, dict):
-                challenge_name = first_next_challenge.get('title', first_next_challenge.get('name', 'Next Challenge'))
+                challenge_name = first_next_challenge.get(
+                    "title", first_next_challenge.get("name", "Next Challenge")
+                )
             else:
                 challenge_name = str(first_next_challenge)
 
             if isinstance(first_next_challenge, dict):
-                recommendations.append({
-                    "title": challenge_name,
-                    "level": current_level + 1,
-                    "difficulty": first_next_challenge.get('difficulty', 'Unknown'),
-                    "time": 20,  # Simplified - will be parsed properly in display
-                    "reason": f"Preview of {LEVELS[current_level + 1]['name']}",
-                    "description": first_next_challenge.get('description', ''),
-                    "concepts": first_next_challenge.get('concepts', []),
-                    "icon": "�",
-                    "color": "var(--ios-purple)",
-                })
+                recommendations.append(
+                    {
+                        "title": challenge_name,
+                        "level": current_level + 1,
+                        "difficulty": first_next_challenge.get("difficulty", "Unknown"),
+                        "time": 20,  # Simplified - will be parsed properly in display
+                        "reason": f"Preview of {LEVELS[current_level + 1]['name']}",
+                        "description": first_next_challenge.get("description", ""),
+                        "concepts": first_next_challenge.get("concepts", []),
+                        "icon": "�",
+                        "color": "var(--ios-purple)",
+                    }
+                )
 
         # If no enhanced data, fall back to basic recommendations
         if not recommendations:
@@ -2392,7 +2727,9 @@ Completion: {stats['completion_rate']:.1f}%
                     {
                         "title": "Continue Your Journey",
                         "level": current_level,
-                        "difficulty": "Beginner" if current_level == 1 else "Intermediate",
+                        "difficulty": (
+                            "Beginner" if current_level == 1 else "Intermediate"
+                        ),
                         "time": 25,
                         "reason": f"Keep building skills in {LEVELS[current_level]['name']}",
                         "description": "Practice more hands-on exercises",
@@ -2424,10 +2761,14 @@ Completion: {stats['completion_rate']:.1f}%
             with cols[i]:
                 # Format time display for recommendations
                 time_str = ""
-                if 'time' in rec:
+                if "time" in rec:
                     # Ensure time is an integer
                     try:
-                        time_value = int(rec['time']) if isinstance(rec['time'], (str, float)) else rec['time']
+                        time_value = (
+                            int(rec["time"])
+                            if isinstance(rec["time"], (str, float))
+                            else rec["time"]
+                        )
                     except (ValueError, TypeError):
                         time_value = 20  # Default fallback
 
