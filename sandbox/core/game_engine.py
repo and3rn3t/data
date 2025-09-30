@@ -1,33 +1,12 @@
 """
-Core game engine for the D        self.progress = {
-            "player_name": "Data Scientist",
-            "current_level": 1,
-            "experience_points": 0,
-            "badges_earned": [],
-            "challenges_completed": [],
-                  for level in range(1, 8):
-            if self.progress["level_progress"][str(level)]["unlocked"]:
-                challenges = self.get_level_challenges(level)
-                print(f"\n📚 Level {level} - {LEVELS[level]['name']}:")
-                for challenge in challenges:
-                    completed = (
-                        f"level_{level}_{challenge}"
-                        in self.progress["challenges_completed"]
-                    )
-                    status = "✅" if completed else "⏳"
-                    print(f"  {status} {challenge}")nt": 0,
-            "created_at": datetime.now().isoformat(),
-            "last_played": datetime.now().isoformat(),
-            "level_progress": {
-                str(i): {"unlocked": i == 1, "completed": False, "score": 0}
-                for i in range(1, 8)
-            },
-        }ndbox
+Core game engine for the Data Science Sandbox
 Handles progress tracking, level management, and achievements
 """
 
 import json
 import os
+import subprocess
+import webbrowser
 from datetime import datetime
 from typing import Any, Dict, List
 
@@ -95,9 +74,9 @@ class GameEngine:
 
     def unlock_next_level(self) -> int:
         """Unlock next level when current is completed"""
-        current = self.progress["current_level"]
+        current: int = self.progress["current_level"]
         if current < 7:
-            next_level = current + 1
+            next_level: int = current + 1
             self.progress["level_progress"][str(next_level)]["unlocked"] = True
             self.progress["current_level"] = next_level
             self.save_progress()
@@ -111,15 +90,13 @@ class GameEngine:
         print(f"🎉 +{points} XP! {reason}")
         self.save_progress()
 
-    def complete_challenge(self, challenge_id: str, score: int = 100) -> None:
+    def complete_challenge(self, challenge_id: str) -> None:
         """Mark a challenge as completed"""
         if challenge_id not in self.progress["challenges_completed"]:
             self.progress["challenges_completed"].append(challenge_id)
-            self.add_experience(score, f"Completed {challenge_id}")
-
-            # Check for level completion
-            self.check_level_completion()
+            self.add_experience(100, f"Completed {challenge_id}")
             self.save_progress()
+            self.check_level_completion()
 
     def earn_badge(self, badge_id: str) -> None:
         """Earn a new badge"""
@@ -151,21 +128,18 @@ class GameEngine:
     def get_level_challenges(self, level: int) -> List[str]:
         """Get list of challenges for a specific level"""
         challenges_dir = os.path.join(BASE_DIR, "challenges", f"level_{level}")
+        challenges = []
+
         if os.path.exists(challenges_dir):
-            challenge_files = [
-                f
-                for f in os.listdir(challenges_dir)
-                if f.endswith(".md") or f.endswith(".py") or f.endswith(".ipynb")
-            ]
-            # Return clean challenge names without file extensions
-            return [
-                os.path.splitext(f)[0]
-                .replace("challenge_", "")
-                .replace("_", " ")
-                .title()
-                for f in sorted(challenge_files)
-            ]
-        return []
+            for file in os.listdir(challenges_dir):
+                if file.endswith(".md") and file.startswith("challenge_"):
+                    # Extract challenge name from filename
+                    name = file.replace("challenge_", "").replace(".md", "")
+                    # Convert underscores to spaces and title case
+                    formatted_name = name.replace("_", " ").title()
+                    challenges.append(formatted_name)
+
+        return sorted(challenges)
 
     def get_stats(self) -> Dict[str, Any]:
         """Get player statistics"""
@@ -191,34 +165,39 @@ class GameEngine:
         """Start CLI interface"""
         print("\n🎮 Data Science Sandbox - CLI Mode")
         print("=" * 50)
-        while True:
-            self.show_main_menu()
-            choice = input("\nSelect option (1-6, 'q' to quit): ").strip().lower()
 
-            if choice == "q":
-                print("👋 Thanks for playing! Keep learning!")
+        while True:
+            stats = self.get_stats()
+            print(f"\n👤 {self.progress['player_name']} | Level {stats['level']} | {stats['experience']} XP")
+
+            self.show_main_menu()
+
+            try:
+                choice = input("Select option (1-6, 'q' to quit): ").strip().lower()
+
+                if choice == 'q':
+                    print("👋 Thanks for playing! Keep learning!")
+                    break
+                elif choice == '1':
+                    self.show_stats()
+                elif choice == '2':
+                    self.show_levels()
+                elif choice == '3':
+                    self.show_badges()
+                elif choice == '4':
+                    self.list_challenges()
+                elif choice == '5':
+                    self.show_help()
+                elif choice == '6':
+                    self.launch_jupyter()
+                else:
+                    print("❌ Invalid option. Please try again.")
+            except KeyboardInterrupt:
+                print("\n👋 Thanks for playing! Keep learning!")
                 break
-            elif choice == "1":
-                self.show_stats()
-            elif choice == "2":
-                self.show_levels()
-            elif choice == "3":
-                self.show_badges()
-            elif choice == "4":
-                self.list_challenges()
-            elif choice == "5":
-                self.show_help()
-            elif choice == "6":
-                self.launch_jupyter()
-            else:
-                print("❌ Invalid option. Please try again.")
 
     def show_main_menu(self) -> None:
-        """Display main menu"""
-        stats = self.get_stats()
-        print(
-            f"\n👤 {self.progress['player_name']} | Level {stats['level']} | {stats['experience']} XP"
-        )
+        """Display main menu options"""
         print("\n📚 Main Menu:")
         print("1. View Stats & Progress")
         print("2. Browse Levels")
@@ -232,7 +211,7 @@ class GameEngine:
         stats = self.get_stats()
         print("\n📊 Player Statistics")
         print("=" * 30)
-        print(f"Current Level: {stats['level']}/6")
+        print(f"Current Level: {stats['level']}/{stats['total_levels']}")
         print(f"Experience Points: {stats['experience']}")
         print(f"Badges Earned: {stats['badges']}")
         print(f"Challenges Completed: {stats['challenges_completed']}")
@@ -250,8 +229,8 @@ class GameEngine:
             print(f"    {level_info['description']}")
 
     def show_badges(self) -> None:
-        """Display earned badges"""
-        print(f"\n🏅 Badges Earned ({len(self.progress['badges_earned'])})")
+        """Display earned and available badges"""
+        print("\n🏆 Your Badges")
         print("=" * 40)
         for badge_id in self.progress["badges_earned"]:
             if badge_id in BADGES:
@@ -283,100 +262,58 @@ class GameEngine:
 
     def show_help(self) -> None:
         """Display help information"""
-        print("\n❓ Data Science Sandbox Help")
+        print("\n📖 Help & Documentation")
         print("=" * 40)
-        print("Welcome to your data science learning journey!")
-        print("\n🎯 How to Play:")
-        print("• Complete challenges to earn XP and badges")
-        print("• Unlock new levels by completing 80% of current level")
-        print("• Use Jupyter notebooks for hands-on practice")
-        print("• Track your progress with the dashboard")
-        print("\n📁 Directory Structure:")
-        print("• /notebooks - Interactive learning materials")
-        print("• /challenges - Coding challenges by level")
-        print("• /data - Sample datasets and resources")
-        print("• /docs - Documentation and guides")
+        print("🎯 How to Play:")
+        print("• Progress through levels by completing challenges")
+        print("• Earn XP and badges for achievements")
+        print("• Use Jupyter notebooks for interactive learning")
+        print("• Each level builds on previous skills")
+        print("\n📚 Resources:")
+        print("• Challenge files: /challenges/level_X/")
+        print("• Notebooks: /notebooks/")
+        print("• Documentation: /docs/")
+        print("\n💡 Tips:")
+        print("• Read challenge instructions carefully")
+        print("• Experiment with the code examples")
+        print("• Don't hesitate to explore beyond the basics!")
 
     def launch_jupyter(self) -> None:
         """Launch Jupyter Lab environment"""
-        try:
-            import subprocess
-            import sys
+        notebooks_dir = os.path.join(BASE_DIR, "notebooks")
 
+        try:
             print("🚀 Launching Jupyter Lab...")
-            # Use python -m jupyterlab to ensure we use the installed module
+            # Try to launch Jupyter Lab
             subprocess.run(
-                [
-                    sys.executable,
-                    "-m",
-                    "jupyterlab",
-                    "--notebook-dir",
-                    BASE_DIR,
-                    "--no-browser",  # Don't auto-open browser on Windows
-                ],
+                ["jupyter", "lab", "--notebook-dir", notebooks_dir],
                 check=True,
+                creationflags=subprocess.CREATE_NEW_CONSOLE if os.name == 'nt' else 0
             )
         except (subprocess.CalledProcessError, FileNotFoundError) as e:
             print(f"❌ Jupyter Lab failed to start: {e}")
-            print("🔄 Trying to open in browser manually...")
-            # Fallback: try to start without check and print URL
             try:
-                import subprocess
-                import sys
-
-                subprocess.Popen(
-                    [sys.executable, "-m", "jupyterlab", "--notebook-dir", BASE_DIR]
-                )
+                print("🔄 Trying to open in browser manually...")
+                # Try to open the Jupyter Lab URL in browser
+                webbrowser.open("http://localhost:8888")
                 print(
                     "📚 Jupyter Lab should open in your browser at: http://localhost:8888"
                 )
             except Exception as fallback_error:
                 print(f"❌ Could not start Jupyter Lab: {fallback_error}")
-                print(
-                    "🔄 Alternative: Open notebooks manually in your preferred environment"
-                )
 
     def launch_dashboard(self) -> None:
-        """Launch Streamlit dashboard properly"""
+        """Launch Streamlit dashboard"""
         try:
-            import subprocess
-            import sys
-
             print("🚀 Launching Data Science Sandbox Dashboard...")
-            # Launch streamlit using the dedicated streamlit_app.py file
             subprocess.run(
-                [
-                    sys.executable,
-                    "-m",
-                    "streamlit",
-                    "run",
-                    os.path.join(BASE_DIR, "streamlit_app.py"),
-                    "--server.port",
-                    "8501",
-                    "--server.headless",
-                    "true",
-                ],
+                ["streamlit", "run", os.path.join(BASE_DIR, "streamlit_app.py")],
                 check=True,
             )
         except (subprocess.CalledProcessError, FileNotFoundError) as e:
             print(f"❌ Dashboard failed to start: {e}")
-            print("🔄 Alternative: Run 'streamlit run streamlit_app.py' manually")
-            # Fallback: try to start in background
-            try:
-                subprocess.Popen(
-                    [
-                        sys.executable,
-                        "-m",
-                        "streamlit",
-                        "run",
-                        os.path.join(BASE_DIR, "streamlit_app.py"),
-                        "--server.port",
-                        "8501",
-                    ]
-                )
-                print(
-                    "📊 Dashboard should open in your browser at: http://localhost:8501"
-                )
-            except Exception as fallback_error:
-                print(f"❌ Could not start Dashboard: {fallback_error}")
-                print("🔄 Try installing streamlit: pip install streamlit")
+            print("💡 Make sure Streamlit is installed: pip install streamlit")
+
+    def get_progress(self) -> Dict[str, Any]:
+        """Get current progress data"""
+        return self.progress.copy()
