@@ -1,27 +1,52 @@
 # 🎮 Data Science Sandbox
 
-> An interactive, gamified data science learning platform designed to take you from beginner to expert through structured challenges and hands-on practice.
+> An interactive, gamified data science learning platform with modern toolchain, professional development workflow, and comprehensive documentation.
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://python.org)
-[![Jupyter](https://img.shields.io/badge/Jupyter-Lab-orange.svg)](https://jupyterlab.readthedocs.io)
+[![Code Quality](https://img.shields.io/badge/Code%20Quality-Black%20%2B%20Ruff-000000.svg)](https://github.com/psf/black)
+[![Security](https://img.shields.io/badge/Security-Bandit%20%2B%20Safety-red.svg)](https://bandit.readthedocs.io)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg)](https://docker.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ## 🌟 What is Data Science Sandbox?
 
-Data Science Sandbox is a comprehensive learning platform that transforms data science education into an engaging, game-like experience. Progress through levels, earn badges, and master real-world data science skills through hands-on challenges and projects.
+Data Science Sandbox is a comprehensive learning platform that transforms data science education into an engaging, game-like experience. Built with modern tools and professional development practices, it provides a production-ready environment for learning data science from beginner to expert level.
 
 ### ✨ Key Features
 
-- 🎯 **Gamified Learning**: Level progression, achievement badges, and XP system
-- 📚 **Structured Curriculum**: 6 levels from beginner to advanced
-- 🛠️ **Hands-on Practice**: Real datasets and coding challenges  
-- 📊 **Interactive Dashboard**: Track progress and visualize achievements
-- 🎓 **Self-Paced**: Learn at your own speed with immediate feedback
-- 🌍 **Real-World Focus**: Practical skills for actual data science work
+#### 🎯 **Gamified Learning System**
+- Progressive level system (1-7) with structured challenges
+- Achievement badges and XP tracking
+- Interactive dashboard for progress visualization
+- Self-paced learning with immediate feedback
+
+#### 🔧 **Modern Data Science Stack**
+- **DuckDB 0.9+**: High-performance analytical database
+- **Polars 0.20+**: Lightning-fast DataFrame operations  
+- **MLflow 2.8+**: Comprehensive ML experiment tracking
+- **Pandera 0.17+**: Data validation and schema enforcement
+
+#### �️ **Professional Development Environment**
+- **Code Quality**: Black formatting, Ruff linting, type checking
+- **Security**: Automated vulnerability scanning with Bandit/Safety
+- **Testing**: Comprehensive pytest suite with coverage reporting
+- **CI/CD**: GitHub Actions workflows for automated quality assurance
+
+#### 🐳 **Development Infrastructure**
+- Docker containerized development environment
+- Pre-commit hooks for consistent code quality
+- VS Code integration with 16+ recommended extensions
+- Automated dependency management with Dependabot
+
+#### 📚 **Comprehensive Documentation**
+- Detailed API documentation with code examples
+- Architecture overview with system diagrams
+- Step-by-step setup guides with troubleshooting
+- Contribution guidelines for community involvement
 
 ## 🚀 Quick Start
 
-### Installation
+### Option 1: Standard Installation
 
 1. **Clone the repository**
    ```bash
@@ -29,20 +54,38 @@ Data Science Sandbox is a comprehensive learning platform that transforms data s
    cd data
    ```
 
-2. **Install dependencies**
+2. **Set up Python environment**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Linux/macOS
+   venv\Scripts\activate     # Windows
+   ```
+
+3. **Install dependencies**
    ```bash
    pip install -r requirements.txt
+   pip install -r requirements-dev.txt  # For development
    ```
 
-3. **Generate sample datasets**
+### Option 2: Docker Development
+
+1. **Using Docker Compose**
    ```bash
-   python data/generate_datasets.py
+   git clone https://github.com/and3rn3t/data.git
+   cd data
+   docker-compose up -d
    ```
 
-4. **Launch the platform**
-   ```bash
-   # Interactive Dashboard
-   python main.py --mode dashboard
+2. **Access services**
+   - Main application: http://localhost:8000
+   - Jupyter Lab: http://localhost:8888
+   - MLflow UI: http://localhost:5000
+
+### 🎮 Launch Options
+
+```bash
+# Interactive Dashboard
+python main.py --mode dashboard
    
    # Command Line Interface  
    python main.py --mode cli
@@ -188,7 +231,45 @@ data-science-sandbox/
 - Immediate code execution and visualization
 - Launch: `python main.py --mode jupyter`
 
-## 📊 Sample Datasets
+## � Modern Development Stack
+
+Data Science Sandbox leverages cutting-edge tools for a professional development experience:
+
+### **Core Technologies**
+- **🐍 Python 3.8+** - Modern Python with type hints
+- **⚡ DuckDB** - High-performance analytical database
+- **🏎️ Polars** - Lightning-fast DataFrame operations
+- **🧪 MLflow** - Machine learning experiment tracking
+- **📊 Streamlit** - Interactive web dashboards
+
+### **Quality Assurance**
+- **🖤 Black** - Code formatting
+- **🦀 Ruff** - Modern Python linting
+- **🔒 Bandit** - Security vulnerability scanning
+- **🧪 pytest** - Comprehensive testing framework
+- **📝 Pandera** - Data validation schemas
+
+### **Development Environment**
+- **🐳 Docker** - Containerized development
+- **🔧 Pre-commit** - Automated code quality checks
+- **🚀 GitHub Actions** - CI/CD pipeline
+- **📝 VS Code** - Enhanced development experience
+
+### **Quick Development Setup**
+```bash
+# Clone and setup
+git clone https://github.com/and3rn3t/data.git
+cd data
+
+# Install dependencies (dev tools included)
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+
+# Initialize modern tools
+python -c "from sandbox.utils.modern_tools_config import initialize_all_tools; initialize_all_tools()"
+```
+
+## �📊 Sample Datasets
 
 The platform includes several curated datasets for learning:
 
