@@ -1,0 +1,63 @@
+# Development Docker Compose for Data Science Sandbox
+version: "3.8"
+
+services:
+  # Main development environment
+  sandbox-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8888:8888" # Jupyter
+      - "8501:8501" # Streamlit
+      - "8050:8050" # Dash
+      - "5000:5000" # MLflow
+    volumes:
+      - .:/app
+      - ./data:/app/data
+      - ./notebooks:/app/notebooks
+      - vscode-extensions:/root/.vscode-server/extensions
+    environment:
+      - PYTHONPATH=/app
+      - JUPYTER_ENABLE_LAB=yes
+    command: tail -f /dev/null # Keep container running
+
+  # Database services
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: sandbox_db
+      POSTGRES_USER: sandbox
+      POSTGRES_PASSWORD: sandbox123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # MLflow tracking server
+  mlflow:
+    image: python:3.11-slim
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./mlruns:/mlruns
+      - ./mlartifacts:/mlartifacts
+    command: >
+      bash -c "pip install mlflow[extras] &&
+               mlflow server --host 0.0.0.0 --port 5000
+               --backend-store-uri file:///mlruns
+               --default-artifact-root file:///mlartifacts"
+    environment:
+      - MLFLOW_TRACKING_URI=http://0.0.0.0:5000
+
+volumes:
+  postgres_data:
+  redis_data:
+  vscode-extensions:

@@ -1,50 +1,46 @@
 {
-    "python.defaultInterpreterPath": "./venv/bin/python",
-    "python.terminal.activateEnvironment": true,
-    "python.linting.enabled": true,
-    "python.linting.pylintEnabled": true,
-    "python.linting.flake8Enabled": true,
-    "python.linting.mypyEnabled": true,
-    "python.formatting.provider": "black",
-    "python.formatting.blackArgs": [
-        "--line-length=88",
-        "--target-version=py38"
-    ],
-    "python.sortImports.args": [
-        "--multi-line=3",
-        "--trailing-comma",
-        "--force-grid-wrap=0",
-        "--combine-as",
-        "--line-width=88"
-    ],
-    "editor.formatOnSave": true,
-    "editor.rulers": [88],
-    "editor.tabSize": 4,
-    "editor.insertSpaces": true,
-    "files.trimTrailingWhitespace": true,
-    "files.insertFinalNewline": true,
-    "files.exclude": {
-        "**/__pycache__": true,
-        "**/*.pyc": true,
-        "**/.pytest_cache": true,
-        "**/node_modules": true,
-        "**/.coverage": true,
-        "**/htmlcov": true
-    },
-    "jupyter.askForKernelRestart": false,
-    "jupyter.interactiveWindow.textEditor.executeSelection": true,
-    "jupyter.sendSelectionToInteractiveWindow": true,
-    "notebook.cellToolbarLocation": {
-        "default": "right",
-        "jupyter-notebook": "left"
-    },
-    "git.autofetch": true,
-    "git.enableSmartCommit": true,
-    "terminal.integrated.defaultProfile.linux": "bash",
-    "explorer.confirmDelete": false,
-    "workbench.colorTheme": "Dark+ (default dark)",
-    "workbench.iconTheme": "material-icon-theme",
-    "emmet.includeLanguages": {
-        "markdown": "html"
-    }
+  "python.defaultInterpreterPath": "./venv/bin/python",
+  "python.terminal.activateEnvironment": true,
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
+  "python.linting.flake8Enabled": true,
+  "python.linting.mypyEnabled": true,
+  "python.formatting.provider": "black",
+  "python.formatting.blackArgs": ["--line-length=88", "--target-version=py38"],
+  "python.sortImports.args": [
+    "--multi-line=3",
+    "--trailing-comma",
+    "--force-grid-wrap=0",
+    "--combine-as",
+    "--line-width=88"
+  ],
+  "editor.formatOnSave": true,
+  "editor.rulers": [88],
+  "editor.tabSize": 4,
+  "editor.insertSpaces": true,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/.pytest_cache": true,
+    "**/node_modules": true,
+    "**/.coverage": true,
+    "**/htmlcov": true
+  },
+  "jupyter.askForKernelRestart": false,
+  "jupyter.interactiveWindow.textEditor.executeSelection": true,
+  "notebook.cellToolbarLocation": {
+    "default": "right",
+    "jupyter-notebook": "left"
+  },
+  "git.autofetch": true,
+  "git.enableSmartCommit": true,
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "explorer.confirmDelete": false,
+  "workbench.colorTheme": "Dark+ (default dark)",
+  "workbench.iconTheme": "material-icon-theme",
+  "emmet.includeLanguages": {
+    "markdown": "html"
+  }
 }

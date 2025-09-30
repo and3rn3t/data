@@ -1,147 +1,254 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Install Dependencies",
-            "type": "shell",
-            "command": "pip",
-            "args": ["install", "-r", "requirements.txt"],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Setup Development Environment",
-            "type": "shell",
-            "command": "./scripts/setup.sh",
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Run Tests",
-            "type": "shell",
-            "command": "python",
-            "args": ["-m", "pytest", "tests/", "-v", "--cov=sandbox", "--cov-report=html"],
-            "group": "test",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Format Code",
-            "type": "shell",
-            "command": "black",
-            "args": [".", "--line-length=88"],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Sort Imports",
-            "type": "shell",
-            "command": "isort",
-            "args": [".", "--profile=black"],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Lint Code",
-            "type": "shell",
-            "command": "flake8",
-            "args": ["sandbox/", "main.py", "config.py", "--max-line-length=88"],
-            "group": "test",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Type Check",
-            "type": "shell",
-            "command": "mypy",
-            "args": ["sandbox/", "--ignore-missing-imports"],
-            "group": "test",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Generate Sample Data",
-            "type": "shell",
-            "command": "python",
-            "args": ["data/generate_datasets.py"],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Start CLI Mode",
-            "type": "shell",
-            "command": "python",
-            "args": ["main.py", "--mode", "cli"],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Start Dashboard",
-            "type": "shell",
-            "command": "python",
-            "args": ["main.py", "--mode", "dashboard"],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Launch Jupyter Lab",
-            "type": "shell",
-            "command": "python",
-            "args": ["main.py", "--mode", "jupyter"],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        }
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Install Dependencies",
+      "type": "shell",
+      "command": "pip",
+      "args": ["install", "-r", "requirements.txt"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Setup Development Environment",
+      "type": "shell",
+      "command": "./scripts/setup.sh",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Run Tests",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "-m",
+        "pytest",
+        "tests/",
+        "-v",
+        "--cov=sandbox",
+        "--cov-report=html"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Format Code",
+      "type": "shell",
+      "command": "black",
+      "args": [".", "--line-length=88"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Sort Imports",
+      "type": "shell",
+      "command": "isort",
+      "args": [".", "--profile=black"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Lint Code",
+      "type": "shell",
+      "command": "flake8",
+      "args": ["sandbox/", "main.py", "config.py", "--max-line-length=88"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Type Check",
+      "type": "shell",
+      "command": "mypy",
+      "args": ["sandbox/", "--ignore-missing-imports"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Generate Sample Data",
+      "type": "shell",
+      "command": "python",
+      "args": ["data/generate_datasets.py"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Start CLI Mode",
+      "type": "shell",
+      "command": "python",
+      "args": ["main.py", "--mode", "cli"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Start Dashboard",
+      "type": "shell",
+      "command": "python",
+      "args": ["main.py", "--mode", "dashboard"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Launch Jupyter Lab",
+      "type": "shell",
+      "command": "python",
+      "args": ["main.py", "--mode", "jupyter"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Install Dev Dependencies",
+      "type": "shell",
+      "command": "pip",
+      "args": ["install", "-r", "requirements-dev.txt"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Security Scan",
+      "type": "shell",
+      "command": "bandit",
+      "args": ["-r", "sandbox/", "-f", "json", "-o", "security-report.json"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Dependency Check",
+      "type": "shell",
+      "command": "safety",
+      "args": ["check", "--json", "--output", "safety-report.json"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Profile Code",
+      "type": "shell",
+      "command": "py-spy",
+      "args": [
+        "record",
+        "-o",
+        "profile.svg",
+        "--",
+        "python",
+        "main.py",
+        "--mode",
+        "cli"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Generate Documentation",
+      "type": "shell",
+      "command": "sphinx-build",
+      "args": ["-b", "html", "docs/", "docs/_build/html"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Run Ruff Check",
+      "type": "shell",
+      "command": "ruff",
+      "args": ["check", "sandbox/", "main.py", "config.py"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Run Ruff Fix",
+      "type": "shell",
+      "command": "ruff",
+      "args": ["check", "--fix", "sandbox/", "main.py", "config.py"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    }
+  ]
 }

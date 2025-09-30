@@ -5,6 +5,7 @@ Welcome to the enhanced Data Science Sandbox with cutting-edge tools! This guide
 ## 📋 Quick Installation Options
 
 ### Option 1: Basic Installation (Core Features Only)
+
 ```bash
 git clone https://github.com/and3rn3t/data.git
 cd data
@@ -12,6 +13,7 @@ pip install -e .
 ```
 
 ### Option 2: Modern Toolchain (Recommended)
+
 ```bash
 git clone https://github.com/and3rn3t/data.git
 cd data
@@ -19,6 +21,7 @@ pip install -e .[all]
 ```
 
 ### Option 3: Docker Setup (Everything Included)
+
 ```bash
 git clone https://github.com/and3rn3t/data.git
 cd data
@@ -30,47 +33,55 @@ docker-compose up -d
 Install only the tools you need:
 
 ### Core Data Science (Always Required)
+
 ```bash
 pip install -e .
 ```
 
 ### Modern Data Processing (2-30x Faster)
+
 ```bash
 pip install -e .[modern]
 # Includes: Polars, DuckDB, PyArrow
 ```
 
-### ML Operations & Experiment Tracking  
+### ML Operations & Experiment Tracking
+
 ```bash
 pip install -e .[mlops]
 # Includes: MLflow, Weights & Biases
 ```
 
 ### Hyperparameter Optimization
+
 ```bash
-pip install -e .[optimization] 
+pip install -e .[optimization]
 # Includes: Optuna, Hyperopt
 ```
 
 ### Model Explainability
+
 ```bash
 pip install -e .[explainability]
 # Includes: SHAP, LIME
 ```
 
 ### Advanced Visualizations
+
 ```bash
 pip install -e .[visualization]
 # Includes: Yellowbrick, Bokeh
 ```
 
 ### Data Engineering & Pipelines
+
 ```bash
 pip install -e .[data_engineering]
 # Includes: Great Expectations, Pandera
 ```
 
 ### Workflow Orchestration
+
 ```bash
 pip install -e .[workflows]
 # Includes: Prefect
@@ -79,25 +90,30 @@ pip install -e .[workflows]
 ## 🎯 What's New in This Version
 
 ### 🚀 High-Performance Data Processing
+
 - **Polars**: 2-30x faster than pandas for large datasets
 - **DuckDB**: SQL queries directly on DataFrames
 - **PyArrow**: Columnar data processing and Parquet support
 
 ### 📊 ML Experiment Tracking
+
 - **MLflow**: Industry-standard experiment tracking
 - **Weights & Biases**: Advanced visualizations and team collaboration
 
 ### 🔍 Model Explainability
+
 - **SHAP**: Unified model explanations
 - **LIME**: Local interpretable explanations
 - **Yellowbrick**: ML visualization library
 
 ### ⚡ Automated Optimization
+
 - **Optuna**: State-of-the-art hyperparameter optimization
 - **Hyperopt**: Bayesian optimization
 - **Scikit-Optimize**: Gaussian process optimization
 
 ### 🔧 Data Engineering
+
 - **Great Expectations**: Data validation and testing
 - **Pandera**: DataFrame schema validation
 - **Prefect**: Modern workflow orchestration
@@ -105,9 +121,11 @@ pip install -e .[workflows]
 ## 🎮 New Learning Content
 
 ### Level 7: Modern Tools Master
+
 Complete the advanced toolchain challenge to master:
+
 - High-performance data processing
-- Experiment tracking best practices  
+- Experiment tracking best practices
 - Model explainability techniques
 - Automated hyperparameter tuning
 - Production data pipelines
@@ -115,33 +133,41 @@ Complete the advanced toolchain challenge to master:
 ## 🚀 Launch Options
 
 ### Interactive Dashboard (Recommended)
+
 ```bash
 python main.py --mode dashboard
 ```
-Access at: http://localhost:8501
+
+Access at: <http://localhost:8501>
 
 ### Jupyter Lab Environment
+
 ```bash
 python main.py --mode jupyter
 ```
-Access at: http://localhost:8888
+
+Access at: <http://localhost:8888>
 
 ### Command Line Interface
+
 ```bash
 python main.py --mode cli
 ```
 
 ### Docker Environment
+
 ```bash
 docker-compose up -d
 ```
-- Dashboard: http://localhost:8501
-- Jupyter Lab: http://localhost:8889  
-- MLflow UI: http://localhost:5001
+
+- Dashboard: <http://localhost:8501>
+- Jupyter Lab: <http://localhost:8889>
+- MLflow UI: <http://localhost:5001>
 
 ## 🔧 Configuration
 
 ### Environment Variables
+
 Create a `.env` file for custom configuration:
 
 ```env
@@ -157,25 +183,28 @@ WANDB_MODE=offline
 JUPYTER_PORT=8888
 JUPYTER_TOKEN=your_secure_token
 
-# Dashboard Configuration  
+# Dashboard Configuration
 STREAMLIT_PORT=8501
 ```
 
 ### Tool-Specific Setup
 
 #### MLflow Setup
+
 ```bash
 # Initialize MLflow tracking
 mlflow server --host 0.0.0.0 --port 5000
 ```
 
 #### Weights & Biases Setup
+
 ```bash
 # Login to W&B (optional)
 wandb login
 ```
 
 #### Optuna Dashboard
+
 ```bash
 # View optimization studies
 optuna-dashboard sqlite:///optuna.db
@@ -184,6 +213,7 @@ optuna-dashboard sqlite:///optuna.db
 ## 📚 Usage Examples
 
 ### Modern Data Processing
+
 ```python
 from sandbox.integrations import ModernDataProcessor
 
@@ -196,6 +226,7 @@ result = processor.query_with_sql(data, "SELECT region, AVG(sales_amount) FROM d
 ```
 
 ### Experiment Tracking
+
 ```python
 from sandbox.integrations import ExperimentTracker
 
@@ -208,6 +239,7 @@ tracker.end_run()
 ```
 
 ### Model Explainability
+
 ```python
 from sandbox.integrations import ModelExplainer
 
@@ -217,6 +249,7 @@ print(f"Feature importance: {results['feature_importance']}")
 ```
 
 ### Hyperparameter Optimization
+
 ```python
 from sandbox.integrations import HyperparameterOptimizer
 
@@ -233,20 +266,25 @@ results = optimizer.optimize_model(
 ### Common Issues
 
 #### Missing Libraries
+
 If you see import errors:
+
 ```bash
 # Install missing dependencies
 pip install polars duckdb mlflow wandb shap lime optuna
 ```
 
 #### Memory Issues
+
 For large datasets:
+
 ```python
 # Use smaller samples during development
 data = processor.create_sample_dataset(n_rows=10000)  # Instead of 1M
 ```
 
 #### Docker Issues
+
 ```bash
 # Rebuild containers
 docker-compose down
@@ -265,12 +303,14 @@ docker-compose up -d
 ## 📖 Additional Resources
 
 ### Documentation
+
 - [Modern Data Processing Guide](docs/modern_data_processing.md)
-- [MLOps Best Practices](docs/mlops_guide.md)  
+- [MLOps Best Practices](docs/mlops_guide.md)
 - [Model Explainability Tutorial](docs/explainability_guide.md)
 - [Hyperparameter Optimization Strategies](docs/optimization_guide.md)
 
 ### External Resources
+
 - [Polars User Guide](https://pola-rs.github.io/polars/)
 - [DuckDB Documentation](https://duckdb.org/docs/)
 - [MLflow Documentation](https://mlflow.org/docs/)
@@ -280,8 +320,9 @@ docker-compose up -d
 ## 🤝 Contributing
 
 We welcome contributions! Areas of interest:
+
 - New tool integrations
-- Additional challenges and tutorials  
+- Additional challenges and tutorials
 - Performance optimizations
 - Documentation improvements
 - Bug fixes and testing
