@@ -1,0 +1,54 @@
+flowchart TD
+    START([User Starts Platform]) --> INIT[Initialize Game Engine]
+    INIT --> LOAD[Load User Progress]
+    LOAD --> MAIN{Main Menu}
+
+    MAIN -->|Dashboard| DASH[Open Streamlit Dashboard]
+    MAIN -->|Jupyter| JUPYTER[Launch Jupyter Lab]
+    MAIN -->|CLI| CLI[Command Line Interface]
+
+    DASH --> PROGRESS[View Progress]
+    DASH --> CHALLENGES[Browse Challenges]
+    DASH --> ANALYTICS[View Analytics]
+
+    JUPYTER --> NOTEBOOK[Open Challenge Notebook]
+    CLI --> COMMAND[Execute Command]
+
+    CHALLENGES --> SELECT[Select Challenge]
+    NOTEBOOK --> SOLVE[Solve Challenge]
+    COMMAND --> SOLVE
+
+    SELECT --> SOLVE
+    SOLVE --> VALIDATE{Validate Solution}
+
+    VALIDATE -->|Success| COMPLETE[Mark Complete]
+    VALIDATE -->|Fail| HINT[Show Hints]
+
+    COMPLETE --> XP[Award XP]
+    XP --> BADGE{Unlock Badge?}
+
+    BADGE -->|Yes| UNLOCK[Unlock Achievement]
+    BADGE -->|No| SAVE[Save Progress]
+    UNLOCK --> SAVE
+
+    HINT --> RETRY[Retry Challenge]
+    RETRY --> SOLVE
+
+    SAVE --> LEVEL{Level Up?}
+    LEVEL -->|Yes| LEVELUP[Advance Level]
+    LEVEL -->|No| MAIN
+    LEVELUP --> MAIN
+
+    PROGRESS --> MAIN
+    ANALYTICS --> MAIN
+
+    %% Styling
+    classDef startEnd fill:#ffcdd2,stroke:#c62828,stroke-width:2px
+    classDef process fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+    classDef decision fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
+    classDef ui fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
+
+    class START startEnd
+    class INIT,LOAD,COMPLETE,XP,UNLOCK,SAVE,LEVELUP,HINT,RETRY process
+    class MAIN,VALIDATE,BADGE,LEVEL decision
+    class DASH,JUPYTER,CLI,PROGRESS,CHALLENGES,ANALYTICS,NOTEBOOK,COMMAND ui

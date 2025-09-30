@@ -1,0 +1,66 @@
+graph TB
+    %% Data Science Sandbox Architecture
+
+    subgraph "Frontend Layer"
+        UI1[Streamlit Dashboard]
+        UI2[Jupyter Notebooks]
+        UI3[CLI Interface]
+    end
+
+    subgraph "Application Layer"
+        APP1[Game Engine]
+        APP2[Progress Tracking]
+        APP3[Challenge Logic]
+        APP4[Dashboard Controller]
+        APP5[Visualization Engine]
+    end
+
+    subgraph "Integration Layer"
+        INT1[Data Processing<br/>DuckDB & Polars]
+        INT2[ML Tracking<br/>MLflow]
+        INT3[Model Explainability<br/>SHAP & LIME]
+        INT4[Hyperparameter Tuning<br/>Optuna]
+        INT5[Data Validation<br/>Pandera]
+    end
+
+    subgraph "Data Layer"
+        DATA1[(Sample Datasets)]
+        DATA2[(User Progress)]
+        DATA3[(ML Experiments)]
+        DATA4[(Model Artifacts)]
+    end
+
+    %% Connections
+    UI1 --> APP1
+    UI1 --> APP4
+    UI2 --> APP1
+    UI2 --> INT1
+    UI3 --> APP1
+
+    APP1 --> APP2
+    APP1 --> APP3
+    APP4 --> APP5
+
+    APP1 --> INT1
+    APP2 --> DATA2
+    APP3 --> INT2
+    APP4 --> INT1
+    APP5 --> INT1
+
+    INT1 --> DATA1
+    INT2 --> DATA3
+    INT2 --> DATA4
+    INT3 --> INT2
+    INT4 --> INT2
+    INT5 --> INT1
+
+    %% Styling
+    classDef frontend fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef application fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef integration fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef data fill:#fff3e0,stroke:#e65100,stroke-width:2px
+
+    class UI1,UI2,UI3 frontend
+    class APP1,APP2,APP3,APP4,APP5 application
+    class INT1,INT2,INT3,INT4,INT5 integration
+    class DATA1,DATA2,DATA3,DATA4 data

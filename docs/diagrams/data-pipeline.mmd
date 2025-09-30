@@ -1,0 +1,78 @@
+graph LR
+    %% Data Processing Pipeline
+
+    subgraph "Data Sources"
+        CSV[CSV Files]
+        JSON[JSON Data]
+        API[API Endpoints]
+        DB[(External DB)]
+    end
+
+    subgraph "Ingestion Layer"
+        DUCK[DuckDB<br/>SQL Analytics]
+        POLARS[Polars<br/>Fast DataFrames]
+        PANDAS[Pandas<br/>Compatibility]
+    end
+
+    subgraph "Processing Pipeline"
+        CLEAN[Data Cleaning]
+        VALIDATE[Schema Validation<br/>Pandera]
+        TRANSFORM[Feature Engineering]
+        ANALYZE[Statistical Analysis]
+    end
+
+    subgraph "ML Pipeline"
+        SPLIT[Train/Test Split]
+        TRAIN[Model Training]
+        TUNE[Hyperparameter Tuning<br/>Optuna]
+        EVALUATE[Model Evaluation]
+    end
+
+    subgraph "Output & Tracking"
+        VIZ[Visualizations]
+        TRACK[MLflow Tracking]
+        EXPLAIN[Model Explainability<br/>SHAP/LIME]
+        EXPORT[Export Results]
+    end
+
+    %% Data Flow
+    CSV --> DUCK
+    JSON --> POLARS
+    API --> PANDAS
+    DB --> DUCK
+
+    DUCK --> CLEAN
+    POLARS --> CLEAN
+    PANDAS --> CLEAN
+
+    CLEAN --> VALIDATE
+    VALIDATE --> TRANSFORM
+    TRANSFORM --> ANALYZE
+
+    ANALYZE --> SPLIT
+    SPLIT --> TRAIN
+    TRAIN --> TUNE
+    TUNE --> EVALUATE
+
+    EVALUATE --> VIZ
+    TRAIN --> TRACK
+    EVALUATE --> EXPLAIN
+    VIZ --> EXPORT
+
+    %% Feedback Loops
+    TUNE -.-> TRAIN
+    EVALUATE -.-> TRANSFORM
+    EXPLAIN -.-> TUNE
+
+    %% Styling
+    classDef source fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef ingestion fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef processing fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    classDef ml fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef output fill:#fff8e1,stroke:#ef6c00,stroke-width:2px
+
+    class CSV,JSON,API,DB source
+    class DUCK,POLARS,PANDAS ingestion
+    class CLEAN,VALIDATE,TRANSFORM,ANALYZE processing
+    class SPLIT,TRAIN,TUNE,EVALUATE ml
+    class VIZ,TRACK,EXPLAIN,EXPORT output

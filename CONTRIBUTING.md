@@ -39,6 +39,7 @@ We are committed to providing a welcoming and inspiring community for all contri
 ### Prerequisites
 
 1. **Fork the Repository**
+
    ```bash
    # Fork on GitHub, then clone your fork
    git clone https://github.com/YOUR_USERNAME/data.git
@@ -46,6 +47,7 @@ We are committed to providing a welcoming and inspiring community for all contri
    ```
 
 2. **Set Up Development Environment**
+
    ```bash
    # Create virtual environment
    python -m venv venv
@@ -58,6 +60,7 @@ We are committed to providing a welcoming and inspiring community for all contri
    ```
 
 3. **Configure Git**
+
    ```bash
    # Configure your identity
    git config user.name "Your Name"
@@ -136,16 +139,19 @@ git push origin feature/your-feature-name
 ### 🐛 Bug Fixes
 
 **What qualifies:**
+
 - Fixing broken functionality
 - Correcting logical errors
 - Resolving performance issues
 
 **Guidelines:**
+
 - Include steps to reproduce the bug
 - Add regression tests
 - Reference the issue number in your PR
 
 **Example:**
+
 ```bash
 git commit -m "fix: resolve dashboard crash on empty datasets
 
@@ -157,18 +163,21 @@ git commit -m "fix: resolve dashboard crash on empty datasets
 ### ✨ New Features
 
 **What qualifies:**
+
 - New challenges or levels
 - Additional data science tools integration
 - Dashboard enhancements
 - New utility functions
 
 **Guidelines:**
+
 - Discuss major features in an issue first
 - Follow existing patterns and conventions
 - Include comprehensive tests
 - Update documentation
 
 **Example:**
+
 ```bash
 git commit -m "feat: add Level 7 deep learning challenges
 
@@ -181,12 +190,14 @@ git commit -m "feat: add Level 7 deep learning challenges
 ### 📚 Documentation
 
 **What qualifies:**
+
 - API documentation improvements
 - Tutorial additions
 - Setup guide enhancements
 - Code comments and docstrings
 
 **Guidelines:**
+
 - Use clear, concise language
 - Include practical examples
 - Follow existing documentation style
@@ -195,12 +206,14 @@ git commit -m "feat: add Level 7 deep learning challenges
 ### 🎨 UI/UX Improvements
 
 **What qualifies:**
+
 - Dashboard design improvements
 - Better data visualizations
 - Enhanced user experience
 - Accessibility improvements
 
 **Guidelines:**
+
 - Maintain iOS-inspired design language
 - Ensure responsive design
 - Test across different browsers
@@ -209,12 +222,14 @@ git commit -m "feat: add Level 7 deep learning challenges
 ### ⚡ Performance Optimizations
 
 **What qualifies:**
+
 - Algorithm improvements
 - Memory usage reductions
 - Database query optimizations
 - Caching implementations
 
 **Guidelines:**
+
 - Include performance benchmarks
 - Document the improvement
 - Ensure correctness is maintained
@@ -227,13 +242,14 @@ git commit -m "feat: add Level 7 deep learning challenges
 We follow [PEP 8](https://pep8.org/) with some specific guidelines:
 
 #### Code Formatting
+
 ```python
 # Use Black with 88-character line length
 # This is automatically enforced by pre-commit hooks
 
 # Good
 def process_user_data(
-    dataframe: pd.DataFrame, 
+    dataframe: pd.DataFrame,
     validation_rules: Dict[str, Any]
 ) -> pd.DataFrame:
     """Process user data with validation."""
@@ -245,6 +261,7 @@ def process_user_data(dataframe,validation_rules):
 ```
 
 #### Type Hints
+
 ```python
 # Always include type hints for public functions
 from typing import Dict, List, Optional, Union
@@ -260,20 +277,21 @@ def analyze_dataset(
 ```
 
 #### Documentation
+
 ```python
 def complete_challenge(self, challenge_id: str) -> bool:
     """Complete a challenge and update user progress.
-    
+
     Args:
         challenge_id: Unique identifier for the challenge
-        
+
     Returns:
         True if challenge was successfully completed
-        
+
     Raises:
         ValidationError: If challenge_id is invalid
         ProgressError: If challenge is already completed
-        
+
     Example:
         >>> game = GameEngine()
         >>> success = game.complete_challenge("level_1_data_loading")
@@ -283,6 +301,7 @@ def complete_challenge(self, challenge_id: str) -> bool:
 ```
 
 #### Error Handling
+
 ```python
 # Use specific exception types
 try:
@@ -298,6 +317,7 @@ except FileNotFoundError as e:
 ### Project Structure Guidelines
 
 #### File Organization
+
 ```
 sandbox/
 ├── core/           # Core game logic
@@ -318,6 +338,7 @@ sandbox/
 ```
 
 #### Import Standards
+
 ```python
 # Standard library imports first
 import json
@@ -338,6 +359,7 @@ from sandbox.utils.validation import validate_data
 ### Configuration Management
 
 #### Environment Variables
+
 ```python
 # Use environment variables for sensitive data
 import os
@@ -348,6 +370,7 @@ MLFLOW_TRACKING_URI: str = os.getenv("MLFLOW_TRACKING_URI", "file:./mlruns")
 ```
 
 #### Configuration Files
+
 ```python
 # config.py - Centralized configuration
 from dataclasses import dataclass
@@ -359,7 +382,7 @@ class AppConfig:
     debug: bool = False
     log_level: str = "INFO"
     data_dir: str = "data"
-    
+
     @classmethod
     def from_env(cls) -> "AppConfig":
         """Load configuration from environment variables."""
@@ -384,50 +407,50 @@ from sandbox.core.game_engine import GameEngine
 
 class TestGameEngine:
     """Test suite for GameEngine class."""
-    
+
     @pytest.fixture
     def game_engine(self):
         """Create GameEngine instance for testing."""
         return GameEngine()
-    
+
     def test_initialization(self, game_engine):
         """Test proper initialization of GameEngine."""
         assert game_engine.get_progress()['level'] == 1
         assert game_engine.get_progress()['xp'] == 0
         assert len(game_engine.get_progress()['challenges_completed']) == 0
-    
+
     def test_challenge_completion(self, game_engine):
         """Test challenge completion functionality."""
         # Given
         challenge_id = "level_1_data_loading"
         initial_xp = game_engine.get_progress()['xp']
-        
+
         # When
         result = game_engine.complete_challenge(challenge_id)
-        
+
         # Then
         assert result is True
         assert challenge_id in game_engine.get_progress()['challenges_completed']
         assert game_engine.get_progress()['xp'] > initial_xp
-    
+
     def test_invalid_challenge_completion(self, game_engine):
         """Test handling of invalid challenge IDs."""
         # Given
         invalid_challenge_id = "non_existent_challenge"
-        
+
         # When/Then
         with pytest.raises(ValueError, match="Invalid challenge ID"):
             game_engine.complete_challenge(invalid_challenge_id)
-    
+
     @patch('sandbox.core.game_engine.save_progress')
     def test_progress_persistence(self, mock_save, game_engine):
         """Test that progress is properly saved."""
         # Given
         challenge_id = "level_1_data_loading"
-        
+
         # When
         game_engine.complete_challenge(challenge_id)
-        
+
         # Then
         mock_save.assert_called_once()
 
@@ -435,7 +458,7 @@ class TestGameEngine:
 # Integration tests
 class TestGameEngineIntegration:
     """Integration tests for GameEngine."""
-    
+
     def test_full_level_completion(self):
         """Test completing an entire level."""
         game = GameEngine()
@@ -444,10 +467,10 @@ class TestGameEngineIntegration:
             "level_1_basic_analysis",
             "level_1_visualization"
         ]
-        
+
         for challenge in level_1_challenges:
             game.complete_challenge(challenge)
-        
+
         # Should advance to level 2
         assert game.get_progress()['level'] == 2
 ```
@@ -455,34 +478,37 @@ class TestGameEngineIntegration:
 ### Test Categories
 
 #### Unit Tests
+
 - Test individual functions in isolation
 - Mock external dependencies
 - Fast execution (< 1 second per test)
 - High coverage of edge cases
 
 #### Integration Tests
+
 - Test component interactions
 - Use real dependencies where practical
 - Moderate execution time (< 30 seconds per test)
 - Focus on critical user workflows
 
 #### Performance Tests
+
 ```python
 def test_large_dataset_performance():
     """Test performance with large datasets."""
     import time
-    
+
     # Create large dataset
     large_df = pd.DataFrame({
         'col1': range(1000000),
         'col2': np.random.randn(1000000)
     })
-    
+
     # Measure processing time
     start_time = time.time()
     result = process_large_dataset(large_df)
     execution_time = time.time() - start_time
-    
+
     # Should complete within reasonable time
     assert execution_time < 10.0  # seconds
     assert len(result) == 1000000
@@ -501,6 +527,7 @@ def test_large_dataset_performance():
 ### Code Documentation
 
 #### Docstring Style
+
 ```python
 def analyze_correlation_matrix(
     df: pd.DataFrame,
@@ -508,30 +535,30 @@ def analyze_correlation_matrix(
     min_periods: Optional[int] = None
 ) -> pd.DataFrame:
     """Compute correlation matrix for numeric columns.
-    
+
     This function computes pairwise correlation of columns, excluding
     NA/null values. Non-numeric columns are automatically excluded.
-    
+
     Args:
         df: Input DataFrame with numeric columns
         method: Method of correlation:
             - 'pearson': Standard correlation coefficient
-            - 'kendall': Kendall Tau correlation coefficient  
+            - 'kendall': Kendall Tau correlation coefficient
             - 'spearman': Spearman rank correlation
         min_periods: Minimum number of observations required per pair
             of columns to have a valid result. Optional parameter.
-    
+
     Returns:
         Correlation matrix as DataFrame with correlation coefficients
         between -1 and 1, where:
         - 1 indicates perfect positive correlation
         - 0 indicates no linear correlation
         - -1 indicates perfect negative correlation
-    
+
     Raises:
         ValueError: If method is not supported
         TypeError: If DataFrame contains no numeric columns
-    
+
     Example:
         >>> df = pd.DataFrame({
         ...     'A': [1, 2, 3, 4, 5],
@@ -541,7 +568,7 @@ def analyze_correlation_matrix(
         >>> corr_matrix = analyze_correlation_matrix(df)
         >>> print(corr_matrix.loc['A', 'B'])
         1.0
-    
+
     Note:
         For small datasets (< 30 observations), correlation coefficients
         may be unstable and should be interpreted with caution.
@@ -551,6 +578,7 @@ def analyze_correlation_matrix(
 #### Markdown Documentation
 
 ##### Structure
+
 ```markdown
 # Title (H1 - Only one per document)
 
@@ -570,6 +598,7 @@ Specific implementation details or examples.
 ```
 
 ##### Code Examples
+
 ````markdown
 ## Usage Example
 
@@ -587,6 +616,7 @@ print(f"Challenge completed: {success}")
 ```
 
 Expected output:
+
 ```
 Challenge completed: True
 ```
@@ -596,26 +626,32 @@ Challenge completed: True
 
 Use consistent formatting for API documentation:
 
-```markdown
+````markdown
 ### `method_name(param1: type, param2: type = default) -> return_type`
 
 Brief description of what the method does.
 
 **Parameters:**
+
 - `param1` (type): Description of parameter
 - `param2` (type, optional): Description with default value
 
 **Returns:**
+
 - `return_type`: Description of return value
 
 **Raises:**
+
 - `ExceptionType`: When this exception is raised
 
 **Example:**
+
 ```python
 result = obj.method_name("value", param2=42)
 ```
-```
+````
+
+````
 
 ## Pull Request Process
 
@@ -653,7 +689,7 @@ Brief description of changes and motivation.
 - [ ] My changes generate no new warnings
 - [ ] I have added tests that prove my fix is effective or that my feature works
 - [ ] New and existing unit tests pass locally with my changes
-```
+````
 
 ### Review Process
 
@@ -665,6 +701,7 @@ Brief description of changes and motivation.
 ### After Merge
 
 1. **Update Local Repository**:
+
    ```bash
    git checkout main
    git pull upstream main
@@ -682,6 +719,7 @@ Brief description of changes and motivation.
 ### Contributors
 
 All contributors will be recognized in:
+
 - README.md contributors section
 - Release notes for significant contributions
 - Annual contributor appreciation posts

@@ -4,37 +4,77 @@ This document describes the technical architecture of the Data Science Sandbox p
 
 ## System Architecture
 
-```text
-┌─────────────────────────────────────────────────────────────────┐
-│                          Frontend Layer                         │
-├─────────────────────────────────────────────────────────────────┤
-│  Streamlit Dashboard  │  Jupyter Notebooks  │  CLI Interface   │
-└─────────────────────────────────────────────────────────────────┘
-                                   │
-┌─────────────────────────────────────────────────────────────────┐
-│                        Application Layer                        │
-├─────────────────────────────────────────────────────────────────┤
-│              Game Engine          │         Dashboard          │
-│           Progress Tracking       │      Visualization         │
-│           Challenge Logic         │      User Interface        │
-└─────────────────────────────────────────────────────────────────┘
-                                   │
-┌─────────────────────────────────────────────────────────────────┐
-│                       Integration Layer                         │
-├─────────────────────────────────────────────────────────────────┤
-│  Data Processing  │  ML Tracking  │  Explainability │  Tuning  │
-│     (DuckDB)      │   (MLflow)    │     (SHAP)      │ (Optuna) │
-│    (Polars)       │   Experiments │     (LIME)      │ Backend  │
-└─────────────────────────────────────────────────────────────────┘
-                                   │
-┌─────────────────────────────────────────────────────────────────┐
-│                          Data Layer                             │
-├─────────────────────────────────────────────────────────────────┤
-│   File System   │   DuckDB      │   MLflow     │   User Data   │
-│   - Datasets    │   - Analytics │   - Models   │   - Progress  │
-│   - Notebooks   │   - Queries   │   - Metrics  │   - Settings  │
-│   - Challenges  │   - Cache     │   - Logs     │   - Badges    │
-└─────────────────────────────────────────────────────────────────┘
+![System Architecture](images/architecture.png)
+
+> **Interactive Diagram**: The above diagram shows the complete system architecture with color-coded layers and component relationships.
+
+```mermaid
+graph TB
+    %% Data Science Sandbox Architecture
+
+    subgraph "Frontend Layer"
+        UI1[Streamlit Dashboard]
+        UI2[Jupyter Notebooks]
+        UI3[CLI Interface]
+    end
+
+    subgraph "Application Layer"
+        APP1[Game Engine]
+        APP2[Progress Tracking]
+        APP3[Challenge Logic]
+        APP4[Dashboard Controller]
+        APP5[Visualization Engine]
+    end
+
+    subgraph "Integration Layer"
+        INT1[Data Processing<br/>DuckDB & Polars]
+        INT2[ML Tracking<br/>MLflow]
+        INT3[Model Explainability<br/>SHAP & LIME]
+        INT4[Hyperparameter Tuning<br/>Optuna]
+        INT5[Data Validation<br/>Pandera]
+    end
+
+    subgraph "Data Layer"
+        DATA1[(Sample Datasets)]
+        DATA2[(User Progress)]
+        DATA3[(ML Experiments)]
+        DATA4[(Model Artifacts)]
+    end
+
+    %% Connections
+    UI1 --> APP1
+    UI1 --> APP4
+    UI2 --> APP1
+    UI2 --> INT1
+    UI3 --> APP1
+
+    APP1 --> APP2
+    APP1 --> APP3
+    APP4 --> APP5
+
+    APP1 --> INT1
+    APP2 --> DATA2
+    APP3 --> INT2
+    APP4 --> INT1
+    APP5 --> INT1
+
+    INT1 --> DATA1
+    INT2 --> DATA3
+    INT2 --> DATA4
+    INT3 --> INT2
+    INT4 --> INT2
+    INT5 --> INT1
+
+    %% Styling
+    classDef frontend fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef application fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef integration fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef data fill:#fff3e0,stroke:#e65100,stroke-width:2px
+
+    class UI1,UI2,UI3 frontend
+    class APP1,APP2,APP3,APP4,APP5 application
+    class INT1,INT2,INT3,INT4,INT5 integration
+    class DATA1,DATA2,DATA3,DATA4 data
 ```
 
 ## Core Components
@@ -162,10 +202,89 @@ Data Loading → Validation (Pandera)
 
 ### 3. Data Processing Pipeline
 
-```text
-Raw Data → Quality Validation → Modern Processing → Analysis → Visualization
-         ↓                   ↓                  ↓           ↓
-    Pandera Schemas    DuckDB/Polars    ML Models    Dashboard
+![Data Processing Pipeline](images/data-pipeline.png)
+
+> **High-Performance Pipeline**: The data processing architecture leverages DuckDB for analytical queries and Polars for fast DataFrame operations, with comprehensive validation and ML tracking.
+
+```mermaid
+graph LR
+    %% Data Processing Pipeline
+
+    subgraph "Data Sources"
+        CSV[CSV Files]
+        JSON[JSON Data]
+        API[API Endpoints]
+        DB[(External DB)]
+    end
+
+    subgraph "Ingestion Layer"
+        DUCK[DuckDB<br/>SQL Analytics]
+        POLARS[Polars<br/>Fast DataFrames]
+        PANDAS[Pandas<br/>Compatibility]
+    end
+
+    subgraph "Processing Pipeline"
+        CLEAN[Data Cleaning]
+        VALIDATE[Schema Validation<br/>Pandera]
+        TRANSFORM[Feature Engineering]
+        ANALYZE[Statistical Analysis]
+    end
+
+    subgraph "ML Pipeline"
+        SPLIT[Train/Test Split]
+        TRAIN[Model Training]
+        TUNE[Hyperparameter Tuning<br/>Optuna]
+        EVALUATE[Model Evaluation]
+    end
+
+    subgraph "Output & Tracking"
+        VIZ[Visualizations]
+        TRACK[MLflow Tracking]
+        EXPLAIN[Model Explainability<br/>SHAP/LIME]
+        EXPORT[Export Results]
+    end
+
+    %% Data Flow
+    CSV --> DUCK
+    JSON --> POLARS
+    API --> PANDAS
+    DB --> DUCK
+
+    DUCK --> CLEAN
+    POLARS --> CLEAN
+    PANDAS --> CLEAN
+
+    CLEAN --> VALIDATE
+    VALIDATE --> TRANSFORM
+    TRANSFORM --> ANALYZE
+
+    ANALYZE --> SPLIT
+    SPLIT --> TRAIN
+    TRAIN --> TUNE
+    TUNE --> EVALUATE
+
+    EVALUATE --> VIZ
+    TRAIN --> TRACK
+    EVALUATE --> EXPLAIN
+    VIZ --> EXPORT
+
+    %% Feedback Loops
+    TUNE -.-> TRAIN
+    EVALUATE -.-> TRANSFORM
+    EXPLAIN -.-> TUNE
+
+    %% Styling
+    classDef source fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef ingestion fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef processing fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    classDef ml fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef output fill:#fff8e1,stroke:#ef6c00,stroke-width:2px
+
+    class CSV,JSON,API,DB source
+    class DUCK,POLARS,PANDAS ingestion
+    class CLEAN,VALIDATE,TRANSFORM,ANALYZE processing
+    class SPLIT,TRAIN,TUNE,EVALUATE ml
+    class VIZ,TRACK,EXPLAIN,EXPORT output
 ```
 
 ## Technology Choices

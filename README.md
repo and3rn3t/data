@@ -15,30 +15,35 @@ Data Science Sandbox is a comprehensive learning platform that transforms data s
 ### ✨ Key Features
 
 #### 🎯 **Gamified Learning System**
+
 - Progressive level system (1-7) with structured challenges
 - Achievement badges and XP tracking
 - Interactive dashboard for progress visualization
 - Self-paced learning with immediate feedback
 
 #### 🔧 **Modern Data Science Stack**
+
 - **DuckDB 0.9+**: High-performance analytical database
-- **Polars 0.20+**: Lightning-fast DataFrame operations  
+- **Polars 0.20+**: Lightning-fast DataFrame operations
 - **MLflow 2.8+**: Comprehensive ML experiment tracking
 - **Pandera 0.17+**: Data validation and schema enforcement
 
 #### �️ **Professional Development Environment**
+
 - **Code Quality**: Black formatting, Ruff linting, type checking
 - **Security**: Automated vulnerability scanning with Bandit/Safety
 - **Testing**: Comprehensive pytest suite with coverage reporting
 - **CI/CD**: GitHub Actions workflows for automated quality assurance
 
 #### 🐳 **Development Infrastructure**
+
 - Docker containerized development environment
 - Pre-commit hooks for consistent code quality
 - VS Code integration with 16+ recommended extensions
 - Automated dependency management with Dependabot
 
 #### 📚 **Comprehensive Documentation**
+
 - Detailed API documentation with code examples
 - Architecture overview with system diagrams
 - Step-by-step setup guides with troubleshooting
@@ -49,12 +54,14 @@ Data Science Sandbox is a comprehensive learning platform that transforms data s
 ### Option 1: Standard Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/and3rn3t/data.git
    cd data
    ```
 
 2. **Set up Python environment**
+
    ```bash
    python -m venv venv
    source venv/bin/activate  # Linux/macOS
@@ -62,6 +69,7 @@ Data Science Sandbox is a comprehensive learning platform that transforms data s
    ```
 
 3. **Install dependencies**
+
    ```bash
    pip install -r requirements.txt
    pip install -r requirements-dev.txt  # For development
@@ -70,6 +78,7 @@ Data Science Sandbox is a comprehensive learning platform that transforms data s
 ### Option 2: Docker Development
 
 1. **Using Docker Compose**
+
    ```bash
    git clone https://github.com/and3rn3t/data.git
    cd data
@@ -77,22 +86,22 @@ Data Science Sandbox is a comprehensive learning platform that transforms data s
    ```
 
 2. **Access services**
-   - Main application: http://localhost:8000
-   - Jupyter Lab: http://localhost:8888
-   - MLflow UI: http://localhost:5000
+   - Main application: <http://localhost:8000>
+   - Jupyter Lab: <http://localhost:8888>
+   - MLflow UI: <http://localhost:5000>
 
 ### 🎮 Launch Options
 
 ```bash
 # Interactive Dashboard
 python main.py --mode dashboard
-   
-   # Command Line Interface  
+
+   # Command Line Interface
    python main.py --mode cli
-   
+
    # Jupyter Lab Environment
    python main.py --mode jupyter
-   ```
+```
 
 ### First Steps
 
@@ -103,50 +112,68 @@ python main.py --mode dashboard
 
 ## 📚 Learning Path
 
+![Learning Journey](docs/images/learning-path.png)
+
+> **Progressive Learning System**: Our structured curriculum takes you from beginner to expert through 7 comprehensive levels with hands-on challenges.
+
 ### 🥇 Level 1: Data Explorer
-*Learn basic data manipulation and visualization*
+
+_Learn basic data manipulation and visualization_
+
 - Loading and exploring datasets
 - Basic pandas operations
 - Creating simple visualizations
 - Understanding data types and structures
 
-### 🥈 Level 2: Analytics Apprentice  
-*Master statistical analysis and data cleaning*
+### 🥈 Level 2: Analytics Apprentice
+
+_Master statistical analysis and data cleaning_
+
 - Data cleaning and preprocessing
 - Handling missing values and outliers
 - Statistical analysis and hypothesis testing
 - Advanced data manipulation
 
 ### 🥉 Level 3: Visualization Virtuoso
-*Create stunning data visualizations*
+
+_Create stunning data visualizations_
+
 - Advanced plotting with matplotlib and seaborn
 - Interactive visualizations with plotly
 - Dashboard creation
 - Data storytelling techniques
 
 ### 🏆 Level 4: Machine Learning Novice
-*Build your first ML models*
+
+_Build your first ML models_
+
 - Supervised learning algorithms
-- Model evaluation and validation  
+- Model evaluation and validation
 - Feature engineering and selection
 - Classification and regression projects
 
 ### 🎖️ Level 5: Algorithm Architect
-*Advanced ML algorithms and optimization*
+
+_Advanced ML algorithms and optimization_
+
 - Ensemble methods and advanced algorithms
 - Hyperparameter tuning and optimization
 - Cross-validation and model selection
 - Deep learning fundamentals
 
 ### 🏅 Level 6: Data Science Master
-*Complex projects and real-world challenges*
+
+_Complex projects and real-world challenges_
+
 - End-to-end data science projects
 - Time series analysis and forecasting
 - Natural language processing
 - Computer vision applications
 
 ### 🚀 Level 7: Modern Tools Master
-*Cutting-edge data science toolchain*
+
+_Cutting-edge data science toolchain_
+
 - High-performance data processing (Polars, DuckDB)
 - ML experiment tracking (MLflow, Weights & Biases)
 - Model explainability (SHAP, LIME, Yellowbrick)
@@ -170,7 +197,7 @@ python main.py --mode dashboard
 Earn badges by completing specific objectives:
 
 - 🎯 **First Steps**: Complete your first challenge
-- 🧹 **Data Cleaner**: Clean a messy dataset  
+- 🧹 **Data Cleaner**: Clean a messy dataset
 - 📊 **Viz Master**: Create 5 different chart types
 - 📈 **Stats Guru**: Complete statistical analysis challenges
 - 🤖 **ML Rookie**: Build your first machine learning model
@@ -195,7 +222,7 @@ data-science-sandbox/
 │
 ├── challenges/           # Coding challenges by level
 │   ├── level_1/         # Beginner challenges
-│   ├── level_2/         # Intermediate challenges  
+│   ├── level_2/         # Intermediate challenges
 │   └── ...              # Advanced challenges
 │
 ├── notebooks/           # Interactive learning materials
@@ -214,18 +241,21 @@ data-science-sandbox/
 ## 🎮 Interface Modes
 
 ### 1. Interactive Dashboard (Recommended)
+
 - Web-based interface with progress tracking
 - Visual charts and statistics
 - Easy navigation between levels and challenges
 - Launch: `python main.py --mode dashboard`
 
 ### 2. Command Line Interface
+
 - Terminal-based interaction
 - Perfect for command-line enthusiasts
 - Full feature access via text interface
 - Launch: `python main.py --mode cli`
 
 ### 3. Jupyter Lab Environment
+
 - Ideal for hands-on coding practice
 - Interactive notebooks with guided exercises
 - Immediate code execution and visualization
@@ -236,6 +266,7 @@ data-science-sandbox/
 Data Science Sandbox leverages cutting-edge tools for a professional development experience:
 
 ### **Core Technologies**
+
 - **🐍 Python 3.8+** - Modern Python with type hints
 - **⚡ DuckDB** - High-performance analytical database
 - **🏎️ Polars** - Lightning-fast DataFrame operations
@@ -243,6 +274,7 @@ Data Science Sandbox leverages cutting-edge tools for a professional development
 - **📊 Streamlit** - Interactive web dashboards
 
 ### **Quality Assurance**
+
 - **🖤 Black** - Code formatting
 - **🦀 Ruff** - Modern Python linting
 - **🔒 Bandit** - Security vulnerability scanning
@@ -250,12 +282,14 @@ Data Science Sandbox leverages cutting-edge tools for a professional development
 - **📝 Pandera** - Data validation schemas
 
 ### **Development Environment**
+
 - **🐳 Docker** - Containerized development
 - **🔧 Pre-commit** - Automated code quality checks
 - **🚀 GitHub Actions** - CI/CD pipeline
 - **📝 VS Code** - Enhanced development experience
 
 ### **Quick Development Setup**
+
 ```bash
 # Clone and setup
 git clone https://github.com/and3rn3t/data.git
@@ -283,34 +317,40 @@ The platform includes several curated datasets for learning:
 ## 🛠️ Technology Stack
 
 ### Core Data Science Libraries
+
 - **Python 3.8+**: Core language
 - **Pandas & NumPy**: Data manipulation and analysis
 - **Matplotlib & Seaborn**: Static visualizations
-- **Plotly**: Interactive visualizations  
+- **Plotly**: Interactive visualizations
 - **Scikit-learn**: Machine learning algorithms
 
 ### Modern High-Performance Tools
+
 - **Polars**: Lightning-fast DataFrame operations (2-30x faster than pandas)
 - **DuckDB**: High-performance analytical database with SQL interface
 - **PyArrow**: Columnar in-memory analytics
 
 ### ML Operations & Tracking
+
 - **MLflow**: Experiment tracking and model management
 - **Weights & Biases**: Advanced experiment tracking with rich visualizations
 - **Optuna**: State-of-the-art hyperparameter optimization
 
 ### Model Understanding & Explainability
+
 - **SHAP**: Unified model explanations with game-theoretic foundation
 - **LIME**: Local interpretable model explanations
 - **Yellowbrick**: Machine learning visualization library
 
 ### Development & Deployment
+
 - **Streamlit**: Web dashboard interface
 - **Jupyter Lab**: Interactive development environment
 - **FastAPI**: Modern API development for ML models
 - **Flask**: Additional web components
 
 ### Advanced ML Libraries
+
 - **XGBoost & LightGBM**: Gradient boosting frameworks
 - **TensorFlow & PyTorch**: Deep learning frameworks
 - **Transformers**: Pre-trained NLP models (Hugging Face)
@@ -329,7 +369,7 @@ We welcome contributions! Here's how you can help:
 ## 📖 Documentation
 
 - [Getting Started Guide](docs/getting-started.md)
-- [Challenge Creation Guide](docs/creating-challenges.md)  
+- [Challenge Creation Guide](docs/creating-challenges.md)
 - [API Documentation](docs/api-reference.md)
 - [FAQ](docs/faq.md)
 
@@ -348,4 +388,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Start your data science journey today! 🚀**
 
-*Made with ❤️ for the data science community*
+_Made with ❤️ for the data science community_

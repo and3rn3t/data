@@ -25,17 +25,20 @@ This guide will help you set up the Data Science Sandbox development environment
 ### Required Software
 
 1. **Python Installation**
+
    ```bash
    # Check Python version
    python --version
    ```
-   
+
    If Python is not installed:
+
    - **Windows**: Download from [python.org](https://python.org) (NOT Windows Store)
    - **macOS**: Use Homebrew: `brew install python@3.11`
    - **Linux**: `sudo apt install python3.11 python3.11-pip python3.11-venv`
 
 2. **Git Installation**
+
    ```bash
    # Verify Git installation
    git --version
@@ -161,7 +164,7 @@ pip install seaborn>=0.12.0 plotly>=5.17.0 scikit-learn>=1.3.0
 # Modern high-performance tools
 pip install duckdb>=0.9.0 polars>=0.20.0 pyarrow>=14.0.0
 
-# ML operations and experiment tracking  
+# ML operations and experiment tracking
 pip install mlflow>=2.8.0 wandb>=0.16.0
 
 # Model explainability
@@ -231,11 +234,11 @@ The project includes VS Code settings in `.vscode/settings.json`:
 
 ```json
 {
-    "python.defaultInterpreterPath": "./venv/bin/python",
-    "python.formatting.provider": "black",
-    "editor.formatOnSave": true,
-    "python.linting.enabled": true,
-    "python.linting.flake8Enabled": true
+  "python.defaultInterpreterPath": "./venv/bin/python",
+  "python.formatting.provider": "black",
+  "editor.formatOnSave": true,
+  "python.linting.enabled": true,
+  "python.linting.flake8Enabled": true
 }
 ```
 
@@ -450,6 +453,7 @@ htop  # Linux/macOS
 ### Getting Help
 
 #### 1. Check Documentation
+
 - [API Reference](API.md)
 - [Architecture Overview](ARCHITECTURE.md)
 - [Development Guide](DEVELOPMENT.md)
@@ -470,6 +474,7 @@ pip list | grep -E '(pandas|numpy|streamlit|duckdb|polars)'
 ```
 
 #### 3. Community Resources
+
 - **GitHub Issues**: Report bugs or request features
 - **Discussions**: Community Q&A
 - **Wiki**: Detailed guides and tutorials

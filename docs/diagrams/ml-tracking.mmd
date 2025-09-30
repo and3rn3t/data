@@ -1,0 +1,42 @@
+sequenceDiagram
+    participant User
+    participant GameEngine as Game Engine
+    participant MLflow as MLflow Tracking
+    participant Model as ML Model
+    participant Storage as Artifact Store
+
+    User->>GameEngine: Start ML Challenge
+    GameEngine->>MLflow: Initialize Experiment
+    MLflow->>MLflow: Create Run ID
+
+    User->>Model: Load Training Data
+    Model->>MLflow: Log Dataset Info
+
+    User->>Model: Train Model
+    Model->>MLflow: Log Parameters
+    Model->>MLflow: Log Metrics (Loss, Accuracy)
+
+    loop Training Epochs
+        Model->>MLflow: Log Epoch Metrics
+        Model->>MLflow: Log Learning Curves
+    end
+
+    User->>Model: Evaluate Model
+    Model->>MLflow: Log Final Metrics
+    Model->>Storage: Save Model Artifacts
+    Model->>MLflow: Log Model Reference
+
+    User->>GameEngine: Submit Challenge
+    GameEngine->>MLflow: Retrieve Results
+    MLflow-->>GameEngine: Return Metrics
+
+    alt Performance Threshold Met
+        GameEngine->>User: Challenge Complete!
+        GameEngine->>GameEngine: Award XP & Badges
+    else Needs Improvement
+        GameEngine->>User: Hints & Feedback
+        User->>Model: Retry with Improvements
+    end
+
+    GameEngine->>MLflow: Finalize Experiment
+    MLflow->>Storage: Archive Results

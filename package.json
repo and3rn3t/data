@@ -1,0 +1,16 @@
+{
+  "name": "data-science-sandbox",
+  "version": "1.0.0",
+  "description": "Data Science Sandbox - Interactive Learning Platform",
+  "scripts": {
+    "mermaid": "mmdc",
+    "build-diagrams": "npm run mermaid -- -i docs/diagrams/architecture.mmd -o docs/images/architecture.png",
+    "build-all-diagrams": "node scripts/build-mermaid-diagrams.js"
+  },
+  "devDependencies": {
+    "@mermaid-js/mermaid-cli": "^10.6.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

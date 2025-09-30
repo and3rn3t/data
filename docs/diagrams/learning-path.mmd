@@ -1,0 +1,67 @@
+flowchart TD
+    START([Start Learning Journey]) --> L1[Level 1: Foundation]
+
+    L1 --> L1_C1[Data Loading & Basic Operations]
+    L1 --> L1_C2[Simple Visualizations]
+    L1 --> L1_C3[Data Types & Structures]
+    L1 --> L1_C4[Basic Aggregations]
+
+    L1_C1 --> L2[Level 2: Intermediate Skills]
+    L1_C2 --> L2
+    L1_C3 --> L2
+    L1_C4 --> L2
+
+    L2 --> L2_C1[Data Cleaning & Validation]
+    L2 --> L2_C2[Statistical Analysis]
+    L2 --> L2_C3[Advanced Data Processing]
+
+    L2_C1 --> L3[Level 3: Visualization Mastery]
+    L2_C2 --> L3
+    L2_C3 --> L3
+
+    L3 --> L3_C1[Interactive Dashboards]
+    L3 --> L3_C2[Advanced Plot Types]
+    L3 --> L3_C3[Data Storytelling]
+
+    L3_C1 --> L4[Level 4: Machine Learning]
+    L3_C2 --> L4
+    L3_C3 --> L4
+
+    L4 --> L4_C1[First ML Models]
+    L4 --> L4_C2[Model Evaluation]
+    L4 --> L4_C3[Feature Engineering]
+
+    L4_C1 --> L5[Level 5: Advanced ML]
+    L4_C2 --> L5
+    L4_C3 --> L5
+
+    L5 --> L5_C1[Deep Learning]
+    L5 --> L5_C2[Ensemble Methods]
+    L5 --> L5_C3[Hyperparameter Tuning]
+
+    L5_C1 --> L6[Level 6: Capstone Project]
+    L5_C2 --> L6
+    L5_C3 --> L6
+
+    L6 --> L6_C1[End-to-End Pipeline]
+    L6 --> L6_C2[Production Deployment]
+
+    L6_C1 --> L7[Level 7: Modern Toolchain]
+    L6_C2 --> L7
+
+    L7 --> L7_C1[DuckDB & Polars Mastery]
+    L7 --> L7_C2[MLflow Integration]
+    L7 --> L7_C3[Professional Workflows]
+
+    L7_C1 --> GRADUATE([🎓 Data Science Expert])
+    L7_C2 --> GRADUATE
+    L7_C3 --> GRADUATE
+
+    %% Styling
+    classDef level fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
+    classDef challenge fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef milestone fill:#e8f5e8,stroke:#388e3c,stroke-width:3px
+
+    class L1,L2,L3,L4,L5,L6,L7 level
+    class L1_C1,L1_C2,L1_C3,L1_C4,L2_C1,L2_C2,L2_C3,L3_C1,L3_C2,L3_C3,L4_C1,L4_C2,L4_C3,L5_C1,L5_C2,L5_C3,L6_C1,L6_C2,L7_C1,L7_C2,L7_C3 challenge
+    class START,GRADUATE milestone
