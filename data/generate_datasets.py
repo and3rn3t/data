@@ -23,13 +23,10 @@ def create_sample_sales_data() -> pd.DataFrame:
     # Generate data
     # Generate random days first to avoid numpy int64 issues
     random_days = [int(day) for day in rng.integers(0, 365, n_records)]
-    
+
     data = {
         "sale_id": range(1, n_records + 1),
-        "date": [
-            datetime.now() - timedelta(days=days)
-            for days in random_days
-        ],
+        "date": [datetime.now() - timedelta(days=days) for days in random_days],
         "region": rng.choice(regions, n_records),
         "category": rng.choice(categories, n_records),
         "sales_rep": rng.choice(sales_reps, n_records),
@@ -49,9 +46,7 @@ def create_sample_sales_data() -> pd.DataFrame:
     df["date"] = pd.to_datetime(df["date"])
 
     # Add some missing values for learning purposes
-    missing_indices = rng.choice(
-        n_records, size=int(n_records * 0.05), replace=False
-    )
+    missing_indices = rng.choice(n_records, size=int(n_records * 0.05), replace=False)
     for idx in missing_indices[: len(missing_indices) // 2]:
         df.loc[idx, "customer_satisfaction"] = np.nan
     for idx in missing_indices[len(missing_indices) // 2 :]:

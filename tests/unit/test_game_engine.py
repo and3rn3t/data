@@ -123,7 +123,9 @@ class TestGameEngine:
         assert isinstance(challenges, list)
 
     @patch("subprocess.run")
-    def test_launch_jupyter_success(self, mock_subprocess: Any, game_engine: Any) -> None:
+    def test_launch_jupyter_success(
+        self, mock_subprocess: Any, game_engine: Any
+    ) -> None:
         """Test successful Jupyter Lab launch."""
         mock_subprocess.return_value.returncode = 0
 
@@ -132,7 +134,9 @@ class TestGameEngine:
         mock_subprocess.assert_called_once()
 
     @patch("subprocess.run")
-    def test_launch_jupyter_failure(self, mock_subprocess: Any, game_engine: Any, capsys: Any) -> None:
+    def test_launch_jupyter_failure(
+        self, mock_subprocess: Any, game_engine: Any, capsys: Any
+    ) -> None:
         """Test Jupyter Lab launch failure."""
         mock_subprocess.side_effect = FileNotFoundError()
 
