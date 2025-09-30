@@ -8,7 +8,7 @@ into the documentation and dashboard components.
 import json
 import subprocess
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union, Callable, Any
 import logging
 
 logger = logging.getLogger(__name__)
@@ -17,7 +17,9 @@ logger = logging.getLogger(__name__)
 class MermaidRenderer:
     """Utility class for rendering Mermaid diagrams."""
 
-    def __init__(self, diagrams_dir: Path = None, images_dir: Path = None):
+    def __init__(
+        self, diagrams_dir: Optional[Path] = None, images_dir: Optional[Path] = None
+    ):
         """Initialize the Mermaid renderer.
 
         Args:
@@ -106,7 +108,7 @@ class MermaidRenderer:
         return results
 
     def create_markdown_image_reference(
-        self, diagram_name: str, alt_text: str = None
+        self, diagram_name: str, alt_text: Optional[str] = None
     ) -> str:
         """Create markdown reference for rendered diagram.
 
@@ -169,12 +171,12 @@ def generate_architecture_diagram_data() -> Dict:
 
 
 # Example usage functions
-def update_architecture_docs():
+def update_architecture_docs() -> Dict[str, str]:
     """Update architecture documentation with latest diagrams."""
     renderer = MermaidRenderer()
 
     # Render all diagrams
-    results = renderer.render_all_diagrams()
+    _ = renderer.render_all_diagrams()
 
     # Generate markdown references
     arch_ref = renderer.create_markdown_image_reference(

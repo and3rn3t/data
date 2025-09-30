@@ -7,11 +7,25 @@ import logging
 import logging.config
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Callable, Optional
+from functools import wraps
 
 # Create logs directory if it doesn't exist
 LOGS_DIR = Path("logs")
 LOGS_DIR.mkdir(exist_ok=True)
+
+# Constants for logging handlers
+ROTATING_FILE_HANDLER = "logging.handlers.RotatingFileHandler"
+MAX_BYTES = 10485760  # 10MB
+BACKUP_COUNT = 5
+
+# Try to import pythonjsonlogger for JSON formatting
+try:
+    import pythonjsonlogger.jsonlogger
+
+    HAS_JSON_LOGGER = True
+except ImportError:
+    HAS_JSON_LOGGER = False
 
 # Logging configuration dictionary
 LOGGING_CONFIG: Dict[str, Any] = {
@@ -24,8 +38,16 @@ LOGGING_CONFIG: Dict[str, Any] = {
         },
         "simple": {"format": "%(levelname)s - %(message)s"},
         "json": {
-            "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
-            "format": "%(asctime)s %(name)s %(levelname)s %(message)s",
+            "()": (
+                "pythonjsonlogger.jsonlogger.JsonFormatter"
+                if HAS_JSON_LOGGER
+                else "logging.Formatter"
+            ),
+            "format": (
+                "%(asctime)s %(name)s %(levelname)s %(message)s"
+                if HAS_JSON_LOGGER
+                else "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+            ),
         },
     },
     "handlers": {
@@ -36,28 +58,28 @@ LOGGING_CONFIG: Dict[str, Any] = {
             "stream": "ext://sys.stdout",
         },
         "file": {
-            "class": "logging.handlers.RotatingFileHandler",
+            "class": ROTATING_FILE_HANDLER,
             "level": "DEBUG",
             "formatter": "detailed",
             "filename": str(LOGS_DIR / "sandbox.log"),
-            "maxBytes": 10485760,  # 10MB
-            "backupCount": 5,
+            "maxBytes": MAX_BYTES,
+            "backupCount": BACKUP_COUNT,
         },
         "error_file": {
-            "class": "logging.handlers.RotatingFileHandler",
+            "class": ROTATING_FILE_HANDLER,
             "level": "ERROR",
             "formatter": "detailed",
             "filename": str(LOGS_DIR / "errors.log"),
-            "maxBytes": 10485760,  # 10MB
-            "backupCount": 5,
+            "maxBytes": MAX_BYTES,
+            "backupCount": BACKUP_COUNT,
         },
         "challenge_file": {
-            "class": "logging.handlers.RotatingFileHandler",
+            "class": ROTATING_FILE_HANDLER,
             "level": "INFO",
             "formatter": "json",
             "filename": str(LOGS_DIR / "challenges.log"),
-            "maxBytes": 10485760,  # 10MB
-            "backupCount": 5,
+            "maxBytes": MAX_BYTES,
+            "backupCount": BACKUP_COUNT,
         },
     },
     "loggers": {
@@ -86,7 +108,7 @@ LOGGING_CONFIG: Dict[str, Any] = {
 }
 
 
-def setup_logging(config_dict: Dict[str, Any] = None) -> None:
+def setup_logging(config_dict: Optional[Dict[str, Any]] = None) -> None:
     """
     Set up logging configuration for the application.
 
@@ -113,16 +135,22 @@ def get_logger(name: str) -> logging.Logger:
 
 
 # Performance logging decorator
-def log_performance(logger: logging.Logger = None):
+def log_performance(
+    logger: Optional[logging.Logger] = None,
+) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
     """
     Decorator to log function execution time.
 
     Args:
         logger: Logger instance to use
+
+    Returns:
+        Decorator function
     """
 
-    def decorator(func):
-        def wrapper(*args, **kwargs):
+    def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+        @wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             nonlocal logger
             if logger is None:
                 logger = get_logger(func.__module__)

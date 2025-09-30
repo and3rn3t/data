@@ -40,6 +40,7 @@ python-dotenv>=1.0.0
 pydantic-settings>=2.0.0
 rich>=13.6.0
 typer>=0.9.0
+python-json-logger>=2.0.0
 
 # Notebook Enhancement
 nbformat>=5.9.0
