@@ -5,20 +5,22 @@ Since pre-commit hooks may have compatibility issues on Windows, here's how to r
 ## Before Committing Changes
 
 ### 1. Format Code
+
 ```powershell
 # Format with Black
 python -m black --line-length=88 sandbox/ main.py config.py
 
-# Sort imports with isort  
+# Sort imports with isort
 python -m isort --profile=black sandbox/ main.py config.py
 ```
 
 ### 2. Check Code Quality
+
 ```powershell
 # Run Ruff linter (fast, modern)
 python -m ruff check sandbox/ main.py config.py --fix
 
-# Run flake8 (traditional linting)  
+# Run flake8 (traditional linting)
 python -m flake8 sandbox/ main.py config.py --max-line-length=88
 
 # Type checking with mypy
@@ -26,6 +28,7 @@ python -m mypy sandbox/ --ignore-missing-imports
 ```
 
 ### 3. Security Scans
+
 ```powershell
 # Check for security issues
 python -m bandit -r sandbox/ --skip B101,B601
@@ -35,6 +38,7 @@ python -m safety check --short-report
 ```
 
 ### 4. Run Tests
+
 ```powershell
 # Run test suite with coverage
 python -m pytest tests/ -v --cov=sandbox --cov-report=html
@@ -43,12 +47,14 @@ python -m pytest tests/ -v --cov=sandbox --cov-report=html
 ## VS Code Tasks
 
 You can also use the predefined VS Code tasks:
+
 - `Ctrl+Shift+P` → "Tasks: Run Task"
 - Select from available tasks like "Format Code", "Lint Code", etc.
 
 ## Automated CI/CD
 
 The GitHub Actions workflows will automatically run these checks on:
+
 - Push to main branch
 - Pull requests
 - Weekly security scans
