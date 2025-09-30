@@ -11,12 +11,6 @@
         "files.associations": {
             "*.md": "markdown"
         },
-        "workbench.colorCustomizations": {
-            "activityBar.background": "#2D3748",
-            "activityBar.foreground": "#E2E8F0",
-            "statusBar.background": "#2D3748",
-            "statusBar.foreground": "#E2E8F0"
-        },
         "workbench.colorTheme": "Dark+ (default dark)",
         "explorer.fileNesting.enabled": true,
         "explorer.fileNesting.patterns": {
