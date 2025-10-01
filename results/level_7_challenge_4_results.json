@@ -1,0 +1,289 @@
+{
+  "bias_metrics": {
+    "demographic_parity": 0.24160230666254762,
+    "equalized_odds": 0.12351190476285923,
+    "equal_opportunity": 0.12351190476285923,
+    "disparate_impact": 0.3237447396338305,
+    "statistical_parity_difference": 0.24160230666254762
+  },
+  "fairness_assessment": {
+    "demographic_parity_fair": "False",
+    "equalized_odds_fair": "False",
+    "equal_opportunity_fair": "False",
+    "disparate_impact_fair": "False",
+    "statistical_parity_fair": "False",
+    "overall_fair": false
+  },
+  "privacy_results": {
+    "k_value": 5,
+    "total_groups": 32,
+    "violations": 0,
+    "compliance_rate": 1.0,
+    "is_compliant": true,
+    "min_group_size": "38",
+    "avg_group_size": 156.25
+  },
+  "compliance_report": {
+    "total_actions": 8,
+    "compliance_rates": {
+      "gdpr_compliant": 1.0,
+      "ccpa_compliant": 1.0,
+      "ai_act_compliant": 1.0,
+      "algorithmic_accountability": 1.0
+    },
+    "overall_compliance": 1.0,
+    "audit_trail_length": 8,
+    "last_audit": "2025-10-01T17:00:03.259977"
+  },
+  "model_card": {
+    "model_name": "Ethical Hiring Assistant",
+    "version": "1.0.0",
+    "creation_date": "2025-10-01",
+    "created_by": "AI Ethics Team",
+    "model_type": "Random Forest Classifier",
+    "architecture": "Ensemble of 100 decision trees",
+    "training_data": "Synthetic hiring dataset (4000 samples)",
+    "evaluation_data": "Hold-out test set (1000 samples)",
+    "accuracy": 0.85,
+    "precision": 0.82,
+    "recall": 0.79,
+    "f1_score": 0.8,
+    "bias_assessment": {
+      "gender_bias_metrics": {
+        "demographic_parity": 0.24160230666254762,
+        "equalized_odds": 0.12351190476285923,
+        "equal_opportunity": 0.12351190476285923,
+        "disparate_impact": 0.3237447396338305,
+        "statistical_parity_difference": 0.24160230666254762
+      },
+      "fairness_assessment": {
+        "demographic_parity_fair": "False",
+        "equalized_odds_fair": "False",
+        "equal_opportunity_fair": "False",
+        "disparate_impact_fair": "False",
+        "statistical_parity_fair": "False",
+        "overall_fair": false
+      }
+    },
+    "fairness_constraints": [
+      "Demographic parity difference < 0.1",
+      "Equalized odds difference < 0.1",
+      "Disparate impact ratio > 0.8"
+    ],
+    "privacy_techniques": [
+      "Differential Privacy",
+      "K-Anonymity"
+    ],
+    "data_retention_policy": "2 years with automatic deletion",
+    "known_limitations": [
+      "May exhibit residual gender bias in edge cases",
+      "Performance varies across age groups",
+      "Limited to technical role hiring scenarios"
+    ],
+    "potential_biases": [
+      "Gender bias in historical salary data",
+      "Age bias in interview scoring",
+      "Educational institution prestige effects"
+    ],
+    "failure_modes": [
+      "High false positive rate for underrepresented groups",
+      "Overconfidence in borderline cases",
+      "Sensitivity to missing education data"
+    ],
+    "compliance_frameworks": [
+      "GDPR",
+      "CCPA",
+      "EU AI Act",
+      "Equal Employment Opportunity"
+    ],
+    "audit_trail": [
+      {
+        "timestamp": "2025-10-01T17:00:03.178085",
+        "action": "bias_assessment",
+        "model_id": "hiring_model_v1",
+        "user": "system",
+        "details": {
+          "bias_metrics": {
+            "demographic_parity": 0.24160230666254762,
+            "equalized_odds": 0.12351190476285923,
+            "equal_opportunity": 0.12351190476285923,
+            "disparate_impact": 0.3237447396338305,
+            "statistical_parity_difference": 0.24160230666254762
+          },
+          "fairness_assessment": {
+            "demographic_parity_fair": "False",
+            "equalized_odds_fair": "False",
+            "equal_opportunity_fair": "False",
+            "disparate_impact_fair": "False",
+            "statistical_parity_fair": "False",
+            "overall_fair": false
+          },
+          "sensitive_attribute": "gender",
+          "model_accuracy": 0.89
+        },
+        "compliance_status": {
+          "gdpr_compliant": true,
+          "ccpa_compliant": true,
+          "ai_act_compliant": true,
+          "algorithmic_accountability": true
+        }
+      },
+      {
+        "timestamp": "2025-10-01T17:00:03.259977",
+        "action": "privacy_assessment",
+        "model_id": "hiring_dataset_v1",
+        "user": "system",
+        "details": {
+          "differential_privacy_epsilon": 1.0,
+          "k_anonymity_results": {
+            "k_value": 5,
+            "total_groups": 32,
+            "violations": 0,
+            "compliance_rate": 1.0,
+            "is_compliant": true,
+            "min_group_size": "38",
+            "avg_group_size": 156.25
+          },
+          "privacy_techniques": [
+            "differential_privacy",
+            "k_anonymity"
+          ],
+          "data_processing_purpose": "ML model training",
+          "legal_basis": "legitimate_interest",
+          "data_retention": "2_years"
+        },
+        "compliance_status": {
+          "gdpr_compliant": true,
+          "ccpa_compliant": true,
+          "ai_act_compliant": true,
+          "algorithmic_accountability": true
+        }
+      },
+      {
+        "timestamp": "2025-10-01T17:00:03.259977",
+        "action": "model_deployment",
+        "model_id": "ethical_hiring_v1",
+        "user": "system",
+        "details": {
+          "deployment_environment": "production",
+          "risk_level": "high",
+          "bias_assessment": "completed",
+          "human_oversight": "enabled",
+          "transparency_measures": "model_cards_available",
+          "explainability": "shap_values_enabled",
+          "audit_capability": "full_trail_logging",
+          "data_processing_purpose": "hiring_decisions",
+          "legal_basis": "legitimate_interest",
+          "data_retention": "2_years",
+          "user_consent": "obtained",
+          "data_categories": [
+            "personal_data",
+            "employment_history"
+          ]
+        },
+        "compliance_status": {
+          "gdpr_compliant": true,
+          "ccpa_compliant": true,
+          "ai_act_compliant": true,
+          "algorithmic_accountability": true
+        }
+      },
+      {
+        "timestamp": "2025-10-01T17:00:03.259977",
+        "action": "prediction",
+        "model_id": "ethical_hiring_v1",
+        "user": "system",
+        "details": {
+          "prediction_id": "pred_1",
+          "explainability": "shap_explanation_provided",
+          "audit_capability": "decision_logged",
+          "confidence_score": 0.8832845368714326,
+          "human_review_required": "False"
+        },
+        "compliance_status": {
+          "gdpr_compliant": true,
+          "ccpa_compliant": true,
+          "ai_act_compliant": true,
+          "algorithmic_accountability": true
+        }
+      },
+      {
+        "timestamp": "2025-10-01T17:00:03.259977",
+        "action": "prediction",
+        "model_id": "ethical_hiring_v1",
+        "user": "system",
+        "details": {
+          "prediction_id": "pred_2",
+          "explainability": "shap_explanation_provided",
+          "audit_capability": "decision_logged",
+          "confidence_score": 0.8022149557996411,
+          "human_review_required": "True"
+        },
+        "compliance_status": {
+          "gdpr_compliant": true,
+          "ccpa_compliant": true,
+          "ai_act_compliant": true,
+          "algorithmic_accountability": true
+        }
+      },
+      {
+        "timestamp": "2025-10-01T17:00:03.259977",
+        "action": "prediction",
+        "model_id": "ethical_hiring_v1",
+        "user": "system",
+        "details": {
+          "prediction_id": "pred_3",
+          "explainability": "shap_explanation_provided",
+          "audit_capability": "decision_logged",
+          "confidence_score": 0.9089717597474004,
+          "human_review_required": "False"
+        },
+        "compliance_status": {
+          "gdpr_compliant": true,
+          "ccpa_compliant": true,
+          "ai_act_compliant": true,
+          "algorithmic_accountability": true
+        }
+      },
+      {
+        "timestamp": "2025-10-01T17:00:03.259977",
+        "action": "prediction",
+        "model_id": "ethical_hiring_v1",
+        "user": "system",
+        "details": {
+          "prediction_id": "pred_4",
+          "explainability": "shap_explanation_provided",
+          "audit_capability": "decision_logged",
+          "confidence_score": 0.7239958873839821,
+          "human_review_required": "False"
+        },
+        "compliance_status": {
+          "gdpr_compliant": true,
+          "ccpa_compliant": true,
+          "ai_act_compliant": true,
+          "algorithmic_accountability": true
+        }
+      },
+      {
+        "timestamp": "2025-10-01T17:00:03.259977",
+        "action": "prediction",
+        "model_id": "ethical_hiring_v1",
+        "user": "system",
+        "details": {
+          "prediction_id": "pred_5",
+          "explainability": "shap_explanation_provided",
+          "audit_capability": "decision_logged",
+          "confidence_score": 0.6451459606589802,
+          "human_review_required": "True"
+        },
+        "compliance_status": {
+          "gdpr_compliant": true,
+          "ccpa_compliant": true,
+          "ai_act_compliant": true,
+          "algorithmic_accountability": true
+        }
+      }
+    ]
+  },
+  "readiness_score": 0.7
+}

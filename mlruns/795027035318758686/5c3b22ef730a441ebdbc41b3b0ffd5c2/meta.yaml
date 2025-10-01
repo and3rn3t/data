@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/git/data/mlruns/795027035318758686/5c3b22ef730a441ebdbc41b3b0ffd5c2/artifacts
+end_time: 1759355147175
+entry_point_name: ''
+experiment_id: '795027035318758686'
+lifecycle_stage: active
+run_id: 5c3b22ef730a441ebdbc41b3b0ffd5c2
+run_name: welcoming-rook-144
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759355132921
+status: 3
+tags: []
+user_id: and3r

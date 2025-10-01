@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/git/data/mlruns/795027035318758686/f0090a18696d42528d057e3959bd5e60/artifacts
+end_time: 1759355344925
+entry_point_name: ''
+experiment_id: '795027035318758686'
+lifecycle_stage: active
+run_id: f0090a18696d42528d057e3959bd5e60
+run_name: unleashed-gull-102
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759355339173
+status: 3
+tags: []
+user_id: and3r

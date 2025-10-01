@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/git/data/mlruns/795027035318758686/f226966db895445da7d6e7716a690fdd/artifacts
+end_time: 1759355208318
+entry_point_name: ''
+experiment_id: '795027035318758686'
+lifecycle_stage: active
+run_id: f226966db895445da7d6e7716a690fdd
+run_name: bouncy-toad-743
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759355202727
+status: 3
+tags: []
+user_id: and3r

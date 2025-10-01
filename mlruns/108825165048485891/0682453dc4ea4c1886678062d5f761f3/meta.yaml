@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/git/data/mlruns/108825165048485891/0682453dc4ea4c1886678062d5f761f3/artifacts
+end_time: 1759355510315
+entry_point_name: ''
+experiment_id: '108825165048485891'
+lifecycle_stage: active
+run_id: 0682453dc4ea4c1886678062d5f761f3
+run_name: customer_classifier_20251001_165144
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759355504373
+status: 3
+tags: []
+user_id: and3r

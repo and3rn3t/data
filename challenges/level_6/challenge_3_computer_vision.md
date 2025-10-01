@@ -22,6 +22,7 @@ warnings.filterwarnings('ignore')
 # Core image processing libraries
 try:
     import cv2
+    import opencv-cv2 as opencv  # Alternative import
     CV2_AVAILABLE = True
     print("✅ OpenCV available")
 except ImportError:
@@ -32,7 +33,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance
 import io
 import base64
 
-# Scientific image processing
+# Scientific image processing - scikit-image
+import scikit-image
 from skimage import (
     filters, feature, measure, morphology, segmentation,
     transform, util, exposure, restoration, color

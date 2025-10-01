@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/git/data/mlruns/795027035318758686/df165d25dca3456da871a519cf4999d1/artifacts
+end_time: 1759355387579
+entry_point_name: ''
+experiment_id: '795027035318758686'
+lifecycle_stage: active
+run_id: df165d25dca3456da871a519cf4999d1
+run_name: learned-steed-750
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759355382254
+status: 3
+tags: []
+user_id: and3r
