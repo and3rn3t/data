@@ -62,7 +62,23 @@ print(f"  • Average sale: ${df['sales'].mean():.2f}")
 print(f"  • Highest sale: ${df['sales'].max():,.2f}")
 print(f"  • Date range: {df['date'].min().date()} to {df['date'].max().date()}")
 
+# 7. Basic data quality checks
+print(f"\n🔍 Data Quality Assessment:")
+print(f"  • Duplicate rows: {df.duplicated().sum()}")
+print(f"  • Negative sales (data errors?): {(df['sales'] < 0).sum()}")
+print(f"  • Zero quantities (potential issues?): {(df['quantity'] == 0).sum()}")
+print(f"  • Unusual customer ages: {((df['customer_age'] < 18) | (df['customer_age'] > 100)).sum()}")
+
+# 8. Quick data validation
+print(f"\n✅ Data Validation:")
+sales_valid = df['sales'].between(0, 100000)  # Reasonable sales range
+print(f"  • Sales in reasonable range (0-$100k): {sales_valid.sum()}/{len(df)} ({sales_valid.mean():.1%})")
+
+age_valid = df['customer_age'].between(18, 80, inclusive='both')
+print(f"  • Customer ages valid (18-80): {age_valid.sum()}/{age_valid.count()} ({age_valid.mean():.1%})")
+
 print(f"\n🎉 Congratulations! You've successfully explored your first dataset!")
+print(f"💡 Pro tip: Always check data quality - real-world data is often messy!")
 ```
 
 ### Success Criteria

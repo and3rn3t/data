@@ -28,7 +28,8 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Set advanced styling
-plt.style.use('seaborn-v0_8-whitegrid')
+plt.style.use('default')
+sns.set_style("whitegrid")
 sns.set_palette("Set2")
 
 # Create comprehensive multi-dimensional dataset

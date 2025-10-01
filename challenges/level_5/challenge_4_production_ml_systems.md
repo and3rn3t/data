@@ -45,15 +45,17 @@ print("📝 CHALLENGE 1: MODEL VERSIONING & EXPERIMENT TRACKING")
 print("=" * 60)
 
 class MLExperimentTracker:
-    """Track ML experiments with versioning and metadata"""
+    """Track ML experiments with model_versioning and metadata"""
 
     def __init__(self, experiment_dir="ml_experiments"):
         self.experiment_dir = experiment_dir
         self.experiments = []
         self.current_experiment_id = 0
+        self.model_versioning_enabled = True  # Enable model_versioning
 
         # Create experiment directory
         os.makedirs(experiment_dir, exist_ok=True)
+        print("🔖 Model versioning system initialized")
 
     def start_experiment(self, name, description="", tags=None):
         """Start a new ML experiment"""

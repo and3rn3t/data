@@ -49,17 +49,39 @@ class ChallengeLoader:
 
             # Parse the markdown structure
             current_section = None
+            challenge_title_found = False
+            collecting_description = False
+
             for line in lines:
                 line = line.strip()
 
-                if line.startswith("# "):
-                    title = line[2:].strip()
+                # Look for challenge title (## Challenge X: Title)
+                if line.startswith("## ") and "challenge" in line.lower():
+                    challenge_title_found = True
+                    collecting_description = (
+                        True  # Start collecting description after title
+                    )
+                    # Extract title after "Challenge X:"
+                    if ":" in line:
+                        title = line.split(":", 1)[1].strip()
+                    else:
+                        title = line[3:].strip()  # Remove "## "
+                elif line.startswith("### ") and collecting_description:
+                    # Any ### section ends the description collection
+                    collecting_description = False
+                    if "objective" in line.lower():
+                        current_section = "objectives"
                 elif line.startswith("## ") and "objective" in line.lower():
                     current_section = "objectives"
+                    collecting_description = False
+                elif line.startswith("### ") and "objective" in line.lower():
+                    current_section = "objectives"
+                    collecting_description = False
                 elif line.startswith("## ") and (
                     "description" in line.lower() or "overview" in line.lower()
                 ):
                     current_section = "description"
+                    collecting_description = False
                 elif line.startswith("- ") and current_section == "objectives":
                     objectives.append(line[2:].strip())
                 elif (
@@ -68,6 +90,25 @@ class ChallengeLoader:
                     and not line.startswith("#")
                 ):
                     description += line + " "
+                elif (
+                    collecting_description
+                    and line
+                    and not line.startswith("#")
+                    and not line.startswith("```")
+                    and len(line) > 10  # Only meaningful lines
+                ):
+                    description += line + " "
+                # Fallback: If we haven't found a challenge title yet, take first meaningful paragraph as description
+                elif (
+                    not challenge_title_found
+                    and not title
+                    and line
+                    and not line.startswith("#")
+                    and not line.startswith("```")
+                ):
+                    if len(line) > 20:  # Only take substantial lines
+                        description = line[:100] + "..." if len(line) > 100 else line
+                        break
 
             return {
                 "title": title or file_path.stem.replace("_", " ").title(),

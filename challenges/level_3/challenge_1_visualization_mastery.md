@@ -5,6 +5,7 @@
 Welcome to the art of data storytelling! Create compelling visualizations that reveal insights.
 
 ### Objective
+
 Master advanced data visualization techniques using matplotlib, seaborn, and plotly.
 
 ### Instructions
@@ -21,26 +22,34 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Set style for better-looking plots
-plt.style.use('seaborn-v0_8')
+plt.style.use('default')
+sns.set_style("whitegrid")
 sns.set_palette("husl")
 
 # Create comprehensive dataset
 np.random.seed(42)
 n_samples = 1000
 
+# Generate dates first for season calculation
+dates = pd.date_range('2023-01-01', periods=n_samples, freq='D')
+
 # Simulate company sales data
 data = pd.DataFrame({
-    'date': pd.date_range('2023-01-01', periods=n_samples, freq='D'),
+    'date': dates,
     'region': np.random.choice(['North', 'South', 'East', 'West'], n_samples, p=[0.3, 0.25, 0.25, 0.2]),
     'product_category': np.random.choice(['Electronics', 'Clothing', 'Home', 'Sports', 'Books'], n_samples),
     'sales_amount': np.random.gamma(2, 500, n_samples),
     'profit_margin': np.random.normal(0.15, 0.05, n_samples),
     'customer_satisfaction': np.random.normal(4.2, 0.8, n_samples),
     'marketing_spend': np.random.exponential(100, n_samples),
-    'season': ['Winter' if m in [12, 1, 2] else 
-              'Spring' if m in [3, 4, 5] else
-              'Summer' if m in [6, 7, 8] else 'Fall'
-              for m in pd.to_datetime(data['date'] if 'date' in locals() else pd.date_range('2023-01-01', periods=n_samples, freq='D')).month]
+})
+
+# Add season based on month
+data['season'] = data['date'].dt.month.map({
+    12: 'Winter', 1: 'Winter', 2: 'Winter',
+    3: 'Spring', 4: 'Spring', 5: 'Spring',
+    6: 'Summer', 7: 'Summer', 8: 'Summer',
+    9: 'Fall', 10: 'Fall', 11: 'Fall'
 })
 
 # Add some realistic relationships
@@ -135,8 +144,8 @@ plt.show()
 print("\n=== INTERACTIVE VISUALIZATIONS ===")
 
 # Interactive scatter plot
-fig_scatter = px.scatter(data, 
-                        x='marketing_spend', 
+fig_scatter = px.scatter(data,
+                        x='marketing_spend',
                         y='sales_amount',
                         color='region',
                         size='profit_amount',
@@ -186,7 +195,7 @@ print("\n=== DASHBOARD VISUALIZATION ===")
 # Create subplot dashboard
 fig = make_subplots(
     rows=2, cols=2,
-    subplot_titles=('Sales by Category', 'Regional Performance', 
+    subplot_titles=('Sales by Category', 'Regional Performance',
                    'Profit vs Satisfaction', 'Seasonal Trends'),
     specs=[[{"type": "bar"}, {"type": "bar"}],
            [{"type": "scatter"}, {"type": "bar"}]]
@@ -263,6 +272,7 @@ print("• Data-driven insights extraction")
 ```
 
 ### Success Criteria
+
 - Create diverse visualization types (statistical, time series, interactive)
 - Use appropriate chart types for different data relationships
 - Apply good design principles (colors, labels, titles)
@@ -270,6 +280,7 @@ print("• Data-driven insights extraction")
 - Extract and communicate insights from visualizations
 
 ### Learning Objectives
+
 - Master matplotlib and seaborn for static plots
 - Learn plotly for interactive visualizations
 - Understand when to use different chart types
@@ -278,4 +289,4 @@ print("• Data-driven insights extraction")
 
 ---
 
-*Tip: The best visualization is the one that makes your data story crystal clear to the audience!*
+_Tip: The best visualization is the one that makes your data story crystal clear to the audience!_

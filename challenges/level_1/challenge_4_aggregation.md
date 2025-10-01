@@ -51,7 +51,7 @@ def coefficient_of_variation(x):
     return x.std() / x.mean() if x.mean() != 0 else 0
 
 if 'category' in df.columns:
-    custom_agg = df.groupby('category')['amount'].agg([
+    custom_agg = df.groupby('category')['sales'].agg([
         'mean',
         'std',
         ('cv', coefficient_of_variation)
@@ -62,7 +62,7 @@ if 'category' in df.columns:
 # 4. Pivot tables
 if 'category' in df.columns and 'month' in df.columns:
     pivot = pd.pivot_table(df,
-                          values='amount',
+                          values='sales',
                           index='category',
                           columns='month',
                           aggfunc='sum',
@@ -73,7 +73,7 @@ if 'category' in df.columns and 'month' in df.columns:
 # 5. Time-based grouping (if date column exists)
 if 'date' in df.columns:
     df['date'] = pd.to_datetime(df['date'])
-    monthly_sales = df.set_index('date').resample('M')['amount'].sum()
+    monthly_sales = df.set_index('date').resample('M')['sales'].sum()
     print("\nMonthly sales trend:")
     print(monthly_sales)
 ```

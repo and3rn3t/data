@@ -40,6 +40,34 @@ class Dashboard:
     def __init__(self, game_engine: GameEngine):
         self.game = game_engine
 
+    def _get_theme_colors(self) -> dict:
+        """Get appropriate colors based on theme detection"""
+        # Check if user has set a theme preference in session state
+        is_dark_theme = st.session_state.get(
+            "dark_theme", True
+        )  # Default to dark for better contrast
+
+        if is_dark_theme:
+            return {
+                "text_primary": "#FFFFFF",  # White text for dark backgrounds
+                "text_secondary": "#AEAEB2",  # Light gray for secondary text
+                "surface_primary": "rgba(28, 28, 30, 0.85)",  # Dark surface
+                "surface_secondary": "rgba(44, 44, 46, 0.8)",  # Darker surface
+                "ios_blue": "#1D4ED8",
+                "ios_orange": "#C2410C",
+                "ios_purple": "#7C3AED",
+            }
+        else:
+            return {
+                "text_primary": "#000000",  # Black text for light backgrounds
+                "text_secondary": "#6B7280",  # Dark gray for secondary text
+                "surface_primary": "rgba(255, 255, 255, 0.85)",  # Light surface
+                "surface_secondary": "rgba(242, 242, 247, 0.8)",  # Light gray surface
+                "ios_blue": "#1D4ED8",
+                "ios_orange": "#C2410C",
+                "ios_purple": "#7C3AED",
+            }
+
     def run(self) -> None:
         """Launch the Streamlit dashboard"""
         # Configure Streamlit page
@@ -80,6 +108,26 @@ class Dashboard:
             --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.1);
             --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
             --shadow-heavy: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Dark theme adjustments */
+        [data-theme="dark"], .stApp[data-theme="dark"] {
+            --surface-primary: rgba(28, 28, 30, 0.85);
+            --surface-secondary: rgba(44, 44, 46, 0.8);
+            --surface-tertiary: rgba(58, 58, 60, 0.6);
+            --text-primary: #FFFFFF;
+            --text-secondary: #AEAEB2;
+        }
+
+        /* Auto-detect dark mode from Streamlit */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --surface-primary: rgba(28, 28, 30, 0.85);
+                --surface-secondary: rgba(44, 44, 46, 0.8);
+                --surface-tertiary: rgba(58, 58, 60, 0.6);
+                --text-primary: #FFFFFF;
+                --text-secondary: #AEAEB2;
+            }
         }
 
         /* Global Styles */
@@ -632,6 +680,11 @@ class Dashboard:
         # Sidebar navigation
         self.create_sidebar()
 
+        # Check for challenge modal display
+        if st.session_state.get("show_challenge_modal", False):
+            self.show_challenge_modal()
+            return
+
         # Main content area
         page = st.session_state.get("page", "Dashboard")
 
@@ -706,9 +759,25 @@ class Dashboard:
 
             if st.sidebar.button(f"{icon} {page}", key=page, help=description):
                 st.session_state.page = page
+                # Clear any open modals when navigating
+                st.session_state.show_challenge_modal = False
+                st.session_state.viewing_challenge = None
                 st.rerun()
 
         st.sidebar.markdown("---")
+
+        # Theme Toggle
+        st.sidebar.markdown(
+            "<h4 style='margin: 20px 0 16px 0; color: var(--text-secondary);'>🎨 Theme</h4>",
+            unsafe_allow_html=True,
+        )
+        current_theme = st.session_state.get("dark_theme", True)
+        theme_label = "🌙 Dark Mode" if current_theme else "☀️ Light Mode"
+        if st.sidebar.button(
+            theme_label, key="theme_toggle", help="Toggle between light and dark themes"
+        ):
+            st.session_state.dark_theme = not current_theme
+            st.rerun()
 
         # Quick Actions with enhanced styling
         st.sidebar.markdown(
@@ -1192,13 +1261,18 @@ class Dashboard:
             with col2:
                 # Calculate completion percentage
                 if status["unlocked"]:
-                    challenges = self.game.get_level_challenges(level_num)
-                    if challenges:
+                    enhanced_challenges = self.game.get_enhanced_challenges(level_num)
+                    if enhanced_challenges:
+                        # Extract challenge titles from enhanced data
+                        challenges = [
+                            ch.get("title", "Unknown Challenge")
+                            for ch in enhanced_challenges
+                        ]
                         completed_count = len(
                             [
                                 c
                                 for c in self.game.progress["challenges_completed"]
-                                if c.startswith(f"level_{level_num}")
+                                if c.startswith(f"level_{level_num}_")
                             ]
                         )
                         completion_pct = (completed_count / len(challenges)) * 100
@@ -1207,36 +1281,40 @@ class Dashboard:
                 else:
                     completion_pct = 100 if status["completed"] else 0
 
-                st.markdown(
-                    f"""
-                <div class="ios-card level-{card_class}" style="position: relative;">
-                    <div style="position: relative; z-index: 1;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                            <h3 style="margin: 0; color: var(--text-primary);">Level {level_num}: {level_info['name']}</h3>
-                            <div style="background: rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 12px;">
-                                <span style="font-size: 0.8rem; font-weight: 600; color: {status_color};">{completion_pct:.0f}%</span>
-                            </div>
-                        </div>
-                        <p style="margin: 0 0 16px 0; color: var(--text-secondary); line-height: 1.5;">{level_info['description']}</p>
+                # Get theme colors
+                colors = self._get_theme_colors()
 
-                        <!-- Progress bar -->
-                        <div style="background: rgba(255,255,255,0.2); border-radius: 10px; height: 6px; margin: 16px 0;">
-                            <div style="background: {status_color}; height: 100%; border-radius: 10px; width: {completion_pct}%;
-                                       transition: width 0.3s ease;"></div>
-                        </div>
-                """,
-                    unsafe_allow_html=True,
-                )
+                # Extract values to avoid complex f-string interpolation
+                text_primary = colors["text_primary"]
+                text_secondary = colors["text_secondary"]
+                level_name = level_info["name"]
+                level_desc = level_info["description"]
+
+                # Use clean Streamlit container without custom CSS
+                with st.container():
+                    # Put percentage inline with the level title
+                    st.markdown(
+                        f"### Level {level_num}: {level_name} - {completion_pct:.0f}% Complete"
+                    )
+                    st.markdown(level_desc)
+
+                    # Progress bar using Streamlit's native progress bar
+                    st.progress(completion_pct / 100.0)
 
                 # Show challenges info
                 if status["unlocked"]:
-                    challenges = self.game.get_level_challenges(level_num)
-                    if challenges:
+                    enhanced_challenges = self.game.get_enhanced_challenges(level_num)
+                    if enhanced_challenges:
+                        # Extract challenge titles from enhanced data
+                        challenges = [
+                            ch.get("title", "Unknown Challenge")
+                            for ch in enhanced_challenges
+                        ]
                         completed_count = len(
                             [
                                 c
                                 for c in self.game.progress["challenges_completed"]
-                                if c.startswith(f"level_{level_num}")
+                                if c.startswith(f"level_{level_num}_")
                             ]
                         )
 
@@ -1245,7 +1323,7 @@ class Dashboard:
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div style="display: flex; align-items: center;">
                                 <span style="font-size: 1.2rem; margin-right: 8px;">📚</span>
-                                <span style="font-size: 0.9rem; color: var(--text-secondary);">
+                                <span style="font-size: 0.9rem; color: {text_secondary};">
                                     {completed_count}/{len(challenges)} challenges completed
                                 </span>
                             </div>
@@ -1254,21 +1332,42 @@ class Dashboard:
                             unsafe_allow_html=True,
                         )
 
-                        # Show first few challenge indicators
-                        for _i, challenge in enumerate(challenges[:5]):
-                            completed = (
-                                f"level_{level_num}_{challenge}"
+                        # Get completed challenges for this level
+                        level_completed = [
+                            c
+                            for c in self.game.progress["challenges_completed"]
+                            if c.startswith(f"level_{level_num}_")
+                        ]
+
+                        # Display challenge list with status indicators
+                        for challenge in challenges[:5]:
+                            # Check if this specific challenge is completed
+                            challenge_id = f"level_{level_num}_{challenge.lower().replace(' ', '_')}"
+                            is_completed = (
+                                challenge_id
                                 in self.game.progress["challenges_completed"]
                             )
-                            dot_color = (
-                                Dashboard.IOS_GREEN
-                                if completed
-                                else "rgba(255,255,255,0.3)"
+
+                            # Use a more flexible matching for legacy IDs
+                            if not is_completed:
+                                # Try partial matching for challenges with different naming
+                                challenge_partial = challenge.lower().replace(" ", "_")
+                                is_completed = any(
+                                    challenge_partial in completed_id
+                                    for completed_id in level_completed
+                                )
+
+                            status_icon = "✅" if is_completed else "○"
+                            status_color = (
+                                Dashboard.IOS_GREEN if is_completed else text_secondary
                             )
+
                             st.markdown(
                                 f"""
-                                <div style="width: 8px; height: 8px; background: {dot_color};
-                                           border-radius: 50%; display: inline-block;"></div>
+                                <div style="display: flex; align-items: center; margin: 4px 0;">
+                                    <span style="color: {status_color}; margin-right: 8px; font-size: 0.9rem;">{status_icon}</span>
+                                    <span style="color: {text_primary}; font-size: 0.85rem;">{challenge}</span>
+                                </div>
                             """,
                                 unsafe_allow_html=True,
                             )
@@ -1288,14 +1387,7 @@ class Dashboard:
                 st.markdown(Dashboard.CLOSE_DIV, unsafe_allow_html=True)
 
             with col3:
-                if status["unlocked"] and not status["completed"]:
-                    if st.button(
-                        "▶️", key=f"start_{level_num}", help=f"Start Level {level_num}"
-                    ):
-                        st.session_state.page = "Challenges"
-                        st.success(f"🚀 Starting Level {level_num}!")
-                        st.rerun()
-                elif status["completed"]:
+                if status["completed"]:
                     st.markdown(
                         """
                     <div class="ios-card" style="text-align: center; height: 100px; display: flex;
@@ -1436,7 +1528,8 @@ class Dashboard:
                         )
                     else:
                         challenge_name = str(challenge_data)
-                    challenge_id = f"level_{selected_level}_{challenge_name}"
+                    # Create unique challenge ID using both level and index
+                    challenge_id = f"level_{selected_level}_challenge_{i}_{challenge_name.replace(' ', '_').lower()}"
                     completed = (
                         challenge_id in self.game.progress["challenges_completed"]
                     )
@@ -1587,11 +1680,15 @@ class Dashboard:
                             key=f"challenge_{challenge_id}",
                             disabled=button_disabled,
                         ):
-                            if completed:
-                                st.success(f"📖 Reviewing challenge: {challenge_name}")
-                            else:
-                                st.success(f"🚀 Started challenge: {challenge_name}")
-                                # Here you would typically open the challenge or mark it as started
+                            # Store challenge info in session state for viewing
+                            st.session_state.viewing_challenge = {
+                                "level": selected_level,
+                                "name": challenge_name,
+                                "data": challenge_data,
+                                "completed": completed,
+                            }
+                            st.session_state.show_challenge_modal = True
+                            st.rerun()
 
                         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -2527,14 +2624,7 @@ Completion: {stats['completion_rate']:.1f}%
         with col1:
             st.markdown("🌙 Dark Mode")
         with col2:
-            if st.checkbox(
-                "Enable dark mode",
-                value=st.session_state.dark_mode,
-                key="theme_toggle",
-                label_visibility="hidden",
-            ):
-                st.session_state.dark_mode = not st.session_state.dark_mode
-                st.rerun()
+            pass  # Removed duplicate theme toggle - now handled in sidebar
 
     def render_enhanced_metrics(self) -> None:
         """Render additional metrics and insights"""
@@ -2641,7 +2731,8 @@ Completion: {stats['completion_rate']:.1f}%
                     )
                 else:
                     challenge_name = str(challenge_data)
-                challenge_id = f"level_{current_level}_{challenge_name}"
+                # Create unique challenge ID
+                challenge_id = f"level_{current_level}_rec_{challenge_name.replace(' ', '_').lower()}"
 
                 if challenge_id not in completed_challenges:
                     if isinstance(challenge_data, dict):
@@ -2810,3 +2901,293 @@ Completion: {stats['completion_rate']:.1f}%
                 ):
                     st.session_state.page = "Challenges"
                     st.rerun()
+
+    def show_challenge_modal(self) -> None:
+        """Display challenge content in a modal-like interface"""
+        challenge_info = st.session_state.get("viewing_challenge")
+        if not challenge_info:
+            st.session_state.show_challenge_modal = False
+            st.rerun()
+            return
+
+        level = challenge_info["level"]
+        challenge_name = challenge_info["name"]
+        challenge_data = challenge_info["data"]
+        completed = challenge_info["completed"]
+
+        # Header with back button
+        col1, col2, col3 = st.columns([1, 6, 1])
+
+        with col1:
+            if st.button(
+                "← Back",
+                key="back_to_challenges",
+                type="secondary",
+                help="Return to main navigation",
+            ):
+                st.session_state.show_challenge_modal = False
+                st.session_state.viewing_challenge = None
+                st.rerun()
+
+        with col2:
+            st.markdown(
+                f"""
+            <div style="text-align: center;">
+                <h1 style="margin: 0;">🎯 {challenge_name}</h1>
+                <p style="color: var(--text-secondary); margin: 0;">Level {level} Challenge</p>
+            </div>
+            """,
+                unsafe_allow_html=True,
+            )
+
+        # Challenge content
+        if isinstance(challenge_data, dict) and challenge_data.get("content"):
+            content = challenge_data["content"]
+
+            # Display challenge description
+            description = challenge_data.get("description", "")
+            if description:
+                st.markdown(
+                    f"""
+                <div class="ios-card" style="margin: 20px 0;">
+                    <h3>📖 Overview</h3>
+                    <p>{description}</p>
+                </div>
+                """,
+                    unsafe_allow_html=True,
+                )
+
+            # Display objectives if available
+            objectives = challenge_data.get("objectives", [])
+            if objectives:
+                st.markdown(
+                    """
+                <div class="ios-card" style="margin: 20px 0;">
+                    <h3>🎯 Learning Objectives</h3>
+                </div>
+                """,
+                    unsafe_allow_html=True,
+                )
+
+                for obj in objectives:
+                    st.markdown(f"• {obj}")
+
+            # Display main content with better formatting
+            st.markdown(
+                """
+            <div class="ios-card" style="margin: 20px 0;">
+                <h3>📝 Challenge Content</h3>
+            </div>
+            """,
+                unsafe_allow_html=True,
+            )
+
+            # Parse and render markdown content with better formatting
+            self._render_formatted_challenge_content(content)
+
+            # Action buttons
+            st.markdown("<br>", unsafe_allow_html=True)
+            col1, col2, col3 = st.columns([2, 1, 2])
+
+            with col1:
+                if not completed:
+                    if st.button(
+                        "✅ Mark as Complete", key="complete_challenge", type="primary"
+                    ):
+                        challenge_id = (
+                            f"level_{level}_{challenge_name.lower().replace(' ', '_')}"
+                        )
+                        self.game.complete_challenge(challenge_id)
+                        st.success("🎉 Challenge completed! XP awarded.")
+                        st.balloons()
+                        # Update the challenge info
+                        st.session_state.viewing_challenge["completed"] = True
+                        st.rerun()
+                else:
+                    st.success("✅ Challenge Already Completed!")
+                    if st.button(
+                        "← Return to Dashboard",
+                        key="return_dashboard",
+                        help="Go back to main dashboard",
+                    ):
+                        st.session_state.show_challenge_modal = False
+                        st.session_state.viewing_challenge = None
+                        st.session_state.page = "Dashboard"
+                        st.rerun()
+
+            with col3:
+                if st.button("📄 Open in Jupyter", key="open_jupyter"):
+                    st.info("💡 Jupyter integration coming soon!")
+
+        else:
+            st.error("❌ Challenge content not found!")
+            if st.button("← Back to Challenges", key="back_error"):
+                st.session_state.show_challenge_modal = False
+                st.session_state.viewing_challenge = None
+                st.rerun()
+
+    def _render_formatted_challenge_content(self, content: str) -> None:
+        """Render challenge content with improved formatting and readability"""
+        if not content:
+            st.warning("No challenge content available.")
+            return
+
+        # Get theme-appropriate colors
+        colors = self._get_theme_colors()
+
+        # Split content into sections for better organization
+        lines = content.split("\n")
+        current_section = []
+        in_code_block = False
+        code_language = "python"
+
+        i = 0
+        while i < len(lines):
+            line = lines[i].rstrip()
+
+            # Handle code blocks
+            if line.startswith("```"):
+                if in_code_block:
+                    # End of code block
+                    if current_section:
+                        code_content = "\n".join(current_section)
+                        if code_content.strip():
+                            st.code(code_content, language=code_language)
+                        current_section = []
+                    in_code_block = False
+                else:
+                    # Start of code block
+                    if current_section:
+                        # Render any accumulated non-code content
+                        text_content = "\n".join(current_section).strip()
+                        if text_content:
+                            formatted_text = self._format_text_content(
+                                text_content, colors
+                            )
+                            st.markdown(formatted_text, unsafe_allow_html=True)
+                        current_section = []
+
+                    # Extract language if specified
+                    code_language = line[3:].strip() or "python"
+                    in_code_block = True
+                i += 1
+                continue
+
+            if in_code_block:
+                current_section.append(line)
+            else:
+                # Handle different types of content
+                if (
+                    line.startswith("# ")
+                    or line.startswith("## ")
+                    or line.startswith("### ")
+                ):
+                    # Render previous section first
+                    if current_section:
+                        text_content = "\n".join(current_section).strip()
+                        if text_content:
+                            formatted_text = self._format_text_content(
+                                text_content, colors
+                            )
+                            st.markdown(formatted_text, unsafe_allow_html=True)
+                        current_section = []
+
+                    # Render header with custom styling
+                    level = len(line) - len(line.lstrip("#"))
+                    header_text = line.lstrip("# ").strip()
+
+                    if level == 1:
+                        st.markdown(
+                            f"""
+                        <div class="ios-card" style="margin: 25px 0 15px 0; background: linear-gradient(135deg, {colors['ios_blue']}, {colors['ios_purple']}); border-radius: 16px; padding: 20px;">
+                            <h2 style="margin: 0; color: white; text-align: center;">🎯 {header_text}</h2>
+                        </div>
+                        """,
+                            unsafe_allow_html=True,
+                        )
+                    elif level == 2:
+                        st.markdown(
+                            f"""
+                        <div style="margin: 20px 0 10px 0; padding: 12px; background: {colors['surface_secondary']}; border-radius: 12px; border-left: 4px solid {colors['ios_blue']};">
+                            <h3 style="margin: 0; color: {colors['text_primary']};">📋 {header_text}</h3>
+                        </div>
+                        """,
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        st.markdown(
+                            f"""
+                        <div style="margin: 15px 0 8px 0;">
+                            <h4 style="margin: 0; color: {colors['text_primary']}; border-bottom: 2px solid {colors['ios_orange']}; display: inline-block; padding-bottom: 4px;">✨ {header_text}</h4>
+                        </div>
+                        """,
+                            unsafe_allow_html=True,
+                        )
+                else:
+                    current_section.append(line)
+
+            i += 1
+
+        # Render any remaining content
+        if current_section:
+            if in_code_block:
+                code_content = "\n".join(current_section)
+                if code_content.strip():
+                    st.code(code_content, language=code_language)
+            else:
+                text_content = "\n".join(current_section).strip()
+                if text_content:
+                    # Apply some styling to regular text content
+                    formatted_text = self._format_text_content(text_content, colors)
+                    st.markdown(formatted_text, unsafe_allow_html=True)
+
+    def _format_text_content(self, text: str, colors: dict) -> str:
+        """Apply better formatting to text content"""
+        if not text:
+            return text
+
+        # Split into paragraphs and format each
+        paragraphs = text.split("\n\n")
+        formatted_paragraphs = []
+
+        for para in paragraphs:
+            para = para.strip()
+            if not para:
+                continue
+
+            # Handle lists
+            if para.startswith("- ") or para.startswith("* "):
+                # Format as a styled list
+                list_items = []
+                for line in para.split("\n"):
+                    line = line.strip()
+                    if line.startswith(("- ", "* ")):
+                        item_text = line[2:].strip()
+                        list_items.append(
+                            f"""
+                        <div style="display: flex; align-items: flex-start; margin: 8px 0; padding: 8px; background: {colors['surface_secondary']}; border-radius: 8px;">
+                            <span style="color: {colors['ios_blue']}; font-weight: bold; margin-right: 8px;">•</span>
+                            <span style="flex: 1; color: {colors['text_primary']};">{item_text}</span>
+                        </div>
+                        """
+                        )
+
+                if list_items:
+                    formatted_paragraphs.append(
+                        f"""
+                    <div style="margin: 16px 0;">
+                        {''.join(list_items)}
+                    </div>
+                    """
+                    )
+            else:
+                # Regular paragraph with enhanced readability
+                formatted_paragraphs.append(
+                    f"""
+                <div style="margin: 16px 0; padding: 16px; background: {colors['surface_secondary']}; border-radius: 12px; line-height: 1.6;">
+                    <p style="margin: 0; color: {colors['text_primary']};">{para}</p>
+                </div>
+                """
+                )
+
+        return "".join(formatted_paragraphs)

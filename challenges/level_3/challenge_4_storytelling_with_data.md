@@ -24,7 +24,8 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Professional presentation styling
-plt.style.use('seaborn-v0_8-whitegrid')
+plt.style.use('default')
+sns.set_style("whitegrid")
 plt.rcParams.update({
     'figure.facecolor': 'white',
     'axes.facecolor': 'white',
