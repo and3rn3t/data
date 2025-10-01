@@ -78,7 +78,7 @@ jobs:
 
             - name: Upload test results
               if: always()
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: ui-test-results-${{ matrix.python-version }}-${{ matrix.browser }}
                   path: |
@@ -137,7 +137,7 @@ jobs:
 
             - name: Upload accessibility report
               if: always()
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: accessibility-report
                   path: accessibility-report.json
@@ -183,7 +183,7 @@ jobs:
 
             - name: Upload performance report
               if: always()
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: performance-report
                   path: |
