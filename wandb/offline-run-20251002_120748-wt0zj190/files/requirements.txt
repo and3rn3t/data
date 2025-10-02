@@ -6,7 +6,7 @@ aiosignal==1.4.0
 aiosqlite==0.21.0
 alabaster==1.0.0
 alembic==1.16.5
-altair==4.2.2
+altair==5.5.0
 annotated-types==0.7.0
 ansicolors==1.1.8
 antlr4-python3-runtime==4.13.2
