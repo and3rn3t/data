@@ -290,6 +290,54 @@ models/
 outputs/
 *.prof
 
+# Machine Learning artifacts
+mlruns/
+mlartifacts/
+mlflow/
+wandb/
+.wandb/
+model_registry/
+experiments/
+checkpoints/
+*.h5
+*.hdf5
+*.onnx
+*.pb
+*.pth
+*.pt
+*.joblib
+
+# Data files (usually large)
+*.csv
+*.parquet
+*.feather
+*.arrow
+*.sqlite
+*.db
+*.duckdb
+!**/sample_data/*.csv
+!**/demo_data/*.csv
+
+# Visualization outputs
+*.html
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.pdf
+!docs/images/*.png
+!docs/images/*.jpg
+
+# Jupyter notebook checkpoints and outputs
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+
+# Profiling and performance
+*.cprof
+*.profile
+profile_results/
+memory_profiler.log
+
 # IDE local settings
 .vscode/settings-local.json
 

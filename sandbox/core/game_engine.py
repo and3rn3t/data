@@ -94,7 +94,7 @@ class GameEngine:
     def add_experience(self, points: int, reason: str = "") -> None:
         """Add experience points"""
         self.progress["experience_points"] += points
-        print(f"🎉 +{points} XP! {reason}")
+        print(f"+{points} XP! {reason}")
         self.save_progress()
 
     def complete_challenge(self, challenge_id: str) -> bool:
@@ -143,6 +143,90 @@ class GameEngine:
                     f"🎊 Level {current_level} Complete! Level {current_level + 1} Unlocked!"
                 )
                 self.earn_badge("problem_solver")
+
+    def _is_challenge_completed(self, level: int, challenge_name: str) -> bool:
+        """Check if a specific challenge is completed using flexible matching"""
+        completed = self.progress["challenges_completed"]
+
+        # Normalize the challenge name for matching - remove leading numbers
+        normalized_name = challenge_name.lower().replace(" ", "_")
+        # Remove leading number patterns like "1_", "2_", etc.
+        if (
+            len(normalized_name) > 2
+            and normalized_name[1] == "_"
+            and normalized_name[0].isdigit()
+        ):
+            normalized_name = normalized_name[2:]  # Remove "1_" from "1_first_steps"
+
+        # Try multiple ID formats that might exist
+        possible_ids = [
+            f"level_{level}_{normalized_name}",
+            f"level_{level}_challenge_{normalized_name}",
+            f"level_{level}_1_{normalized_name}",
+            f"level_{level}_2_{normalized_name}",
+            f"level_{level}_3_{normalized_name}",
+            f"level_{level}_4_{normalized_name}",
+        ]
+
+        # Check each completed challenge
+        for completed_id in completed:
+            if completed_id.startswith(f"level_{level}_"):
+                # Direct ID match
+                for possible_id in possible_ids:
+                    if possible_id == completed_id:
+                        return True
+
+                # Extract the name part from completed ID for partial matching
+                completed_name_part = completed_id.replace(f"level_{level}_", "")
+
+                # Remove common prefixes from completed name
+                if completed_name_part.startswith("challenge_"):
+                    completed_name_part = completed_name_part[
+                        10:
+                    ]  # Remove "challenge_"
+
+                # Check if the core challenge name matches
+                # Handle cases like "time_series_analysis" vs "1_time_series_analysis"
+                if (
+                    normalized_name in completed_name_part
+                    or completed_name_part in normalized_name
+                    or normalized_name == completed_name_part
+                ):
+                    return True
+
+        return False
+
+    def get_level_challenges_with_completion(self, level: int) -> List[Dict[str, Any]]:
+        """Get level challenges with completion status"""
+        challenges = self.get_level_challenges(level)
+        result = []
+
+        for i, challenge in enumerate(challenges, 1):
+            is_completed = self._is_challenge_completed(level, challenge)
+            result.append(
+                {
+                    "name": challenge,
+                    "number": i,
+                    "completed": is_completed,
+                    "id": f"level_{level}_{i}_{challenge.lower().replace(' ', '_')}",
+                }
+            )
+
+        return result
+
+    def get_level_completion_stats(self, level: int) -> Dict[str, Any]:
+        """Get completion statistics for a level"""
+        challenges = self.get_level_challenges_with_completion(level)
+        completed_count = sum(1 for c in challenges if c["completed"])
+
+        return {
+            "total_challenges": len(challenges),
+            "completed_challenges": completed_count,
+            "completion_rate": (
+                (completed_count / len(challenges) * 100) if challenges else 0
+            ),
+            "is_level_complete": completed_count >= len(challenges) * 0.8,
+        }
 
     def get_level_challenges(self, level: int) -> List[str]:
         """Get list of challenges for a specific level"""
