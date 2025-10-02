@@ -36,7 +36,7 @@ class TestEndToEndWorkflows:
         assert len(initial_progress["challenges_completed"]) == 0
 
         # Complete first challenge
-        first_challenge = "level_1_first_steps"
+        first_challenge = "level_1_1_first_steps"
         success = self.game_engine.complete_challenge(first_challenge)
 
         assert success is True
@@ -164,6 +164,10 @@ class TestEndToEndWorkflows:
                     sample_data, "SELECT COUNT(*) as row_count FROM df"
                 )
                 assert len(query_result) == 1
+                # Handle both Pandas and Polars DataFrames
+                if hasattr(query_result, "to_pandas"):
+                    # It's a Polars DataFrame, convert to pandas
+                    query_result = query_result.to_pandas()
                 assert query_result.iloc[0]["row_count"] == 100
 
                 # Simulate challenge completion with data analysis

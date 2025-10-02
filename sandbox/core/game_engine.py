@@ -97,8 +97,12 @@ class GameEngine:
         print(f"🎉 +{points} XP! {reason}")
         self.save_progress()
 
-    def complete_challenge(self, challenge_id: str) -> None:
+    def complete_challenge(self, challenge_id: str) -> bool:
         """Mark a challenge as completed and check for badges"""
+        # Validate challenge exists
+        if not self._is_valid_challenge(challenge_id):
+            return False
+
         if challenge_id not in self.progress["challenges_completed"]:
             self.progress["challenges_completed"].append(challenge_id)
             self.add_experience(100, f"Completed {challenge_id}")
@@ -110,6 +114,8 @@ class GameEngine:
 
             self.save_progress()
             self.check_level_completion()
+            return True
+        return False  # Challenge was already completed
 
     def earn_badge(self, badge_id: str) -> None:
         """Earn a new badge"""
@@ -191,6 +197,66 @@ class GameEngine:
         for level in range(1, 8):
             total += len(self.get_level_challenges(level))
         return max(1, total)  # Avoid division by zero
+
+    def get_available_challenges(self) -> List[Dict[str, Any]]:
+        """Get list of challenges available to the player"""
+        current_level = self.get_current_level()
+        all_challenges = []
+
+        # Get challenges from current level and all unlocked levels
+        for level in range(1, current_level + 1):
+            challenges_dir = os.path.join(BASE_DIR, "challenges", f"level_{level}")
+
+            if os.path.exists(challenges_dir):
+                for file in os.listdir(challenges_dir):
+                    if file.endswith(".md") and file.startswith("challenge_"):
+                        # Extract challenge name from filename (e.g., challenge_1_first_steps.md)
+                        base_name = file.replace("challenge_", "").replace(".md", "")
+                        challenge_id = f"level_{level}_{base_name}"
+
+                        # Only include challenges not yet completed
+                        if challenge_id not in self.progress["challenges_completed"]:
+                            # Format display name
+                            display_name = base_name.replace("_", " ").title()
+
+                            challenge_info = {
+                                "id": challenge_id,
+                                "name": display_name,
+                                "level": level,
+                                "difficulty": (
+                                    "beginner"
+                                    if level <= 2
+                                    else "intermediate" if level <= 4 else "advanced"
+                                ),
+                            }
+                            all_challenges.append(challenge_info)
+
+        return sorted(all_challenges, key=lambda x: (x["level"], x["id"]))
+
+    def _is_valid_challenge(self, challenge_id: str) -> bool:
+        """Check if a challenge ID is valid"""
+        # Extract level from challenge_id (format: level_X_number_challenge_name)
+        try:
+            parts = challenge_id.split("_")
+            if len(parts) < 4 or parts[0] != "level":
+                return False
+
+            level = int(parts[1])
+
+            # Check if level exists and challenge file exists
+            if level in LEVELS:
+                challenges_dir = os.path.join(BASE_DIR, "challenges", f"level_{level}")
+
+                # Reconstruct the original filename from the challenge_id
+                # level_1_1_first_steps -> challenge_1_first_steps.md
+                challenge_number = parts[2]
+                challenge_name = "_".join(parts[3:])
+                challenge_file = f"challenge_{challenge_number}_{challenge_name}.md"
+
+                return os.path.exists(os.path.join(challenges_dir, challenge_file))
+            return False
+        except (ValueError, IndexError):
+            return False
 
     def start_cli_mode(self) -> None:
         """Start CLI interface"""

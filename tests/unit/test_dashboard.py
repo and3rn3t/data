@@ -84,6 +84,15 @@ class TestDashboard:
     def test_dashboard_page_config_setup(self, mock_streamlit):
         """Test that Streamlit page configuration is set up."""
         mock_game_engine = Mock()
+        mock_game_engine.get_stats.return_value = {
+            "level": 1,
+            "experience": 100,
+            "badges": 2,
+            "challenges_completed": 3,
+            "total_levels": 7,
+            "completion_rate": 15.0,
+        }
+        mock_game_engine.progress = {"player_name": "Test Player"}
         dashboard = Dashboard(mock_game_engine)
 
         dashboard.run()
@@ -100,6 +109,15 @@ class TestDashboard:
     def test_dashboard_css_styling(self, mock_streamlit):
         """Test that custom CSS is applied."""
         mock_game_engine = Mock()
+        mock_game_engine.get_stats.return_value = {
+            "level": 1,
+            "experience": 100,
+            "badges": 2,
+            "challenges_completed": 3,
+            "total_levels": 7,
+            "completion_rate": 15.0,
+        }
+        mock_game_engine.progress = {"player_name": "Test Player"}
         dashboard = Dashboard(mock_game_engine)
 
         dashboard.run()
@@ -165,11 +183,14 @@ class TestDashboard:
         mock_game_engine = Mock()
         dashboard = Dashboard(mock_game_engine)
 
-        # Test default theme preference
-        mock_streamlit.session_state.get.return_value = None
+        # Test default theme preference - simulate session_state.get with default behavior
+        def mock_get(key, default=None):
+            return default if key == "dark_theme" else None
+
+        mock_streamlit.session_state.get.side_effect = mock_get
         colors = dashboard._get_theme_colors()
 
-        # Should default to dark theme
+        # Should default to dark theme (default=True)
         assert colors["text_primary"] == "#FFFFFF"
 
     @patch("sandbox.core.dashboard.st")

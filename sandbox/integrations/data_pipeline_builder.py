@@ -293,7 +293,18 @@ class DataPipelineBuilder:
                 else:
                     raise ValueError(f"Unsupported file format: {data_source}")
             else:
-                data = data_source.copy()
+                # Handle both Pandas and Polars DataFrames
+                try:
+                    import polars as pl
+
+                    if isinstance(data_source, pl.DataFrame):
+                        # Convert Polars to Pandas for pipeline processing
+                        data = data_source.to_pandas()
+                    else:
+                        data = data_source.copy()
+                except ImportError:
+                    # Polars not available, assume pandas DataFrame
+                    data = data_source.copy()
 
             original_shape = data.shape
 

@@ -40,8 +40,12 @@ class TestDataPipelineIntegration:
         # Define transformation pipeline
         def add_derived_fields(df: pd.DataFrame) -> pd.DataFrame:
             df = df.copy()
+            # Use the correct column name that exists in the data
+            amount_col = (
+                "total_amount" if "total_amount" in df.columns else "sales_amount"
+            )
             df["revenue_category"] = pd.cut(
-                df["total_amount"], bins=3, labels=["Low", "Medium", "High"]
+                df[amount_col], bins=3, labels=["Low", "Medium", "High"]
             )
             return df
 
@@ -214,9 +218,10 @@ class TestDataPipelineIntegration:
         quality_report = self.pipeline_builder.create_data_quality_report(
             result["processed_data"]
         )
-        assert "total_rows" in quality_report
-        assert "total_columns" in quality_report
-        assert quality_report["total_rows"] > 0
+        assert "dataset_overview" in quality_report
+        assert "total_rows" in quality_report["dataset_overview"]
+        assert "total_columns" in quality_report["dataset_overview"]
+        assert quality_report["dataset_overview"]["total_rows"] > 0
 
     @pytest.mark.integration
     def test_cross_tool_integration(self) -> None:
@@ -243,8 +248,8 @@ class TestDataPipelineIntegration:
         SELECT
             product_category,
             COUNT(*) as order_count,
-            AVG(total_amount) as avg_amount,
-            SUM(total_amount) as total_revenue
+            AVG(sales_amount) as avg_amount,
+            SUM(sales_amount) as total_revenue
         FROM df
         GROUP BY product_category
         ORDER BY total_revenue DESC
@@ -252,7 +257,10 @@ class TestDataPipelineIntegration:
 
         analysis_result = self.processor.query_with_sql(processed_data, analysis_query)
 
-        # Verify cross-tool integration
+        # Verify cross-tool integration - handle both Pandas and Polars DataFrames
+        if hasattr(analysis_result, "to_pandas"):
+            # It's a Polars DataFrame, convert to pandas for assertions
+            analysis_result = analysis_result.to_pandas()
         assert isinstance(analysis_result, pd.DataFrame)
         assert len(analysis_result) > 0
         assert "product_category" in analysis_result.columns

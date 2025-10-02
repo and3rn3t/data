@@ -46,7 +46,7 @@ class TestGameEngine:
 
     def test_complete_challenge(self, game_engine: Any) -> None:
         """Test completing a challenge."""
-        challenge_id = "level_1_first_steps"
+        challenge_id = "level_1_1_first_steps"
         initial_challenges = len(game_engine.progress["challenges_completed"])
 
         game_engine.complete_challenge(challenge_id)
@@ -91,7 +91,7 @@ class TestGameEngine:
         # Add some data
         game_engine.add_experience(150)
         game_engine.earn_badge("first_steps")
-        game_engine.complete_challenge("level_1_test")
+        game_engine.complete_challenge("level_1_1_first_steps")
 
         stats = game_engine.get_stats()
 

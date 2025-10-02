@@ -46,12 +46,12 @@ class TestDatabaseIntegration:
         if not self.processor.duckdb_available:
             pytest.skip("DuckDB not available")
 
-        # Create test data
+        # Create test data - ensure all arrays have the same length
         test_data = pd.DataFrame(
             {
-                "id": range(1, 101),
-                "value": range(100, 201),
-                "category": ["A", "B", "C"] * 33 + ["A"],
+                "id": range(1, 101),  # 100 elements
+                "value": range(100, 200),  # 100 elements
+                "category": ["A", "B", "C"] * 33 + ["A"],  # 100 elements
             }
         )
 
@@ -59,6 +59,10 @@ class TestDatabaseIntegration:
         query = "SELECT category, COUNT(*) as count, AVG(value) as avg_value FROM df GROUP BY category"
         result = self.processor.query_with_sql(test_data, query)
 
+        # Handle both Pandas and Polars DataFrames
+        if hasattr(result, "to_pandas"):
+            # It's a Polars DataFrame, convert to pandas
+            result = result.to_pandas()
         assert isinstance(result, pd.DataFrame)
         assert len(result) == 3  # Three categories
         assert "count" in result.columns
@@ -143,7 +147,7 @@ class TestDatabaseIntegration:
         SELECT
             DATE_TRUNC('month', order_date) as month,
             COUNT(*) as orders,
-            SUM(total_amount) as revenue
+            SUM(sales_amount) as revenue
         FROM df
         GROUP BY month
         ORDER BY month
