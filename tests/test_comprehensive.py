@@ -11,34 +11,36 @@ import time
 from sandbox.core.game_engine import GameEngine
 
 
-def test_game_engine() -> bool:
+def test_game_engine():
     """Test core game engine functionality"""
     print("🎮 Testing Game Engine...")
 
     # Create test engine
     engine = GameEngine()
     print(f"✅ Engine initialized: Level {engine.get_current_level()}")
+    assert engine.get_current_level() >= 1
 
     # Test challenge completion
     engine.complete_challenge("test_challenge")
     print(
         f"✅ Challenge completed: {len(engine.progress['challenges_completed'])} total"
     )
+    assert len(engine.progress["challenges_completed"]) > 0
 
     # Test level info
     challenges = engine.get_level_challenges(1)
     print(f"✅ Level 1 has {len(challenges)} challenges")
+    assert len(challenges) > 0
 
     # Test stats
     stats = engine.get_stats()
     print(
         f"✅ Stats: Level {stats['level']}, {stats['experience']} XP, {stats['completion_rate']:.1f}% complete"
     )
+    assert stats["level"] >= 1
 
-    return True
 
-
-def test_challenge_system() -> bool:
+def test_challenge_system():
     """Test challenge system integrity"""
     print("\n🎯 Testing Challenge System...")
 
@@ -57,27 +59,20 @@ def test_challenge_system() -> bool:
     counted_total = engine.count_total_challenges()
     print(f"✅ Engine reports: {counted_total} challenges")
 
-    return total_challenges > 25  # Should have 29+ challenges
+    assert total_challenges > 25, "Should have 29+ challenges"
 
 
-def test_dashboard_compatibility() -> bool:
+def test_dashboard_compatibility():
     """Test dashboard can import without errors"""
     print("\n📊 Testing Dashboard Compatibility...")
 
-    try:
-        from sandbox.core.dashboard import Dashboard
+    from sandbox.core.dashboard import Dashboard
 
-        engine = GameEngine()
-        Dashboard(engine)  # Test initialization only
-        print("✅ Dashboard imports successfully")
-        print("✅ Dashboard initializes with game engine")
-        return True
-    except ImportError as e:
-        print(f"❌ Dashboard import failed: {e}")
-        return False
-    except Exception as e:
-        print(f"❌ Dashboard initialization failed: {e}")
-        return False
+    engine = GameEngine()
+    Dashboard(engine)  # Test initialization only
+    print("✅ Dashboard imports successfully")
+    print("✅ Dashboard initializes with game engine")
+    # Test passes if no exception is thrown
 
 
 def test_file_structure() -> bool:
@@ -89,7 +84,7 @@ def test_file_structure() -> bool:
         "config.py",
         "sandbox/core/game_engine.py",
         "sandbox/core/dashboard.py",
-        "streamlit_app.py",
+        "apps/streamlit_app.py",
         "progress.json",
     ]
 
@@ -121,10 +116,10 @@ def test_file_structure() -> bool:
             print(f"❌ Missing: {dir_path}/")
             all_good = False
 
-    return all_good
+    assert all_good, "Some required files/directories are missing"
 
 
-def test_imports() -> bool:
+def test_imports():
     """Test that all critical imports work"""
     print("\n📦 Testing Imports...")
 
@@ -138,7 +133,7 @@ def test_imports() -> bool:
         ("polars", "pl"),
     ]
 
-    all_good = True
+    failed_imports = []
 
     for module, alias in imports_to_test:
         try:
@@ -149,9 +144,9 @@ def test_imports() -> bool:
             print(f"✅ Import success: {module}")
         except ImportError as e:
             print(f"❌ Import failed: {module} - {e}")
-            all_good = False
+            failed_imports.append(module)
 
-    return all_good
+    assert len(failed_imports) == 0, f"Failed imports: {failed_imports}"
 
 
 def main() -> bool:
@@ -172,15 +167,17 @@ def main() -> bool:
     for test_name, test_func in tests:
         try:
             start_time = time.time()
-            result = test_func()
+            test_func()  # Test functions now use assertions instead of return values
             end_time = time.time()
 
-            status = "✅ PASS" if result else "❌ FAIL"
+            # If we get here, test passed (no assertion error)
             duration = end_time - start_time
+            print(f"\n✅ PASS {test_name} ({duration:.2f}s)")
+            results.append((test_name, True, duration))
 
-            print(f"\n{status} {test_name} ({duration:.2f}s)")
-            results.append((test_name, result, duration))
-
+        except AssertionError as e:
+            print(f"\n❌ FAIL {test_name} - Assertion: {e}")
+            results.append((test_name, False, 0))
         except Exception as e:
             print(f"\n❌ FAIL {test_name} - Exception: {e}")
             results.append((test_name, False, 0))
@@ -202,9 +199,9 @@ def main() -> bool:
     if passed == total:
         print("🎉 All tests passed! The system is working correctly.")
         return True
-    else:
-        print("⚠️  Some tests failed. Please check the issues above.")
-        return False
+
+    print("⚠️  Some tests failed. Please check the issues above.")
+    return False
 
 
 if __name__ == "__main__":

@@ -17,20 +17,17 @@ print("=" * 60)
 
 try:
     # Import our integration modules
-    from sandbox.integrations import (
-        ModernDataProcessor,
-        ExperimentTracker,
-        ModelExplainer,
-        HyperparameterOptimizer,
-        DataPipelineBuilder,
-    )
-
-    # Standard ML imports
-    import pandas as pd
-    import numpy as np
     from sklearn.ensemble import RandomForestClassifier
-    from sklearn.model_selection import train_test_split, cross_val_score
-    from sklearn.metrics import accuracy_score, classification_report
+    from sklearn.metrics import accuracy_score
+    from sklearn.model_selection import cross_val_score, train_test_split
+
+    from sandbox.integrations import (
+        DataPipelineBuilder,
+        ExperimentTracker,
+        HyperparameterOptimizer,
+        ModelExplainer,
+        ModernDataProcessor,
+    )
 
     print("✅ All modules imported successfully!")
 
@@ -40,13 +37,8 @@ except ImportError as e:
     exit(1)
 
 
-def main():
-    """Main demonstration workflow."""
-
-    # ============================================================================
-    # STEP 1: High-Performance Data Processing
-    # ============================================================================
-
+def demo_data_processing():
+    """Demonstrate high-performance data processing."""
     print("\n📊 STEP 1: High-Performance Data Processing")
     print("-" * 50)
 
@@ -60,6 +52,97 @@ def main():
     for tool, info in status.items():
         if isinstance(info, str):
             print(f"  • {tool.replace('_', ' ').title()}: {info}")
+
+    return processor
+
+
+def demo_ml_tracking():
+    """Demonstrate ML experiment tracking."""
+    print("\n🧪 STEP 2: ML Experiment Tracking")
+    print("-" * 50)
+
+    # Initialize experiment tracker
+    tracker = ExperimentTracker()
+
+    # Show tracking capabilities
+    print("📋 Experiment tracking capabilities:")
+    tracking_info = tracker.get_tracking_info()
+
+    for capability, status in tracking_info.items():
+        print(f"  • {capability.replace('_', ' ').title()}: {status}")
+
+    return tracker
+
+
+def demo_baseline_model(tracker, X_train, X_test, y_train, y_test):
+    """Train and evaluate baseline model."""
+    print("\n🌲 Training baseline Random Forest...")
+
+    # Start experiment run
+    tracker.start_run(
+        run_name="baseline_random_forest",
+        tags={"model_type": "random_forest", "dataset": "sales", "demo": True},
+    )
+
+    # Train baseline model
+    rf_model = RandomForestClassifier(
+        n_estimators=100, random_state=42, min_samples_leaf=1, max_features="sqrt"
+    )
+    rf_model.fit(X_train, y_train)
+
+    # Evaluate model
+    pred = rf_model.predict(X_test)
+    accuracy = accuracy_score(y_test, pred)
+    cv_scores = cross_val_score(rf_model, X_train, y_train, cv=5)
+
+    return rf_model, accuracy, cv_scores
+
+
+def demo_hyperparameter_optimization(X_train, y_train):
+    """Demonstrate hyperparameter optimization."""
+    print("\n🎯 STEP 3: Hyperparameter Optimization")
+    print("-" * 50)
+
+    optimizer = HyperparameterOptimizer()
+    opt_tools = optimizer.get_tool_comparison()
+    print("🎯 Optimization tools:")
+    for tool, info in opt_tools.items():
+        print(f"  • {tool.upper()}: {info['status']}")
+
+    # Define optimization objective
+    def rf_objective(params):
+        """Objective function for Random Forest optimization."""
+        model = RandomForestClassifier(
+            n_estimators=params["n_estimators"],
+            max_depth=params["max_depth"] if params["max_depth"] > 0 else None,
+            min_samples_split=params["min_samples_split"],
+            min_samples_leaf=1,
+            max_features="sqrt",
+            random_state=42,
+        )
+
+        # Use cross-validation for robust estimation
+        cv_scores = cross_val_score(model, X_train, y_train, cv=3, scoring="accuracy")
+        return -cv_scores.mean()  # Negative because we minimize
+
+    # Define parameter space
+    param_space = {
+        "n_estimators": {"type": "int", "low": 50, "high": 200},
+        "max_depth": {"type": "int", "low": 1, "high": 20},
+        "min_samples_split": {"type": "int", "low": 2, "high": 20},
+    }
+
+    # Run optimization
+    print("⚡ Running hyperparameter optimization...")
+    optimization_results = optimizer.optimize(rf_objective, param_space, n_trials=25)
+
+    return optimization_results
+
+
+def main():
+    """Main demonstration workflow."""
+    # Demo data processing
+    processor = demo_data_processing()
 
     # Create sample dataset using the fastest available method
     print("\n🏭 Creating sample dataset (50K records)...")
@@ -180,14 +263,16 @@ def main():
     print("-" * 50)
 
     # Start experiment run
-    run_id = tracker.start_run(
+    tracker.start_run(
         run_name="baseline_random_forest",
         tags={"model_type": "random_forest", "dataset": "sales", "demo": True},
     )
 
     # Train baseline model
     print("🌲 Training baseline Random Forest...")
-    rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
+    rf_model = RandomForestClassifier(
+        n_estimators=100, random_state=42, min_samples_leaf=1, max_features="sqrt"
+    )
     rf_model.fit(X_train, y_train)
 
     # Log parameters
@@ -293,6 +378,8 @@ def main():
             n_estimators=params["n_estimators"],
             max_depth=params["max_depth"] if params["max_depth"] > 0 else None,
             min_samples_split=params["min_samples_split"],
+            min_samples_leaf=1,
+            max_features="sqrt",
             random_state=42,
         )
 
@@ -334,7 +421,7 @@ def main():
     print("-" * 50)
 
     # Start new experiment for optimized model
-    run_id = tracker.start_run(
+    tracker.start_run(
         run_name="optimized_random_forest",
         tags={"model_type": "random_forest", "optimized": True, "demo": True},
     )
@@ -347,6 +434,12 @@ def main():
         and optimized_params["max_depth"] <= 0
     ):
         optimized_params["max_depth"] = None
+
+    # Add required hyperparameters if not present
+    if "min_samples_leaf" not in optimized_params:
+        optimized_params["min_samples_leaf"] = 1
+    if "max_features" not in optimized_params:
+        optimized_params["max_features"] = "sqrt"
 
     optimized_rf = RandomForestClassifier(**optimized_params, random_state=42)
     optimized_rf.fit(X_train, y_train)
@@ -418,9 +511,7 @@ def main():
     print("• Experiment with different optimization algorithms")
     print("• Build your own data science projects using these tools")
 
-    print(
-        f"\n🏅 Congratulations! You've experienced the modern data science toolchain."
-    )
+    print("\n🏅 Congratulations! You've experienced the modern data science toolchain.")
     print("You're now ready to build production-ready ML systems! 🚀")
 
 

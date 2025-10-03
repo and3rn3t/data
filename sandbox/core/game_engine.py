@@ -144,11 +144,8 @@ class GameEngine:
                 )
                 self.earn_badge("problem_solver")
 
-    def _is_challenge_completed(self, level: int, challenge_name: str) -> bool:
-        """Check if a specific challenge is completed using flexible matching"""
-        completed = self.progress["challenges_completed"]
-
-        # Normalize the challenge name for matching - remove leading numbers
+    def _normalize_challenge_name(self, challenge_name: str) -> str:
+        """Normalize challenge name for matching."""
         normalized_name = challenge_name.lower().replace(" ", "_")
         # Remove leading number patterns like "1_", "2_", etc.
         if (
@@ -157,9 +154,13 @@ class GameEngine:
             and normalized_name[0].isdigit()
         ):
             normalized_name = normalized_name[2:]  # Remove "1_" from "1_first_steps"
+        return normalized_name
 
-        # Try multiple ID formats that might exist
-        possible_ids = [
+    def _get_possible_challenge_ids(
+        self, level: int, normalized_name: str
+    ) -> List[str]:
+        """Get possible challenge ID formats."""
+        return [
             f"level_{level}_{normalized_name}",
             f"level_{level}_challenge_{normalized_name}",
             f"level_{level}_1_{normalized_name}",
@@ -168,31 +169,53 @@ class GameEngine:
             f"level_{level}_4_{normalized_name}",
         ]
 
+    def _check_direct_match(self, possible_ids: List[str], completed_id: str) -> bool:
+        """Check for direct ID matches."""
+        return completed_id in possible_ids
+
+    def _check_partial_match(
+        self, level: int, completed_id: str, normalized_name: str
+    ) -> bool:
+        """Check for partial name matches."""
+        completed_name_part = completed_id.replace(f"level_{level}_", "")
+
+        # Remove common prefixes from completed name
+        if completed_name_part.startswith("challenge_"):
+            completed_name_part = completed_name_part[10:]  # Remove "challenge_"
+
+        # Check if the core challenge name matches
+        return (
+            normalized_name in completed_name_part
+            or completed_name_part in normalized_name
+            or normalized_name == completed_name_part
+        )
+
+    def _get_difficulty_level(self, level: int) -> str:
+        """Get difficulty level based on challenge level."""
+        if level <= 2:
+            return "beginner"
+        if level <= 4:
+            return "intermediate"
+        return "advanced"
+
+    def _is_challenge_completed(self, level: int, challenge_name: str) -> bool:
+        """Check if a specific challenge is completed using flexible matching"""
+        completed = self.progress["challenges_completed"]
+        normalized_name = self._normalize_challenge_name(challenge_name)
+        possible_ids = self._get_possible_challenge_ids(level, normalized_name)
+
         # Check each completed challenge
         for completed_id in completed:
-            if completed_id.startswith(f"level_{level}_"):
-                # Direct ID match
-                for possible_id in possible_ids:
-                    if possible_id == completed_id:
-                        return True
+            if not completed_id.startswith(f"level_{level}_"):
+                continue
 
-                # Extract the name part from completed ID for partial matching
-                completed_name_part = completed_id.replace(f"level_{level}_", "")
+            # Direct ID match
+            if self._check_direct_match(possible_ids, completed_id):
+                return True
 
-                # Remove common prefixes from completed name
-                if completed_name_part.startswith("challenge_"):
-                    completed_name_part = completed_name_part[
-                        10:
-                    ]  # Remove "challenge_"
-
-                # Check if the core challenge name matches
-                # Handle cases like "time_series_analysis" vs "1_time_series_analysis"
-                if (
-                    normalized_name in completed_name_part
-                    or completed_name_part in normalized_name
-                    or normalized_name == completed_name_part
-                ):
-                    return True
+            # Partial match
+            if self._check_partial_match(level, completed_id, normalized_name):
+                return True
 
         return False
 
@@ -307,11 +330,7 @@ class GameEngine:
                                 "id": challenge_id,
                                 "name": display_name,
                                 "level": level,
-                                "difficulty": (
-                                    "beginner"
-                                    if level <= 2
-                                    else "intermediate" if level <= 4 else "advanced"
-                                ),
+                                "difficulty": self._get_difficulty_level(level),
                             }
                             all_challenges.append(challenge_info)
 
