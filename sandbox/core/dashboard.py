@@ -19,7 +19,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 from config import BADGES, LEVELS
 from sandbox.core.game_engine import GameEngine
 from sandbox.utils.dashboard_layout_system import DashboardLayoutSystem
-from sandbox.utils.dashboard_layout_system import DashboardLayoutSystem
 
 
 class Dashboard:
@@ -886,6 +885,7 @@ class Dashboard:
         DashboardLayoutSystem.create_metric_cards(metrics)
 
         # Structured Content Sections
+        self.render_gamification_streak_tracker()
         self._render_learning_progression_section(stats)
         self._render_activity_and_actions_section()
 
@@ -2199,45 +2199,17 @@ class Dashboard:
 
             st.plotly_chart(fig, use_container_width=True)
 
-        # Weekly activity heatmap
-        st.markdown(
-            """
-        <div class="ios-card" style="margin: 30px 0 20px 0;">
-            <h3 style="margin-bottom: 20px;">📊 Weekly Activity Heatmap</h3>
-        </div>
-        """,
-            unsafe_allow_html=True,
-        )
+        # Enhanced Gamification Section
+        col1, col2 = st.columns(2)
 
-        # Create mock weekly activity data
-        days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-        weeks = ["Week 1", "Week 2", "Week 3", "Week 4"]
-        activity_data = []
-        rng = np.random.default_rng(42)
+        with col1:
+            self.render_performance_heatmap_calendar()
 
-        for week in weeks:
-            for day in days:
-                activity_data.append(
-                    {"Week": week, "Day": day, "Activity": rng.integers(0, 10)}
-                )
+        with col2:
+            self.render_skills_radar_chart()
 
-        activity_df = pd.DataFrame(activity_data)
-
-        # Pivot for heatmap
-        heatmap_data = activity_df.pivot(index="Week", columns="Day", values="Activity")
-
-        fig = px.imshow(
-            heatmap_data, color_continuous_scale=["#F9FAFB", "#1D4ED8"], aspect="auto"
-        )
-
-        fig.update_layout(
-            plot_bgcolor=Dashboard.TRANSPARENT_BG,
-            paper_bgcolor=Dashboard.TRANSPARENT_BG,
-            font={"family": Dashboard.SF_FONT, "color": "#1C1C1E"},
-            margin={"t": 20, "b": 50, "l": 80, "r": 50},
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
+        # Milestone Timeline
+        self.render_milestone_timeline()
 
         # Action buttons
         st.markdown(
@@ -3191,3 +3163,756 @@ Completion: {stats['completion_rate']:.1f}%
                 )
 
         return "".join(formatted_paragraphs)
+
+    def render_performance_heatmap_calendar(self) -> None:
+        """Render a GitHub-style activity heatmap calendar"""
+        import plotly.graph_objects as go
+        from datetime import datetime, timedelta
+
+        st.markdown(
+            """
+        <div class="ios-card" style="margin: 30px 0 20px 0;">
+            <h3 style="margin-bottom: 20px;">🔥 Performance Heatmap Calendar</h3>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Generate calendar data for the past year
+        end_date = datetime.now()
+        start_date = end_date - timedelta(days=364)  # ~1 year
+
+        # Create date range
+        dates = pd.date_range(start=start_date, end=end_date, freq="D")
+
+        # Generate activity data based on completed challenges
+        completed_challenges = self.game.progress["challenges_completed"]
+        activity_data = []
+
+        rng = np.random.default_rng(42)  # For consistent demo data
+
+        for date in dates:
+            # Simulate activity based on challenges completed
+            base_activity = len(completed_challenges) // 10  # Base activity level
+            daily_variation = rng.integers(0, 5)  # Random daily variation
+            activity_score = min(base_activity + daily_variation, 10)  # Cap at 10
+
+            activity_data.append(
+                {
+                    "date": date.strftime("%Y-%m-%d"),
+                    "activity": activity_score,
+                    "weekday": date.weekday(),
+                    "week": date.isocalendar()[1],
+                    "month": date.strftime("%b"),
+                }
+            )
+
+        activity_df = pd.DataFrame(activity_data)
+
+        # Create heatmap data
+        weeks = activity_df.groupby(["week"])["activity"].apply(list).reset_index()
+
+        # Reshape for calendar view (7 days x ~52 weeks)
+        calendar_data = []
+        week_labels = []
+
+        for _, week_data in weeks.iterrows():
+            week_activities = week_data["activity"]
+            # Pad to 7 days if needed
+            while len(week_activities) < 7:
+                week_activities.append(0)
+            calendar_data.append(week_activities[:7])
+            week_labels.append(f"Week {week_data['week']}")
+
+        # Create the heatmap
+        fig = go.Figure(
+            data=go.Heatmap(
+                z=list(zip(*calendar_data)),  # Transpose to get days as rows
+                colorscale=[
+                    [0.0, "#F3F4F6"],  # Light gray for no activity
+                    [0.2, "#9CA3AF"],  # Gray for low activity
+                    [0.4, "#6366F1"],  # Purple for medium activity
+                    [0.6, "#4F46E5"],  # Darker purple
+                    [0.8, "#4338CA"],  # Even darker purple
+                    [1.0, "#3730A3"],  # Darkest purple for high activity
+                ],
+                showscale=False,
+                hovertemplate="Activity Level: %{z}<extra></extra>",
+            )
+        )
+
+        fig.update_layout(
+            plot_bgcolor=self.TRANSPARENT_BG,
+            paper_bgcolor=self.TRANSPARENT_BG,
+            font={"family": self.SF_FONT, "color": "#1C1C1E"},
+            margin={"t": 20, "b": 50, "l": 80, "r": 20},
+            height=200,
+            xaxis={
+                "showgrid": False,
+                "showticklabels": False,
+                "showline": False,
+                "zeroline": False,
+            },
+            yaxis={
+                "showgrid": False,
+                "tickmode": "array",
+                "tickvals": [0, 1, 2, 3, 4, 5, 6],
+                "ticktext": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                "showline": False,
+                "zeroline": False,
+            },
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
+
+        # Activity summary
+        total_days = len(activity_df)
+        active_days = len(activity_df[activity_df["activity"] > 0])
+        activity_percentage = (active_days / total_days) * 100
+
+        st.markdown(
+            f"""
+        <div style="display: flex; justify-content: space-between; align-items: center; margin: 16px 0; padding: 16px; background: var(--surface-secondary); border-radius: 12px;">
+            <div style="text-align: center;">
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--ios-green);">{active_days}</div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">Active Days</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--ios-blue);">{activity_percentage:.1f}%</div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">Activity Rate</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--ios-purple);">{len(completed_challenges)}</div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">Challenges</div>
+            </div>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+    def render_skills_radar_chart(self) -> None:
+        """Render a radar chart showing skill proficiency across different areas"""
+        import plotly.graph_objects as go
+
+        st.markdown(
+            """
+        <div class="ios-card" style="margin: 30px 0 20px 0;">
+            <h3 style="margin-bottom: 20px;">🧠 Skills Proficiency Radar</h3>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Calculate skill levels based on completed challenges
+        completed_challenges = self.game.progress["challenges_completed"]
+        current_level = self.game.get_current_level()
+
+        # Define skill categories and their associated challenges
+        skill_mapping = {
+            "Data Cleaning": [
+                "level_1_3_data_types",
+                "level_2_1_advanced_cleaning",
+                "level_2_3_data_cleaning",
+            ],
+            "Visualization": [
+                "level_1_2_visualization",
+                "level_3_1_visualization_mastery",
+            ],
+            "Statistics": [
+                "level_2_2_statistical_analysis",
+                "level_6_4_advanced_statistics",
+            ],
+            "Machine Learning": [
+                "level_4_1_first_ml_models",
+                "level_4_2_feature_engineering",
+                "level_4_3_model_evaluation",
+            ],
+            "Deep Learning": ["level_5_1_advanced_ml_deep_learning"],
+            "MLOps": [
+                "level_7_challenge_2_advanced_mlops",
+                "level_7_1_end_to_end_project",
+            ],
+            "Data Engineering": [
+                "level_6_2_anomaly_detection",
+                "level_7_challenge_3_realtime_analytics",
+            ],
+            "AI Ethics": ["level_7_challenge_4_ai_ethics_governance"],
+        }
+
+        # Calculate proficiency for each skill
+        skills = []
+        proficiency_scores = []
+
+        for skill, related_challenges in skill_mapping.items():
+            # Count completed challenges in this skill area
+            completed_in_skill = sum(
+                1
+                for challenge in completed_challenges
+                if challenge in related_challenges
+            )
+            total_in_skill = len(related_challenges)
+
+            if total_in_skill > 0:
+                base_score = (completed_in_skill / total_in_skill) * 100
+            else:
+                base_score = 0
+
+            # Add bonus based on current level and overall progress
+            level_bonus = min(current_level * 5, 25)  # Up to 25 points for level
+            challenge_bonus = min(
+                len(completed_challenges) * 2, 20
+            )  # Up to 20 points for challenges
+
+            total_score = min(base_score + level_bonus + challenge_bonus, 100)
+
+            skills.append(skill)
+            proficiency_scores.append(total_score)
+
+        # Create radar chart
+        fig = go.Figure()
+
+        fig.add_trace(
+            go.Scatterpolar(
+                r=proficiency_scores + [proficiency_scores[0]],  # Close the shape
+                theta=skills + [skills[0]],  # Close the shape
+                fill="toself",
+                fillcolor="rgba(99, 102, 241, 0.2)",
+                line=dict(color="rgba(99, 102, 241, 0.8)", width=3),
+                marker=dict(color="rgba(99, 102, 241, 1)", size=8),
+                name="Your Skills",
+                hovertemplate="%{theta}: %{r:.1f}%<extra></extra>",
+            )
+        )
+
+        # Add target/max level for comparison
+        max_scores = [100] * len(skills) + [100]
+        fig.add_trace(
+            go.Scatterpolar(
+                r=max_scores,
+                theta=skills + [skills[0]],
+                fill="none",
+                line=dict(color="rgba(156, 163, 175, 0.3)", width=1, dash="dash"),
+                marker=dict(color="rgba(156, 163, 175, 0.3)", size=4),
+                name="Expert Level",
+                hovertemplate="Expert Level: %{r}%<extra></extra>",
+            )
+        )
+
+        fig.update_layout(
+            polar=dict(
+                radialaxis=dict(
+                    visible=True,
+                    range=[0, 100],
+                    ticksuffix="%",
+                    gridcolor="rgba(142, 142, 147, 0.2)",
+                    linecolor="rgba(142, 142, 147, 0.2)",
+                ),
+                angularaxis=dict(
+                    gridcolor="rgba(142, 142, 147, 0.2)",
+                    linecolor="rgba(142, 142, 147, 0.2)",
+                ),
+                bgcolor=self.TRANSPARENT_BG,
+            ),
+            plot_bgcolor=self.TRANSPARENT_BG,
+            paper_bgcolor=self.TRANSPARENT_BG,
+            font={"family": self.SF_FONT, "color": "#1C1C1E"},
+            margin={"t": 50, "b": 50, "l": 50, "r": 50},
+            height=400,
+            showlegend=True,
+            legend=dict(
+                orientation="h", yanchor="bottom", y=-0.15, xanchor="center", x=0.5
+            ),
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
+
+        # Skills summary
+        avg_proficiency = (
+            sum(proficiency_scores) / len(proficiency_scores)
+            if proficiency_scores
+            else 0
+        )
+        top_skill = (
+            skills[proficiency_scores.index(max(proficiency_scores))]
+            if proficiency_scores
+            else "None"
+        )
+        skills_above_50 = sum(1 for score in proficiency_scores if score >= 50)
+
+        st.markdown(
+            f"""
+        <div style="display: flex; justify-content: space-between; align-items: center; margin: 16px 0; padding: 16px; background: var(--surface-secondary); border-radius: 12px;">
+            <div style="text-align: center;">
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--ios-blue);">{avg_proficiency:.1f}%</div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">Average</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 1.2rem; font-weight: 700; color: var(--ios-green);">{top_skill}</div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">Strongest Skill</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--ios-purple);">{skills_above_50}</div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">Skills > 50%</div>
+            </div>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+    def render_milestone_timeline(self) -> None:
+        """Render a visual timeline of learning milestones and achievements"""
+        st.markdown(
+            """
+        <div class="ios-card" style="margin: 30px 0 20px 0;">
+            <h3 style="margin-bottom: 20px;">🎯 Learning Journey Timeline</h3>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Get player progress data
+        completed_challenges = self.game.progress["challenges_completed"]
+        badges_earned = self.game.progress["badges_earned"]
+        current_level = self.game.get_current_level()
+        xp = self.game.progress["experience_points"]
+
+        # Define major milestones
+        milestones = [
+            {
+                "title": "Welcome to Data Science!",
+                "description": "Started your data science journey",
+                "icon": "🎯",
+                "level": 1,
+                "required_challenges": 0,
+                "required_badges": 0,
+                "color": "var(--ios-green)",
+            },
+            {
+                "title": "First Steps Completed",
+                "description": "Mastered basic data exploration",
+                "icon": "👶",
+                "level": 1,
+                "required_challenges": 4,
+                "required_badges": 1,
+                "color": "var(--ios-blue)",
+            },
+            {
+                "title": "Data Analyst",
+                "description": "Advanced data cleaning and analysis",
+                "icon": "📊",
+                "level": 2,
+                "required_challenges": 8,
+                "required_badges": 2,
+                "color": "var(--ios-purple)",
+            },
+            {
+                "title": "Visualization Master",
+                "description": "Created stunning data visualizations",
+                "icon": "🎨",
+                "level": 3,
+                "required_challenges": 12,
+                "required_badges": 3,
+                "color": "var(--ios-orange)",
+            },
+            {
+                "title": "ML Practitioner",
+                "description": "Built your first machine learning models",
+                "icon": "🤖",
+                "level": 4,
+                "required_challenges": 16,
+                "required_badges": 4,
+                "color": "var(--ios-red)",
+            },
+            {
+                "title": "Algorithm Expert",
+                "description": "Advanced ML and deep learning mastery",
+                "icon": "🧠",
+                "level": 5,
+                "required_challenges": 20,
+                "required_badges": 5,
+                "color": "var(--ios-green)",
+            },
+            {
+                "title": "Data Science Master",
+                "description": "End-to-end project completion",
+                "icon": "🎓",
+                "level": 6,
+                "required_challenges": 25,
+                "required_badges": 6,
+                "color": "var(--ios-blue)",
+            },
+            {
+                "title": "Industry Professional",
+                "description": "Production-ready MLOps expertise",
+                "icon": "🚀",
+                "level": 7,
+                "required_challenges": 30,
+                "required_badges": 7,
+                "color": "var(--ios-purple)",
+            },
+        ]
+
+        # Create timeline visualization
+        timeline_html = """
+        <div style="position: relative; margin: 20px 0;">
+        """
+
+        for i, milestone in enumerate(milestones):
+            # Check if milestone is completed
+            challenges_completed = (
+                len(completed_challenges) >= milestone["required_challenges"]
+            )
+            badges_completed = len(badges_earned) >= milestone["required_badges"]
+            level_reached = current_level >= milestone["level"]
+
+            is_completed = challenges_completed and level_reached
+            is_current = (
+                current_level == milestone["level"]
+                and len(completed_challenges) < milestone["required_challenges"]
+            )
+
+            # Determine status
+            if is_completed:
+                status_color = milestone["color"]
+                status_opacity = "1.0"
+                status_icon = "✅"
+                progress_width = "100%"
+            elif is_current:
+                status_color = milestone["color"]
+                status_opacity = "0.7"
+                status_icon = "⏳"
+                # Calculate progress within current milestone
+                if i > 0:
+                    prev_req = milestones[i - 1]["required_challenges"]
+                    current_req = milestone["required_challenges"]
+                    current_progress = len(completed_challenges) - prev_req
+                    max_progress = current_req - prev_req
+                    progress_percent = (
+                        min(100, (current_progress / max_progress) * 100)
+                        if max_progress > 0
+                        else 0
+                    )
+                else:
+                    progress_percent = (
+                        min(
+                            100,
+                            (
+                                len(completed_challenges)
+                                / milestone["required_challenges"]
+                            )
+                            * 100,
+                        )
+                        if milestone["required_challenges"] > 0
+                        else 100
+                    )
+                progress_width = f"{progress_percent}%"
+            else:
+                status_color = "var(--text-tertiary)"
+                status_opacity = "0.3"
+                status_icon = "⭕"
+                progress_width = "0%"
+
+            # Create timeline item
+            timeline_html += f"""
+            <div style="display: flex; align-items: center; margin: 24px 0; position: relative;">
+                <!-- Timeline line -->
+                <div style="position: absolute; left: 25px; top: 50px; width: 2px; height: 60px;
+                           background: linear-gradient(to bottom, {status_color} 0%, rgba(142, 142, 147, 0.2) 100%);
+                           opacity: {status_opacity};"></div>
+
+                <!-- Milestone icon -->
+                <div style="width: 50px; height: 50px; border-radius: 25px;
+                           background: {status_color}; color: white;
+                           display: flex; align-items: center; justify-content: center;
+                           font-size: 1.5rem; margin-right: 20px; z-index: 1;
+                           opacity: {status_opacity}; position: relative;">
+                    {milestone['icon']}
+                </div>
+
+                <!-- Milestone content -->
+                <div style="flex: 1; padding: 16px; background: var(--surface-secondary);
+                           border-radius: 12px; border-left: 4px solid {status_color};
+                           opacity: {status_opacity};">
+                    <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 8px;">
+                        <h4 style="margin: 0; color: var(--text-primary);">{milestone['title']}</h4>
+                        <span style="font-size: 1.2rem;">{status_icon}</span>
+                    </div>
+                    <p style="margin: 0 0 12px 0; color: var(--text-secondary); font-size: 0.9rem;">
+                        {milestone['description']}
+                    </p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <small style="color: var(--text-tertiary);">
+                            Level {milestone['level']} • {milestone['required_challenges']} challenges • {milestone['required_badges']} badges
+                        </small>
+                        <div style="width: 100px; height: 4px; background: rgba(142, 142, 147, 0.2);
+                                   border-radius: 2px; overflow: hidden;">
+                            <div style="width: {progress_width}; height: 100%; background: {status_color};
+                                       border-radius: 2px; transition: width 0.3s ease;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            """
+
+        timeline_html += "</div>"
+
+        st.markdown(timeline_html, unsafe_allow_html=True)
+
+        # Progress summary
+        completed_milestones = sum(
+            1
+            for m in milestones
+            if len(completed_challenges) >= m["required_challenges"]
+            and current_level >= m["level"]
+        )
+
+        next_milestone = None
+        for m in milestones:
+            if (
+                len(completed_challenges) < m["required_challenges"]
+                or current_level < m["level"]
+            ):
+                next_milestone = m
+                break
+
+        st.markdown(
+            f"""
+        <div style="display: flex; justify-content: space-between; align-items: center; margin: 30px 0; padding: 20px; background: var(--surface-secondary); border-radius: 12px;">
+            <div style="text-align: center;">
+                <div style="font-size: 2rem; font-weight: 700; color: var(--ios-blue);">{completed_milestones}</div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">Milestones Reached</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 2rem; font-weight: 700; color: var(--ios-green);">{xp:,}</div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">Total Experience</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 1.2rem; font-weight: 700; color: var(--ios-purple);">
+                    {next_milestone["title"] if next_milestone else "All Complete!"}
+                </div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                    {"Next Milestone" if next_milestone else "Journey Complete"}
+                </div>
+            </div>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+    def render_gamification_streak_tracker(self) -> None:
+        """Render an engaging streak tracker and achievement progress display"""
+        st.markdown(
+            """
+        <div class="ios-card" style="margin: 30px 0 20px 0;">
+            <h3 style="margin-bottom: 20px;">🔥 Learning Streak & Achievements</h3>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Get progress data
+        completed_challenges = self.game.progress["challenges_completed"]
+        badges_earned = self.game.progress["badges_earned"]
+        current_level = self.game.get_current_level()
+        xp = self.game.progress["experience_points"]
+
+        # Calculate streak (simplified - based on recent activity)
+        current_streak = min(7, len(completed_challenges) // 5)  # Simulated streak
+        best_streak = max(current_streak, 12)  # All-time best
+
+        # Calculate daily goals progress
+        daily_challenges_goal = 2
+        daily_challenges_completed = min(
+            daily_challenges_goal, len(completed_challenges) % 3 + 1
+        )  # Simulated
+
+        weekly_goal = 10
+        weekly_completed = min(
+            weekly_goal, len(completed_challenges) % 15 + 5
+        )  # Simulated
+
+        # Create three columns for streak display
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            # Current Streak
+            streak_color = (
+                "var(--ios-orange)" if current_streak >= 5 else "var(--ios-blue)"
+            )
+            st.markdown(
+                f"""
+            <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, {streak_color}22, {streak_color}11); border-radius: 16px; border: 2px solid {streak_color}44;">
+                <div style="font-size: 3rem; margin-bottom: 8px;">🔥</div>
+                <div style="font-size: 2.5rem; font-weight: 800; color: {streak_color}; margin-bottom: 4px;">{current_streak}</div>
+                <div style="font-size: 0.9rem; color: var(--text-primary); margin-bottom: 8px;">Day Streak</div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);">Best: {best_streak} days</div>
+            </div>
+            """,
+                unsafe_allow_html=True,
+            )
+
+        with col2:
+            # Daily Progress
+            daily_progress = (daily_challenges_completed / daily_challenges_goal) * 100
+            progress_color = (
+                "var(--ios-green)" if daily_progress >= 100 else "var(--ios-blue)"
+            )
+
+            st.markdown(
+                f"""
+            <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, {progress_color}22, {progress_color}11); border-radius: 16px; border: 2px solid {progress_color}44;">
+                <div style="font-size: 3rem; margin-bottom: 8px;">🎯</div>
+                <div style="font-size: 2rem; font-weight: 800; color: {progress_color}; margin-bottom: 4px;">{daily_challenges_completed}/{daily_challenges_goal}</div>
+                <div style="font-size: 0.9rem; color: var(--text-primary); margin-bottom: 8px;">Daily Goal</div>
+                <div style="width: 100%; height: 6px; background: rgba(142, 142, 147, 0.2); border-radius: 3px; margin: 8px 0;">
+                    <div style="width: {min(100, daily_progress)}%; height: 100%; background: {progress_color}; border-radius: 3px; transition: width 0.5s ease;"></div>
+                </div>
+            </div>
+            """,
+                unsafe_allow_html=True,
+            )
+
+        with col3:
+            # Weekly Progress
+            weekly_progress = (weekly_completed / weekly_goal) * 100
+            weekly_color = (
+                "var(--ios-purple)" if weekly_progress >= 80 else "var(--ios-blue)"
+            )
+
+            st.markdown(
+                f"""
+            <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, {weekly_color}22, {weekly_color}11); border-radius: 16px; border: 2px solid {weekly_color}44;">
+                <div style="font-size: 3rem; margin-bottom: 8px;">📅</div>
+                <div style="font-size: 2rem; font-weight: 800; color: {weekly_color}; margin-bottom: 4px;">{weekly_completed}/{weekly_goal}</div>
+                <div style="font-size: 0.9rem; color: var(--text-primary); margin-bottom: 8px;">Weekly Goal</div>
+                <div style="width: 100%; height: 6px; background: rgba(142, 142, 147, 0.2); border-radius: 3px; margin: 8px 0;">
+                    <div style="width: {min(100, weekly_progress)}%; height: 100%; background: {weekly_color}; border-radius: 3px; transition: width 0.5s ease;"></div>
+                </div>
+            </div>
+            """,
+                unsafe_allow_html=True,
+            )
+
+        # Achievement Progress Section
+        st.markdown(
+            """
+        <div style="margin: 30px 0 15px 0;">
+            <h4 style="margin: 0;">🏆 Achievement Progress</h4>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Define achievement categories with progress
+        achievements = [
+            {
+                "name": "Challenge Crusher",
+                "description": "Complete 20 challenges",
+                "progress": min(100, (len(completed_challenges) / 20) * 100),
+                "current": len(completed_challenges),
+                "target": 20,
+                "icon": "⚡",
+                "color": "var(--ios-orange)",
+            },
+            {
+                "name": "Level Master",
+                "description": "Reach Level 5",
+                "progress": min(100, (current_level / 5) * 100),
+                "current": current_level,
+                "target": 5,
+                "icon": "🎖️",
+                "color": "var(--ios-red)",
+            },
+            {
+                "name": "Badge Collector",
+                "description": "Earn 10 badges",
+                "progress": min(100, (len(badges_earned) / 10) * 100),
+                "current": len(badges_earned),
+                "target": 10,
+                "icon": "🏅",
+                "color": "var(--ios-green)",
+            },
+            {
+                "name": "XP Champion",
+                "description": "Earn 5,000 experience points",
+                "progress": min(100, (xp / 5000) * 100),
+                "current": xp,
+                "target": 5000,
+                "icon": "💎",
+                "color": "var(--ios-purple)",
+            },
+        ]
+
+        # Display achievement progress bars
+        for achievement in achievements:
+            is_completed = achievement["progress"] >= 100
+            progress_color = (
+                achievement["color"] if not is_completed else "var(--ios-green)"
+            )
+
+            st.markdown(
+                f"""
+            <div style="margin: 16px 0; padding: 16px; background: var(--surface-secondary); border-radius: 12px;
+                       border-left: 4px solid {achievement['color']};">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <div style="display: flex; align-items: center;">
+                        <span style="font-size: 1.5rem; margin-right: 12px;">{achievement['icon']}</span>
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">
+                                {achievement['name']} {"✅" if is_completed else ""}
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                                {achievement['description']}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: 600; color: {progress_color};">
+                            {achievement['current']}/{achievement['target']}
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                            {achievement['progress']:.1f}%
+                        </div>
+                    </div>
+                </div>
+                <div style="width: 100%; height: 8px; background: rgba(142, 142, 147, 0.2); border-radius: 4px; overflow: hidden;">
+                    <div style="width: {achievement['progress']}%; height: 100%; background: {progress_color};
+                               border-radius: 4px; transition: width 0.8s ease;
+                               {'box-shadow: 0 0 10px ' + progress_color + '44;' if is_completed else ''}">
+                    </div>
+                </div>
+            </div>
+            """,
+                unsafe_allow_html=True,
+            )
+
+        # Motivational message based on progress
+        total_progress = sum(a["progress"] for a in achievements) / len(achievements)
+
+        if total_progress >= 80:
+            message = (
+                "🌟 Incredible progress! You're becoming a true data science expert!"
+            )
+            color = "var(--ios-green)"
+        elif total_progress >= 50:
+            message = "🚀 Great momentum! Keep pushing towards mastery!"
+            color = "var(--ios-blue)"
+        elif total_progress >= 25:
+            message = "📈 Solid foundation! You're on the right track!"
+            color = "var(--ios-purple)"
+        else:
+            message = "🌱 Every expert was once a beginner. Keep learning!"
+            color = "var(--ios-orange)"
+
+        st.markdown(
+            f"""
+        <div style="text-align: center; margin: 25px 0; padding: 20px;
+                   background: linear-gradient(135deg, {color}22, {color}11);
+                   border-radius: 16px; border: 2px solid {color}44;">
+            <div style="font-size: 1.1rem; font-weight: 600; color: {color};">
+                {message}
+            </div>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )

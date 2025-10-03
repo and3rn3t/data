@@ -312,7 +312,7 @@ def create_ensemble_models(X_train, X_test, y_train, y_test, base_models):
 
     # 2. Bagging with different base learners
     bagging_dt = BaggingClassifier(
-        base_estimator=DecisionTreeClassifier(max_depth=8),
+        estimator=DecisionTreeClassifier(max_depth=8),
         n_estimators=50,
         random_state=42,
     )
