@@ -1,0 +1,138 @@
+# Production Docker Compose for Data Science Sandbox
+version: "3.8"
+
+services:
+  # Enhanced Gamification Dashboard (Main Production Service)
+  gamification-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: ds-sandbox-gamification
+    ports:
+      - "8503:8503" # Enhanced gamification dashboard
+    volumes:
+      - ./data:/app/data:ro
+      - ./logs:/app/logs
+      - ./mlruns:/app/mlruns
+      - ./mlartifacts:/app/mlartifacts
+      - ./model_registry:/app/model_registry
+      - ./results:/app/results
+    environment:
+      - NODE_ENV=production
+      - STREAMLIT_SERVER_PORT=8503
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+      - STREAMLIT_SERVER_ENABLE_CORS=false
+      - STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION=true
+      - MLFLOW_TRACKING_URI=file:///app/mlruns
+      - WANDB_MODE=offline
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8503/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - ds-sandbox-network
+    command: streamlit run apps/streamlit_app_enhanced.py --server.port=8503 --server.address=0.0.0.0
+
+  # Standard Dashboard (Fallback)
+  standard-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: ds-sandbox-standard
+    ports:
+      - "8501:8501" # Standard dashboard
+    volumes:
+      - ./data:/app/data:ro
+      - ./logs:/app/logs
+      - ./mlruns:/app/mlruns
+      - ./results:/app/results
+    environment:
+      - NODE_ENV=production
+      - STREAMLIT_SERVER_PORT=8501
+      - MLFLOW_TRACKING_URI=file:///app/mlruns
+      - WANDB_MODE=offline
+    restart: unless-stopped
+    networks:
+      - ds-sandbox-network
+    command: streamlit run streamlit_app.py --server.port=8501 --server.address=0.0.0.0
+
+  # Modern iOS-style Dashboard
+  modern-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: ds-sandbox-modern
+    ports:
+      - "8502:8502" # Modern dashboard
+    volumes:
+      - ./data:/app/data:ro
+      - ./logs:/app/logs
+      - ./results:/app/results
+    environment:
+      - NODE_ENV=production
+      - STREAMLIT_SERVER_PORT=8502
+    restart: unless-stopped
+    networks:
+      - ds-sandbox-network
+    command: streamlit run streamlit_app_modern.py --server.port=8502 --server.address=0.0.0.0
+
+  # MLflow Tracking Server
+  mlflow:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: ds-sandbox-mlflow
+    ports:
+      - "5000:5000" # MLflow UI
+    volumes:
+      - ./mlruns:/app/mlruns
+      - ./mlartifacts:/app/mlartifacts
+      - ./model_registry:/app/model_registry
+    environment:
+      - MLFLOW_TRACKING_URI=file:///app/mlruns
+      - MLFLOW_ARTIFACT_ROOT=/app/mlartifacts
+    restart: unless-stopped
+    networks:
+      - ds-sandbox-network
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --port 5000
+      --default-artifact-root /app/mlartifacts
+      --serve-artifacts
+
+  # Reverse Proxy (Nginx)
+  nginx:
+    image: nginx:alpine
+    container_name: ds-sandbox-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/ssl:/etc/ssl/certs:ro # SSL certificates
+    depends_on:
+      - gamification-dashboard
+      - standard-dashboard
+      - modern-dashboard
+      - mlflow
+    restart: unless-stopped
+    networks:
+      - ds-sandbox-network
+
+networks:
+  ds-sandbox-network:
+    driver: bridge
+
+volumes:
+  ds-data:
+    driver: local
+  ds-models:
+    driver: local
+  ds-logs:
+    driver: local

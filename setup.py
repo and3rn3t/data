@@ -1,7 +1,13 @@
 from setuptools import find_packages, setup
 
-with open("README.md", encoding="utf-8") as fh:
-    long_description = fh.read()
+# Handle README.md optionally for Docker builds
+try:
+    with open("README.md", encoding="utf-8") as fh:
+        long_description = fh.read()
+except FileNotFoundError:
+    long_description = (
+        "An interactive data science learning platform with game-like progression"
+    )
 
 setup(
     name="data-science-sandbox",

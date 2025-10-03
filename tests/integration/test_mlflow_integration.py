@@ -69,7 +69,9 @@ class TestMLflowIntegration:
         X, y = make_classification(
             n_samples=100, n_features=4, n_classes=2, random_state=42
         )
-        model = RandomForestClassifier(n_estimators=10, random_state=42)
+        model = RandomForestClassifier(
+            n_estimators=10, random_state=42, min_samples_leaf=1, max_features="sqrt"
+        )
         model.fit(X, y)
 
         model_name = "integration_test_model"

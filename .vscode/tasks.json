@@ -357,6 +357,21 @@
       "isBackground": true,
       "problemMatcher": [],
       "group": "build"
+    },
+    {
+      "label": "Start Enhanced Gamification Dashboard",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "-m",
+        "streamlit",
+        "run",
+        "apps/streamlit_app_enhanced.py",
+        "--server.port=8503"
+      ],
+      "isBackground": true,
+      "problemMatcher": [],
+      "group": "build"
     }
   ]
 }

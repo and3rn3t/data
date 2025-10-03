@@ -8,15 +8,16 @@ covered in Level 7 Challenge 1.
 
 import warnings
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import train_test_split
 
 warnings.filterwarnings("ignore")
+
+# Create random number generator for consistent seeding
+rng = np.random.default_rng(42)
 
 print("🚀 LEVEL 7 CHALLENGE 1: MODERN DATA SCIENCE TOOLCHAIN")
 print("=" * 60)
@@ -35,9 +36,9 @@ try:
     df_polars = pl.DataFrame(
         {
             "id": range(1000),
-            "value": np.random.randn(1000),
-            "category": np.random.choice(["A", "B", "C"], 1000),
-            "score": np.random.uniform(0, 100, 1000),
+            "value": rng.standard_normal(1000),
+            "category": rng.choice(["A", "B", "C"], 1000),
+            "score": rng.uniform(0, 100, 1000),
         }
     )
 
@@ -64,9 +65,9 @@ except ImportError:
     df_pandas = pd.DataFrame(
         {
             "id": range(1000),
-            "value": np.random.randn(1000),
-            "category": np.random.choice(["A", "B", "C"], 1000),
-            "score": np.random.uniform(0, 100, 1000),
+            "value": rng.standard_normal(1000),
+            "category": rng.choice(["A", "B", "C"], 1000),
+            "score": rng.uniform(0, 100, 1000),
         }
     )
 
@@ -93,9 +94,9 @@ try:
     sample_data = pd.DataFrame(
         {
             "date": pd.date_range("2024-01-01", periods=365, freq="D"),
-            "sales": np.random.uniform(100, 1000, 365),
-            "region": np.random.choice(["North", "South", "East", "West"], 365),
-            "product": np.random.choice(["A", "B", "C", "D"], 365),
+            "sales": rng.uniform(100, 1000, 365),
+            "region": rng.choice(["North", "South", "East", "West"], 365),
+            "product": rng.choice(["A", "B", "C", "D"], 365),
         }
     )
 
@@ -139,13 +140,17 @@ try:
 
     with mlflow.start_run():
         # Create sample ML dataset
-        X = np.random.randn(1000, 10)
+        X = rng.standard_normal((1000, 10))
         y = (X[:, 0] + X[:, 1] > 0).astype(int)
 
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.2, random_state=42
+        )
 
         # Train model
-        model = RandomForestClassifier(n_estimators=100, random_state=42)
+        model = RandomForestClassifier(
+            n_estimators=100, random_state=42, min_samples_leaf=1, max_features="sqrt"
+        )
         model.fit(X_train, y_train)
 
         # Make predictions
@@ -177,10 +182,12 @@ try:
     print("✅ SHAP available - Model explanations ready!")
 
     # Create sample model and data for explanation
-    X_sample = np.random.randn(100, 5)
+    X_sample = rng.standard_normal((100, 5))
     y_sample = (X_sample[:, 0] + X_sample[:, 1] - X_sample[:, 2] > 0).astype(int)
 
-    model_sample = RandomForestClassifier(n_estimators=50, random_state=42)
+    model_sample = RandomForestClassifier(
+        n_estimators=50, random_state=42, min_samples_leaf=1, max_features="sqrt"
+    )
     model_sample.fit(X_sample, y_sample)
 
     # Create SHAP explainer
@@ -250,18 +257,20 @@ try:
             max_depth=max_depth,
             min_samples_split=min_samples_split,
             random_state=42,
+            min_samples_leaf=1,
+            max_features="sqrt",
         )
 
         # Use sample data (create if not exists)
-        X_opt = np.random.randn(500, 8)
-        y_opt = (X_opt[:, 0] + X_opt[:, 1] - X_opt[:, 2] > 0).astype(int)
+        x_opt = rng.standard_normal((500, 8))
+        y_opt = (x_opt[:, 0] + x_opt[:, 1] - x_opt[:, 2] > 0).astype(int)
 
-        X_train_opt, X_val_opt, y_train_opt, y_val_opt = train_test_split(
-            X_opt, y_opt, test_size=0.3, random_state=42
+        x_train_opt, x_val_opt, y_train_opt, y_val_opt = train_test_split(
+            x_opt, y_opt, test_size=0.3, random_state=42
         )
 
-        model_opt.fit(X_train_opt, y_train_opt)
-        y_pred_opt = model_opt.predict(X_val_opt)
+        model_opt.fit(x_train_opt, y_train_opt)
+        y_pred_opt = model_opt.predict(x_val_opt)
 
         return accuracy_score(y_val_opt, y_pred_opt)
 
@@ -281,7 +290,6 @@ print("\n📊 PART 5: ADVANCED VISUALIZATION")
 print("-" * 40)
 
 try:
-    import plotly.graph_objects as go
     import plotly.express as px
 
     print("✅ Plotly available - Interactive visualizations ready!")
@@ -289,10 +297,10 @@ try:
     # Create sample visualization data
     viz_data = pd.DataFrame(
         {
-            "x": np.random.randn(200),
-            "y": np.random.randn(200),
-            "category": np.random.choice(["A", "B", "C"], 200),
-            "size": np.random.uniform(10, 50, 200),
+            "x": rng.standard_normal(200),
+            "y": rng.standard_normal(200),
+            "category": rng.choice(["A", "B", "C"], 200),
+            "size": rng.uniform(10, 50, 200),
         }
     )
 
@@ -333,7 +341,7 @@ print("  • Interactive dashboard creation")
 print("\n🚀 NEXT LEVEL UNLOCKED:")
 print("  Ready for Challenge 2: Advanced MLOps!")
 
-print(f"\n💻 Environment Status:")
+print("\n💻 Environment Status:")
 libraries_status = {
     "polars": "polars" in globals(),
     "duckdb": "duckdb" in globals(),
