@@ -51,7 +51,7 @@ services:
 
   # MLflow tracking server
   mlflow:
-    image: python:3.11-slim
+    image: python:3.13-slim
     ports:
       - "5001:5000"
     volumes:
