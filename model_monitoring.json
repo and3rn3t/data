@@ -23,11 +23,90 @@
         "recall": 0.914,
         "f1_score": 0.9140189291617142
       }
+    },
+    {
+      "timestamp": "2025-10-02T20:02:55.460244",
+      "model_name": "customer_classifier",
+      "model_version": "v20251002_200255",
+      "metrics": {
+        "accuracy": 0.9175,
+        "roc_auc": 0.9774909963985594,
+        "precision": 0.9182744595917752,
+        "recall": 0.9175,
+        "f1_score": 0.9174209666209592
+      }
+    },
+    {
+      "timestamp": "2025-10-02T20:03:00.924228",
+      "model_name": "customer_classifier",
+      "model_version": "v20251002_200300",
+      "metrics": {
+        "accuracy": 0.914,
+        "roc_auc": 0.9721154462169261,
+        "precision": 0.9142206717767358,
+        "recall": 0.914,
+        "f1_score": 0.9140189291617142
+      }
     }
   ],
   "drift_alerts": [
     {
       "timestamp": "2025-10-01T16:51:50.619110",
+      "drift_detected": true,
+      "drift_features": [
+        {
+          "feature": "feature_0",
+          "baseline_mean": 0.0006625380343226101,
+          "current_mean": 0.4643218900020218,
+          "drift_ratio": 699.8229957345048
+        },
+        {
+          "feature": "feature_1",
+          "baseline_mean": -0.012902859729810971,
+          "current_mean": 0.06499821579122783,
+          "drift_ratio": 6.037504642560357
+        },
+        {
+          "feature": "feature_2",
+          "baseline_mean": -0.03226259557715227,
+          "current_mean": -0.025365272725103753,
+          "drift_ratio": 0.2137869792761827
+        },
+        {
+          "feature": "feature_3",
+          "baseline_mean": 0.013593834128252706,
+          "current_mean": 0.11579812781787711,
+          "drift_ratio": 7.51843024751997
+        },
+        {
+          "feature": "feature_4",
+          "baseline_mean": 0.04138929475850009,
+          "current_mean": 0.020674420838516904,
+          "drift_ratio": 0.5004886901516723
+        },
+        {
+          "feature": "feature_5",
+          "baseline_mean": 0.00700955821709759,
+          "current_mean": 0.024155535699940486,
+          "drift_ratio": 2.4460853240394997
+        },
+        {
+          "feature": "feature_6",
+          "baseline_mean": -0.006892679268084535,
+          "current_mean": 0.004792288698822274,
+          "drift_ratio": 1.6952722609642104
+        },
+        {
+          "feature": "feature_7",
+          "baseline_mean": 0.0014926465005573313,
+          "current_mean": -0.06722855266875266,
+          "drift_ratio": 46.03983538208849
+        }
+      ],
+      "threshold": 0.1
+    },
+    {
+      "timestamp": "2025-10-02T20:02:55.913272",
       "drift_detected": true,
       "drift_features": [
         {
@@ -240,6 +319,176 @@
       "timestamp": "2025-10-01T16:51:50.610610",
       "model_name": "customer_classifier",
       "model_version": "v20251001_165150",
+      "features": {
+        "feature_0": 0.36997921388074695,
+        "feature_1": -0.8040129979542465,
+        "feature_2": -0.6592990368504504,
+        "feature_3": -0.2361545678572265,
+        "feature_4": -0.8039383767271636,
+        "feature_5": 0.7978518254783004,
+        "feature_6": -1.3480342515450294,
+        "feature_7": 0.09922962338107293
+      },
+      "prediction": "1",
+      "confidence": 0.5909574619474016
+    },
+    {
+      "timestamp": "2025-10-02T20:02:55.524472",
+      "model_name": "customer_classifier",
+      "model_version": "v20251002_200255",
+      "features": {
+        "feature_0": 0.32183519002277045,
+        "feature_1": -0.7813576956169462,
+        "feature_2": 0.6913563810805253,
+        "feature_3": -0.5903616918053307,
+        "feature_4": 0.7495550374451283,
+        "feature_5": -0.27411147538072145,
+        "feature_6": -1.7210471256296629,
+        "feature_7": -0.982416240480937
+      },
+      "prediction": "0",
+      "confidence": 0.9348597230311981
+    },
+    {
+      "timestamp": "2025-10-02T20:02:55.550575",
+      "model_name": "customer_classifier",
+      "model_version": "v20251002_200255",
+      "features": {
+        "feature_0": -0.4304147086872844,
+        "feature_1": 1.3681890237485779,
+        "feature_2": 0.9011436305292249,
+        "feature_3": 1.623861412322142,
+        "feature_4": 1.6536352160298582,
+        "feature_5": -0.534750804590915,
+        "feature_6": -0.18848685975882942,
+        "feature_7": -0.4112799243305384
+      },
+      "prediction": "0",
+      "confidence": 0.5940013521114814
+    },
+    {
+      "timestamp": "2025-10-02T20:02:55.583949",
+      "model_name": "customer_classifier",
+      "model_version": "v20251002_200255",
+      "features": {
+        "feature_0": -0.6715106053010765,
+        "feature_1": -1.8414947093364584,
+        "feature_2": -0.01474771801684241,
+        "feature_3": -1.2855655937111106,
+        "feature_4": -0.034171881534327396,
+        "feature_5": 2.1157708095629846,
+        "feature_6": -0.5093450963307086,
+        "feature_7": 0.19477400562806724
+      },
+      "prediction": "0",
+      "confidence": 0.886072164522367
+    },
+    {
+      "timestamp": "2025-10-02T20:02:55.610258",
+      "model_name": "customer_classifier",
+      "model_version": "v20251002_200255",
+      "features": {
+        "feature_0": 0.9066483858092831,
+        "feature_1": 0.28029129196590696,
+        "feature_2": 0.29248418794229586,
+        "feature_3": -0.36240243368808,
+        "feature_4": -0.23187797506123262,
+        "feature_5": -0.9600105221878282,
+        "feature_6": 0.8460450088894076,
+        "feature_7": -1.7414916566140959
+      },
+      "prediction": "1",
+      "confidence": 0.8823034536208096
+    },
+    {
+      "timestamp": "2025-10-02T20:02:55.640609",
+      "model_name": "customer_classifier",
+      "model_version": "v20251002_200255",
+      "features": {
+        "feature_0": 0.9710883383822022,
+        "feature_1": -1.4036983847452424,
+        "feature_2": 0.9626072740766523,
+        "feature_3": -0.3538175262121811,
+        "feature_4": -1.2318686881330803,
+        "feature_5": 0.5792986450796365,
+        "feature_6": 0.9287675350757748,
+        "feature_7": -0.43807864810353686
+      },
+      "prediction": "0",
+      "confidence": 0.8384758750863044
+    },
+    {
+      "timestamp": "2025-10-02T20:02:55.671548",
+      "model_name": "customer_classifier",
+      "model_version": "v20251002_200255",
+      "features": {
+        "feature_0": 0.7206105486789331,
+        "feature_1": -2.2850844946693503,
+        "feature_2": -1.3205962897466004,
+        "feature_3": 1.292408930468729,
+        "feature_4": -0.22366927419791616,
+        "feature_5": -1.8622133264488476,
+        "feature_6": -0.6988661804419937,
+        "feature_7": -0.9234004725250807
+      },
+      "prediction": "1",
+      "confidence": 0.5916667744020685
+    },
+    {
+      "timestamp": "2025-10-02T20:02:55.701251",
+      "model_name": "customer_classifier",
+      "model_version": "v20251002_200255",
+      "features": {
+        "feature_0": -0.16596173147292473,
+        "feature_1": -0.37075098380764737,
+        "feature_2": 0.1789317289381608,
+        "feature_3": -0.0694660516125747,
+        "feature_4": 1.3597392550370186,
+        "feature_5": 0.4245485997196691,
+        "feature_6": 0.45767161119358607,
+        "feature_7": 1.1651571238945218
+      },
+      "prediction": "0",
+      "confidence": 0.8823082490015488
+    },
+    {
+      "timestamp": "2025-10-02T20:02:55.733826",
+      "model_name": "customer_classifier",
+      "model_version": "v20251002_200255",
+      "features": {
+        "feature_0": -0.38876875042958176,
+        "feature_1": -1.2618774433584852,
+        "feature_2": 1.2069703246322492,
+        "feature_3": 0.13584174810811248,
+        "feature_4": 0.13935120789892844,
+        "feature_5": -0.6333299215302364,
+        "feature_6": -0.6168553331035774,
+        "feature_7": 0.8467223387708436
+      },
+      "prediction": "0",
+      "confidence": 0.9979319975433425
+    },
+    {
+      "timestamp": "2025-10-02T20:02:55.766309",
+      "model_name": "customer_classifier",
+      "model_version": "v20251002_200255",
+      "features": {
+        "feature_0": 0.9846557981376103,
+        "feature_1": 0.7838234057466584,
+        "feature_2": 0.792961605445475,
+        "feature_3": 0.5690295372597589,
+        "feature_4": 0.13152273007815657,
+        "feature_5": -0.17537968432098058,
+        "feature_6": 1.2103238499415532,
+        "feature_7": -0.3737208704904336
+      },
+      "prediction": "1",
+      "confidence": 0.9466178109632264
+    },
+    {
+      "timestamp": "2025-10-02T20:02:55.854953",
+      "model_name": "customer_classifier",
+      "model_version": "v20251002_200255",
       "features": {
         "feature_0": 0.36997921388074695,
         "feature_1": -0.8040129979542465,

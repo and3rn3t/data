@@ -28,18 +28,55 @@
         "model_path": "model",
         "stage": "staging",
         "registered_at": "2025-10-01T16:51:54.707171"
+      },
+      "v20251002_200255": {
+        "version": "v20251002_200255",
+        "metrics": {
+          "accuracy": 0.9175,
+          "roc_auc": 0.9774909963985594,
+          "precision": 0.9182744595917752,
+          "recall": 0.9175,
+          "f1_score": 0.9174209666209592,
+          "timestamp": "2025-10-02T20:02:48.821734"
+        },
+        "model_path": "model",
+        "stage": "production",
+        "registered_at": "2025-10-02T20:02:55.443970"
+      },
+      "v20251002_200300": {
+        "version": "v20251002_200300",
+        "metrics": {
+          "accuracy": 0.914,
+          "roc_auc": 0.9721154462169261,
+          "precision": 0.9142206717767358,
+          "recall": 0.914,
+          "f1_score": 0.9140189291617142,
+          "timestamp": "2025-10-02T20:02:56.538649"
+        },
+        "model_path": "model",
+        "stage": "staging",
+        "registered_at": "2025-10-02T20:03:00.897058"
       }
     }
   },
   "production_model": {
     "name": "customer_classifier",
-    "version": "v20251001_165150"
+    "version": "v20251002_200255"
   },
   "staging_models": [
     {
       "name": "customer_classifier",
       "version": "v20251001_165154"
+    },
+    {
+      "name": "customer_classifier",
+      "version": "v20251002_200300"
     }
   ],
-  "archived_models": []
+  "archived_models": [
+    {
+      "name": "customer_classifier",
+      "version": "v20251001_165150"
+    }
+  ]
 }

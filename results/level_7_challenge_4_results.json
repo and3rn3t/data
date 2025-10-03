@@ -33,12 +33,12 @@
     },
     "overall_compliance": 1.0,
     "audit_trail_length": 8,
-    "last_audit": "2025-10-01T17:00:03.259977"
+    "last_audit": "2025-10-02T20:04:02.501225"
   },
   "model_card": {
     "model_name": "Ethical Hiring Assistant",
     "version": "1.0.0",
-    "creation_date": "2025-10-01",
+    "creation_date": "2025-10-02",
     "created_by": "AI Ethics Team",
     "model_type": "Random Forest Classifier",
     "architecture": "Ensemble of 100 decision trees",
@@ -98,7 +98,7 @@
     ],
     "audit_trail": [
       {
-        "timestamp": "2025-10-01T17:00:03.178085",
+        "timestamp": "2025-10-02T20:04:02.443668",
         "action": "bias_assessment",
         "model_id": "hiring_model_v1",
         "user": "system",
@@ -129,7 +129,7 @@
         }
       },
       {
-        "timestamp": "2025-10-01T17:00:03.259977",
+        "timestamp": "2025-10-02T20:04:02.501225",
         "action": "privacy_assessment",
         "model_id": "hiring_dataset_v1",
         "user": "system",
@@ -160,7 +160,7 @@
         }
       },
       {
-        "timestamp": "2025-10-01T17:00:03.259977",
+        "timestamp": "2025-10-02T20:04:02.501225",
         "action": "model_deployment",
         "model_id": "ethical_hiring_v1",
         "user": "system",
@@ -189,7 +189,7 @@
         }
       },
       {
-        "timestamp": "2025-10-01T17:00:03.259977",
+        "timestamp": "2025-10-02T20:04:02.501225",
         "action": "prediction",
         "model_id": "ethical_hiring_v1",
         "user": "system",
@@ -208,7 +208,7 @@
         }
       },
       {
-        "timestamp": "2025-10-01T17:00:03.259977",
+        "timestamp": "2025-10-02T20:04:02.501225",
         "action": "prediction",
         "model_id": "ethical_hiring_v1",
         "user": "system",
@@ -227,7 +227,7 @@
         }
       },
       {
-        "timestamp": "2025-10-01T17:00:03.259977",
+        "timestamp": "2025-10-02T20:04:02.501225",
         "action": "prediction",
         "model_id": "ethical_hiring_v1",
         "user": "system",
@@ -246,7 +246,7 @@
         }
       },
       {
-        "timestamp": "2025-10-01T17:00:03.259977",
+        "timestamp": "2025-10-02T20:04:02.501225",
         "action": "prediction",
         "model_id": "ethical_hiring_v1",
         "user": "system",
@@ -265,7 +265,7 @@
         }
       },
       {
-        "timestamp": "2025-10-01T17:00:03.259977",
+        "timestamp": "2025-10-02T20:04:02.501225",
         "action": "prediction",
         "model_id": "ethical_hiring_v1",
         "user": "system",

@@ -1,0 +1,7 @@
+[31;1mTraceback (most recent call last):[0m
+[31;1m  File "C:\git\data\level_7_challenge_1_runner.py", line 21, in <module>[0m
+[31;1m    print("\U0001f680 LEVEL 7 CHALLENGE 1: MODERN DATA SCIENCE TOOLCHAIN")[0m
+[31;1m  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\encodings\cp1252.py", line 19, in encode[0m
+[31;1m    return codecs.charmap_encode(input,self.errors,encoding_table)[0][0m
+[31;1m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31;1mUnicodeEncodeError: 'charmap' codec can't encode character '\U0001f680' in position 0: character maps to <undefined>[0m
