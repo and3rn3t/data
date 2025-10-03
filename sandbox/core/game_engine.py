@@ -498,14 +498,14 @@ class GameEngine:
                     "-m",
                     "streamlit",
                     "run",
-                    os.path.join(BASE_DIR, "streamlit_app.py"),
+                    os.path.join(BASE_DIR, "apps", "streamlit_app.py"),
                 ],
                 check=True,
             )
         except (subprocess.CalledProcessError, FileNotFoundError) as e:
             print(f"❌ Dashboard failed to start: {e}")
             print("💡 Make sure Streamlit is installed: pip install streamlit")
-            print("💡 Try running: python -m streamlit run streamlit_app.py")
+            print("💡 Try running: python -m streamlit run apps/streamlit_app.py")
 
     def get_progress(self) -> Dict[str, Any]:
         """Get current progress data"""

@@ -128,7 +128,37 @@ python main.py --mode dashboard
 3. Use the dashboard to track your progress and achievements
 4. Practice with real datasets in the Jupyter environment
 
-## 📚 Learning Path
+## � Project Structure
+
+The project follows a clean, organized structure for easy navigation:
+
+```text
+data-science-sandbox/
+├── 🚀 apps/                    # User-facing applications
+│   ├── streamlit_app.py        # Original dashboard
+│   └── streamlit_app_modern.py # Modern iOS HIG dashboard
+├── 💡 examples/                # Demo scripts and examples
+├── 🏃 runners/                 # Challenge runners and validation
+├── 📚 docs/                    # Comprehensive documentation
+│   ├── level-summaries/        # Learning progress docs
+│   ├── implementation/         # Technical guides
+│   └── project-management/     # Planning and tracking
+├── 🧪 tests/                   # Test suite
+├── 🔧 sandbox/                 # Core source code
+├── 📊 data/                    # Datasets and data generation
+├── 📓 notebooks/               # Jupyter notebooks
+├── 🎯 challenges/              # Learning challenges (Levels 1-7)
+└── ⚙️ scripts/                 # Build and deployment scripts
+```
+
+**Key Entry Points:**
+
+- `main.py` - Primary application launcher
+- `apps/streamlit_app_modern.py` - Modern dashboard interface
+- `examples/` - Demo scripts showcasing features
+- `docs/README.md` - Complete documentation index
+
+## �📚 Learning Path
 
 ![Learning Journey](docs/images/learning-path.png)
 
@@ -225,7 +255,7 @@ Earn badges by completing specific objectives:
 
 ## 📁 Project Structure
 
-```
+```text
 data-science-sandbox/
 ├── main.py                 # Main application entry point
 ├── config.py               # Configuration and game settings
